@@ -1,78 +1,36 @@
 # PHP Event Booking
 > A website that offers the possibility to create and book events.
 
-[![PHP Version][php-image]]
-[![Build Status][travis-image]][travis-url]
-[![Downloads Stats][npm-downloads]][npm-url]
+![PHP Version][php-image]
+![Apache Version][apache-image]
+![Postgres Version][postgres-image]
+![Docker Version][docker-image]
+![Composer Version][composer-image]
 
-One to two paragraph statement about your product and what it does.
+This project contains a website created with HTML, JavaScript and PHP. It is hosted on an Apache Server with a PostgreSQL database, startable via docker. Created as a PHP lecture assignment at DHBW Stuttgart.
 
-![](header.png)
+## Requirements
 
-## Installation
+t.b.a.
 
-OS X & Linux:
-
-```sh
-npm install my-crazy-module --save
-```
-
-Windows:
-
-```sh
-edit autoexec.bat
-```
-
-## Usage example
-
-A few motivating and useful examples of how your product can be used. Spice this up with code blocks and potentially more screenshots.
-
-_For more examples and usage, please refer to the [Wiki][wiki]._
 
 ## Development setup
 
-Describe how to install all development dependencies and how to run an automated test-suite of some kind. Potentially do this for multiple platforms.
-
-```sh
-make install
-npm test
-```
+t.b.a.
 
 ## Release History
 
-* 0.2.1
-    * CHANGE: Update docs (module code remains unchanged)
-* 0.2.0
-    * CHANGE: Remove `setDefaultXYZ()`
-    * ADD: Add `init()`
-* 0.1.1
-    * FIX: Crash when calling `baz()` (Thanks @GenerousContributorName!)
-* 0.1.0
-    * The first proper release
-    * CHANGE: Rename `foo()` to `bar()`
-* 0.0.1
-    * Work in progress
-
-## Meta
-
-Your Name – [@YourTwitter](https://twitter.com/dbader_org) – YourEmail@example.com
-
-Distributed under the XYZ license. See ``LICENSE`` for more information.
-
-[https://github.com/yourname/github-link](https://github.com/dbader/)
-
-## Contributing
-
-1. Fork it (<https://github.com/yourname/yourproject/fork>)
-2. Create your feature branch (`git checkout -b feature/fooBar`)
-3. Commit your changes (`git commit -am 'Add some fooBar'`)
-4. Push to the branch (`git push origin feature/fooBar`)
-5. Create a new Pull Request
+* 0.1
+    * t.b.a.
+* 0.2
+    * t.b.a.
+* 0.3
+    * t.b.a.
 
 <!-- Markdown link & img dfn's -->
 [php-image]: https://img.shields.io/badge/php-v7.4.3-brightgreen?style=flat-square&logo=php
-[npm-url]: https://npmjs.org/package/datadog-metrics
-[npm-downloads]: https://img.shields.io/npm/dm/datadog-metrics.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/dbader/node-datadog-metrics/master.svg?style=flat-square
-[travis-url]: https://travis-ci.org/dbader/node-datadog-metrics
-[wiki]: https://github.com/yourname/yourproject/wiki
+[composer-image]: https://img.shields.io/badge/composer-v1.9.3-brightgreen?style=flat-square&logo=composer
+[bootstrap-image]: https://img.shields.io/badge/bootstrap-v4.3.1-brightgreen?style=flat-square&logo=bootstrap
+[postgres-image]: https://img.shields.io/badge/postgres-v12.2-brightgreen?style=flat-square&logo=postgresql
+[docker-image]: https://img.shields.io/badge/docker-v19.03.6-brightgreen?style=flat-square&logo=docker
+[apache-image]: https://img.shields.io/badge/apache-v19.03.6-brightgreen?style=flat-square&logo=apache
