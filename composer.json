@@ -1,0 +1,17 @@
+{
+  "name": "vendor_name/package_name",
+  "description": "description_text",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "author's name",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "squizlabs/php_codesniffer": "4.0.x-dev",
+    "twbs/bootstrap": "4.3.1",
+    "ext-spltype": "*"
+  }
+}
