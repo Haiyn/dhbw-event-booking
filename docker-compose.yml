@@ -1,0 +1,38 @@
+version: '3.2'
+services:
+  db:
+    container_name: pg-database
+    image: postgres:12.2
+    ports:
+    - 5433:5432
+    networks:
+      development:
+    volumes:
+    - database:/var/lib/postgres/data
+    environment:
+      POSTGRES_DB: "event-booking"
+      POSTGRES_USER: "dev"
+      POSTGRES_PASSWORD: "dev"
+
+  web:
+    container_name: webserver
+    image: event-booking:2020
+    ports:
+    - 8080:80
+    networks:
+      development:
+    depends_on:
+      - db
+    volumes:
+    - type: bind
+      source: "./src"
+      target: "/var/www/html"
+    - webserver:/data
+
+volumes:
+  database:
+  webserver:
+
+networks:
+  development:
+    driver: bridge
