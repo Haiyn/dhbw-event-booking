@@ -26,7 +26,7 @@ services:
     volumes:
     - type: bind
       source: "./src"
-      target: ${TARGET}
+      target: "/var/www/html"
     - webserver:/data
 
 volumes:

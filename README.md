@@ -49,8 +49,6 @@ IMPORTANT: the TARGET argument must be corresponding to your OS:
 docker-compose up -d
 ```
 
-IMPORTANT: A .env file needs to be available in the same directory as the .yml file. It needs to contain the same TARGET argument as in 1. during build.
-
 ## Release History
 
 * 0.1
