@@ -1,7 +1,3 @@
-##### Docker
-*.env
-
-
 ##### Composer
 composer.phar
 /vendor/
