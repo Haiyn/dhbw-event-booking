@@ -5,6 +5,8 @@ ARG TARGET
 
 # Update
 RUN apt-get update
+RUN a2enmod rewrite
+RUN service apache2 restart
 
 # Install Postgre PDO
 RUN apt-get install -y libpq-dev

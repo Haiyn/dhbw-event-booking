@@ -12,6 +12,13 @@
   "require": {
     "squizlabs/php_codesniffer": "4.0.x-dev",
     "twbs/bootstrap": "4.3.1",
-    "ext-spltype": "*"
+    "ext-spltype": "*",
+    "ext-pdo": "*"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "rm -rf src/resources/assets/bootstrap",
+      "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap"
+    ]
   }
 }
