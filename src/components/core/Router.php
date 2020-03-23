@@ -20,12 +20,13 @@ class Router
 
         $controllerName = $this->transformPathToController($path);
         if (empty($controllerName))
-            $controllerName = "Homepage";
+            $controllerName = "Register";
 
         $controllerClassName = $controllerName . "Controller";
 
         if (file_exists("controllers/{$controllerClassName}.php")) {
-            $controller = new $controllerClassName;
+            $className = "\\controllers\\"."$controllerClassName";
+            $controller = new $className;
         }
         else {
             $controller = new RegisterController();

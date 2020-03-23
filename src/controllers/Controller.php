@@ -23,7 +23,7 @@ abstract class Controller
 
     public final function showView() {
         extract((array)$this->view);
-        require "views/{$this->viewName}/{$this->viewName}.phtml";
+        require dirname(__DIR__)."/views/{$this->viewName}/{$this->viewName}.phtml";
     }
 
 
