@@ -10,11 +10,11 @@ CREATE TABLE IF NOT EXISTS users (
     verified BOOLEAN,
     registration_date TIMESTAMP
 );
-CREATE TYPE visibility AS ENUM ('private', 'public');
+CREATE TYPE visibility AS ENUM ('invite-only', 'public');
 CREATE TABLE IF NOT EXISTS events (
     event_id UUID PRIMARY KEY,
     creator_id UUID REFERENCES users (user_id),
-    creation_date TIMESTAMP ,
+    creation_date TIMESTAMP,
     title TEXT,
     description TEXT,
     location TEXT,
@@ -22,17 +22,20 @@ CREATE TABLE IF NOT EXISTS events (
     time TIME,
     visibility visibility,
     maximum_attendees INTEGER,
-    price INTEGER
+    price NUMERIC (8, 2)
 );
+CREATE TYPE status AS ENUM ('invited', 'accepted');
 CREATE TABLE IF NOT EXISTS bookings (
     booking_id UUID PRIMARY KEY,
     event_id UUID REFERENCES events (event_id),
     user_id UUID REFERENCES users (user_id),
-    status TEXT,
+    status status,
     accepted_date TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS sessions (
     session_id UUID PRIMARY KEY,
     user_id UUID REFERENCES users (user_id),
-    login_time TIME
+    login_time TIME,
+    ip_address TEXT,
+    user_agent TEXT
 );
