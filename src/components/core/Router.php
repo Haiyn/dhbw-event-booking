@@ -45,7 +45,6 @@ class Router
 
         // See if the called controller exists in the controllers folder
         if (file_exists("controllers/{$controllerClassName}.php")) {
-            echo "here";
             $className = "\\controllers\\"."$controllerClassName";
             $controller = new $className;
 

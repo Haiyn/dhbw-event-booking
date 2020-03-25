@@ -37,17 +37,42 @@ all dependencies will be available to reference in ```src/resouces/assets/```.
 A Dockerfile and docker-compose is available for running the apache server and PostgreSQL database in a docker container. In order to set this up, the following two steps are needed:
 1. Building the image
 ```
-docker build -t event-booking:2020 --build-arg TARGET=<target> .
+docker build -t event-booking:2020.
 ```
-
-IMPORTANT: the TARGET argument must be corresponding to your OS:
-* Arch Linux: ```/srv/http```
-* Debian: ```/var/www/html```
 
 2. Running docker-compose
 ```
 docker-compose up -d
 ```
+
+## PHPStorm
+
+### Docker
+
+#### Dockerfile
+
+Run Dockerfile to create image for docker-compose.yml.
+
+1. Create new "Dockerfile" configuration
+2. Context folder: "."
+3. Image tag: "event-booking:2020"
+
+#### Docker-compose
+
+Run database and webserver.
+
+1. Create new "Docker-compose" configuration
+2. Compose file(s): "./docker-compose.yml;"
+
+### Debugging
+
+Debugging via xdebug, all required packages are installed in the Dockerfile.
+
+Installation:
+1. Create "PHP Remote Debug" configuration
+2. Install browser extension https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_content=2019.3&utm_medium=link&utm_source=product
+3. Run new created debug configuration
+4. Open installed browser extension and enable debug
 
 ## Release History
 
