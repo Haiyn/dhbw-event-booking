@@ -2,16 +2,32 @@
 
 namespace models;
 
-use Database;
+use components\database\Database;
 
 class User
 {
-    public function getUserByUsername($username) {
+    private static $_database;
 
+    public function __construct()
+    {
+    }
+
+    public function getUserByUsername($username) {
+        $users = $_database->fetch(
+            "SELECT * from Users WHERE username = :username",
+            ["username" => $username]
+        );
+        if (empty($users)) return [];
+        return $users[0];
     }
 
     public function getUserByEmail($email) {
-
+        $users = $_database->fetch(
+            "SELECT * from Users WHERE {$email} = email",
+            ["email" => $email]
+        );
+        if (empty($users)) return [];
+        return $users[0];
     }
 
     public function addUser($data) {

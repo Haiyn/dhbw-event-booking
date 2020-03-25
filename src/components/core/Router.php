@@ -6,10 +6,11 @@ use controllers\NotFoundController;
 
 class Router
 {
+
     /*
      * Transforms the URL into a Controller name
      */
-    private function _transformViewNameToController($viewName) {
+    private function _transformViewNameToControllerName($viewName) {
         // If the url has '-' in it, convert it to CamelCase
         // e.g.: event-overview --> EventOverview
         $parts = explode("-", $viewName);
@@ -35,7 +36,7 @@ class Router
     public function route($params) {
         $path = $params[0];
         $viewName = $this->_transformPathToViewName($path);
-        $controllerName = $this->_transformViewNameToController($viewName);
+        $controllerName = $this->_transformViewNameToControllerName($viewName);
 
         // This sets which Controller will be called if no path is given
         if (empty($controllerName))

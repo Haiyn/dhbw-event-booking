@@ -1,5 +1,6 @@
 <?php
 
+// Initialize autoloader
 spl_autoload_register("autoLoader");
 
 function autoLoader($className) {
@@ -10,8 +11,8 @@ function autoLoader($className) {
     }
 }
 
+// Initialize Router
 use components\core\Router;
 
 $router = new Router();
-
 $router->route([$_SERVER["REQUEST_URI"]]);

@@ -4,42 +4,57 @@
     <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
+    <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <script type="text/javascript" src="/views/register/register.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Register</h1><br>
         <p>Please enter following values to register.</p>
+
+        <?php if($isError): ?>
+            <div class="alert alert-danger" role="alert">
+                <p class="text-danger"><?php echo $_SESSION['REGISTER_ERROR']; ?></p>
+            </div>
+        <?php endif ?>
         
         <form method="post" target="RegisterController.php">
             <div class="form-group">
-                <label for="register-username">Username*</label>
-                <input id="register-username" type="text" name="username" class="form-control"><br/>
+                <label for="js-register-username">Username*</label>
+                <input id="js-register-username" type="text" name="username" class="form-control"><br/>
             </div>
             <div class="form-group">
-                <label for="register-email">E-Mail*</label>
-                <input id="register-email" type="text" name="email" class="form-control"><br/>
+                <label for="js-register-email">E-Mail*</label>
+                <input id="js-register-email" type="text" name="email" class="form-control"><br/>
             </div>
             <div class="form-group">
-                <label for="register-password">Password*</label>
-                <input id="register-password" type="password" name="password" class="form-control"><br/>
+                <label for="js-register-password">Password*</label>
+                <input id="js-register-password" type="password" name="password" class="form-control"><br/>
             </div>
             <div class="form-group">
-                <label for="register-firstname">First Name</label>
-                <input id="register-firstname" type="text" name="firstname" class="form-control"><br/>
+                <label for="js-register-firstname">First Name</label>
+                <input id="js-register-firstname" type="text" name="firstname" class="form-control"><br/>
             </div>
             <div class="form-group">
-                <label for="register-lastname">Last Name</label>
-                <input id="register-lastname" type="text" name="lastname" class="form-control"><br/>
+                <label for="js-register-lastname">Last Name</label>
+                <input id="js-register-lastname" type="text" name="lastname" class="form-control"><br/>
             </div>
             <div class="form-group">
-                <label for="register-age">Age</label>
-                <input id="register-age" type="text" name="age" class="form-control"><br/>
+                <label for="js-register-age">Age</label>
+                <input id="js-register-age" type="text" name="age" class="form-control"><br/>
             </div>
             <p class="text-danger">*These fields are required.</p>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button disabled id="js-register-submit" type="submit" class="btn btn-primary">Register</button>
         </form>
+
+        <?php if($isSuccess): ?>
+            <div class="alert alert-success" role="alert">
+                <p class="text-success"><?php echo $_SESSION["REGISTER_SUCCESS"]; ?></p>
+            </div>
+        <?php endif ?>
     </div>
 </body>
 </html>
