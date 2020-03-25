@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "squizlabs/php_codesniffer": "4.0.x-dev",
+    "squizlabs/php_codesniffer": "^3.5",
     "twbs/bootstrap": "4.3.1",
     "ext-spltype": "*",
     "ext-pdo": "*"
