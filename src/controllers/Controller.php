@@ -7,10 +7,10 @@ use stdClass;
 abstract class Controller
 {
     public $viewName;
-    protected $_view;
+    protected $view;
 
     function __construct() {
-        $this->_view = new stdClass();
+        $this->view = new stdClass();
     }
 
     abstract public function render($params);
@@ -18,7 +18,7 @@ abstract class Controller
     /*
      * Redirects to the given url. Makes use of the router.
      */
-    protected final function _redirect($url)
+    protected final function redirect($url)
     {
         header("Location: $url");
         header("Connection: close");
@@ -30,7 +30,7 @@ abstract class Controller
      */
     public final function showView()
     {
-        extract((array)$this->_view);
+        extract((array)$this->view);
         require dirname(__DIR__)."/views/{$this->viewName}/{$this->viewName}.phtml";
     }
 
@@ -40,20 +40,20 @@ abstract class Controller
      *
      * e.g. in register, the _setError method creates $_SESSION['REGISTER_ERROR'] and reroutes to /register?error
      */
-    protected function _setError($errorMessage)
+    protected function setError($errorMessage)
     {
         $_SESSION[strtoupper($this->viewName) . "_ERROR"] = $errorMessage;
-        $this->_redirect("/{$this->viewName}?error");
+        $this->redirect("/{$this->viewName}?error");
     }
 
-    protected function _setWarning($warningMessage) {
+    protected function setWarning($warningMessage) {
         $_SESSION[strtoupper($this->viewName) . "_WARNING"] = $warningMessage;
-        $this->_redirect("/{$this->viewName}?warning");
+        $this->redirect("/{$this->viewName}?warning");
     }
 
-    protected function _setSuccess($successMessage) {
+    protected function setSuccess($successMessage) {
         $_SESSION[strtoupper($this->viewName) . "_SUCCESS"] = $successMessage;
-        $this->_redirect("/{$this->viewName}?success");
+        $this->redirect("/{$this->viewName}?success");
     }
 
 
