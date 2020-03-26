@@ -20,15 +20,13 @@ class RegisterController extends Controller
                 "age" => filter_var(htmlspecialchars($_POST["age"]), FILTER_SANITIZE_NUMBER_INT)
             ];
 
-            if(!$this->validateData($user_data))
-            {
-                return;
-            }
+            $this->validateData($user_data);
 
             $this->registerUser($user_data);
 
             $this->setSuccess("You have been successfully registered to the website! 
-                    Please confirm your email address with the link you've received at {$user_data['email']}");
+                    Please confirm your email address with the link you've received at 
+                    <strong>{$user_data['email']}</strong>");
         }
 
         $this->view->pageTitle = "Register";
@@ -45,16 +43,12 @@ class RegisterController extends Controller
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL))
         {
             $this->setError("Please enter a valid E-Mail address!");
-            return false;
         }
 
         if (!empty($data['age']) && !filter_var($data['age'], FILTER_VALIDATE_INT))
         {
             $this->setError("Please enter a valid age!");
-            return false;
         }
-
-        return true;
     }
 
     /*
@@ -70,15 +64,13 @@ class RegisterController extends Controller
         if (!empty($existingUser))
         {
             $this->setError("This username is already taken!");
-            return;
         }
 
         // Check if email is already in database
         $existingUser = $user->getUserByEmail($user_data["email"]);
         if (!empty($existingUser))
         {
-            $this->setSuccess("An account with this E-Mail is already registered!");
-            return;
+            $this->setError("An account with this E-Mail is already registered!");
         }
 
         // Add the user to the database

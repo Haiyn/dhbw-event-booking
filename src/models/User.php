@@ -64,7 +64,7 @@ class User
     public function addUser($user_data) {
         self::$database->execute(
             "INSERT INTO users VALUES (DEFAULT, :username, :email, :password, :first_name, :last_name, :age, :verification_hash, :verified, DEFAULT)",
-            $this->_mapRegisterDataToUserTableData($user_data)
+            $this->mapRegisterDataToUserTableData($user_data)
         );
     }
 
@@ -72,7 +72,7 @@ class User
      * Maps the data from user_data to a users database object
      * user_id and creation_date are generated in database
      */
-    private function _mapRegisterDataToUserTableData($user_data) {
+    private function mapRegisterDataToUserTableData($user_data) {
         $ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . "/config.ini.php");
 
         // Check for empty values, postgres must receive null not ""
