@@ -6,6 +6,6 @@ class NotFoundController extends Controller
 {
     public function render($parameters)
     {
-        $this->_view->pageTitle = "404 Not Found";
+        $this->view->pageTitle = "404 Not Found";
     }
 }

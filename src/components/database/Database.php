@@ -8,21 +8,21 @@ use PDOException;
 class Database
 {
 
-    private static $_instance;
-    private static $_connection;
+    private static $instance;
+    private static $connection;
 
     public function __construct($options)
     {
-        self::$_instance = $this;
+        self::$instance = $this;
         $this->openConnection($options);
     }
 
     public static function getInstance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new self(null);
+        if (self::$instance === null) {
+            self::$instance = new self(null);
         }
-        return self::$_instance;
+        return self::$instance;
     }
 
     public static function newInstance($options)
@@ -41,18 +41,20 @@ class Database
             $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
         }
 
-        try {
+        try
+        {
             $ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . "/config.ini.php");
-            self::$_connection = new PDO(
+            self::$connection = new PDO(
                 $ini['DB_TYPE'] . ':host=' . $ini['DB_HOST']  . ';port=' . $ini['DB_PORT']  . ';dbname=' . $ini['DB_NAME'] ,
                 $ini['DB_USER'] ,
                 $ini['DB_PASS'] ,
                 $options
             );
         }
-        catch(PDOException $exception) {
+        catch(PDOException $exception)
+        {
             // Connection to the database failed, redirect to error page to not expose stack trace
-            //header("Location: /internal-error");
+            header("Location: /internal-error");
             return;
         }
 
@@ -62,8 +64,9 @@ class Database
     /*
      * Query and return all fetched data
      */
-    public function fetch($query, $data) {
-        $result = self::$_connection->prepare($query);
+    public function fetch($query, $data)
+    {
+        $result = self::$connection->prepare($query);
         foreach ($data as $key => &$value) {
             $result->bindParam($key, $value);
         }
@@ -74,8 +77,9 @@ class Database
     /*
      * Query and return result
      */
-    public function execute($query, $data) {
-        $result = self::$_connection->prepare($query);
+    public function execute($query, $data)
+    {
+        $result = self::$connection->prepare($query);
         foreach ($data as $key => &$value) {
             $result->bindParam($key, $value);
         }

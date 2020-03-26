@@ -4,11 +4,8 @@
     <title>Register</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
-    <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <script type="text/javascript" src="/views/register/register.js"></script>
 </head>
 <body>
     <div class="container">
@@ -24,15 +21,15 @@
         <form method="post" target="RegisterController.php">
             <div class="form-group">
                 <label for="js-register-username">Username*</label>
-                <input id="js-register-username" type="text" name="username" class="form-control"><br/>
+                <input required id="js-register-username" type="text" name="username" class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="js-register-email">E-Mail*</label>
-                <input id="js-register-email" type="text" name="email" class="form-control"><br/>
+                <input required id="js-register-email" type="text" name="email" class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="js-register-password">Password*</label>
-                <input id="js-register-password" type="password" name="password" class="form-control"><br/>
+                <input required id="js-register-password" type="password" name="password" class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="js-register-firstname">First Name</label>
@@ -47,7 +44,7 @@
                 <input id="js-register-age" type="text" name="age" class="form-control"><br/>
             </div>
             <p class="text-danger">*These fields are required.</p>
-            <button disabled id="js-register-submit" type="submit" class="btn btn-primary">Register</button>
+            <button id="js-register-submit" type="submit" class="btn btn-primary">Register</button>
         </form>
 
         <?php if($isSuccess): ?>
