@@ -21,7 +21,7 @@ class EventCreateController extends Controller
                 "price" => htmlspecialchars($_POST["price"])
             ];
 
-            $this->_validateData($event_data);
+            $this->validateData($event_data);
 
             $this->redirect('/event-overview');
         }
@@ -33,6 +33,31 @@ class EventCreateController extends Controller
     private function validateData($data)
     {
         $event = new Event();
+
+        if (!isset($data["title"]) || !is_string($data["title"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!isset($data["description"]) || !is_string($data["description"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!is_string($data["location"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!isset($data["date"]) || !is_string($data["date"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!is_string($data["time"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!isset($data["visibility"]) || !is_string($data["visibility"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!is_string($data["maximum_attendees"])) {
+            $this->redirect("/event-create?error");
+        }
+        if (!is_numeric($data["price"])) {
+            $this->redirect("/event-create?error");
+        }
 
         $event->addEvent($data);
     }
