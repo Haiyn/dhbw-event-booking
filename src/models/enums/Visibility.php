@@ -2,12 +2,8 @@
 
 namespace models\enums;
 
-use SplEnum;
-
-class Visibility extends SplEnum
+class Visibility
 {
-    public const DEFAULT = self::PUBLIC;
-
-    public const PUBLIC = 0;
-    public const INVITE_ONLY = 1;
+    public static $INVITE_ONLY = "invite-only";
+    public static $PUBLIC = "public";
 }

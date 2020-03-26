@@ -2,10 +2,8 @@
 
 namespace models\enums;
 
-use SplEnum;
-
-class Status extends SplEnum
+class Status
 {
-    public const INVITED = 0;
-    public const ACCEPTED = 1;
+    public static $INVITED = "invited";
+    public static $ACCEPTED = "accepted";
 }

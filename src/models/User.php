@@ -3,6 +3,7 @@
 namespace models;
 
 use components\database\Database;
+use models\enums\Visibility;
 use Utility;
 
 class User
@@ -27,6 +28,15 @@ class User
     public static function newInstance()
     {
         return new self();
+    }
+
+    public function getUserById($user_id) {
+        $users = self::$_database->fetch(
+            "SELECT * from users WHERE username = :username",
+            [":user_id" => $user_id]
+        );
+        if (empty($users)) return [];
+        return $users[0];
     }
 
     public function getUserByUsername($username) {

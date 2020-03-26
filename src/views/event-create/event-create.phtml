@@ -47,7 +47,8 @@
             <div class="form-group">
                 <label for="event-create-visibility">Visibility*</label>
                 <select id="event-create-visibility" name="visibility" required class="form-control">
-                    <option selected>Choose...</option>
+                    <option selected><?php echo \models\enums\Visibility::$INVITE_ONLY ?></option>
+                    <option><?php echo \models\enums\Visibility::$PUBLIC ?></option>
                 </select><br/>
             </div>
             <div class="form-group">

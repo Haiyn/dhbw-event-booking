@@ -15,7 +15,7 @@
         <h1>Register</h1><br>
         <p>Please enter following values to register.</p>
 
-        /** @noinspection PhpUndefinedVariableInspection */<?php if($isError): ?>
+        <?php if($isError): ?>
             <div class="alert alert-danger" role="alert">
                 <p class="text-danger"><?php echo $_SESSION['REGISTER_ERROR']; ?></p>
             </div>

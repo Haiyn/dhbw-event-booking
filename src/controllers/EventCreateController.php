@@ -2,7 +2,9 @@
 
 namespace controllers;
 
+use models\enums\Visibility;
 use models\Event;
+use models\User;
 
 class EventCreateController extends Controller
 {
@@ -12,7 +14,7 @@ class EventCreateController extends Controller
         if (isset($_POST["title"]) && isset($_POST["description"]) && isset($_POST["location"])) {
             $event_data = [
                 "title" => htmlspecialchars($_POST["title"]),
-                "password" => htmlspecialchars($_POST["description"]),
+                "description" => htmlspecialchars($_POST["description"]),
                 "location" => htmlspecialchars($_POST["location"]),
                 "date" => htmlspecialchars($_POST["date"]),
                 "time" => htmlspecialchars($_POST["time"]),
@@ -21,9 +23,10 @@ class EventCreateController extends Controller
                 "price" => htmlspecialchars($_POST["price"])
             ];
 
-            $this->validateData($event_data);
+            $event = new Event();
+            $event->addEvent($this->validateData($event_data));
 
-            $this->redirect('/event-overview');
+            //$this->_redirect('/event-overview');
         }
 
         $this->_view->pageTitle = "Create Event";
@@ -32,33 +35,19 @@ class EventCreateController extends Controller
 
     private function validateData($data)
     {
-        $event = new Event();
-
-        if (!isset($data["title"]) || !is_string($data["title"])) {
-            $this->_setError("");
-        }
-        if (!isset($data["description"]) || !is_string($data["description"])) {
-            $this->_setError("");
-        }
-        if (!is_string($data["location"])) {
-            $this->_setError("");
-        }
-        if (!isset($data["date"]) || !is_string($data["date"])) {
-            $this->_setError("");
-        }
-        if (!is_string($data["time"])) {
-            $this->_setError("");
-        }
-        if (!isset($data["visibility"]) || !is_string($data["visibility"])) {
-            $this->_setError("");
-        }
-        if (!is_string($data["maximum_attendees"])) {
-            $this->_setError("");
-        }
-        if (!is_numeric($data["price"])) {
-            $this->_setError("");
+        if (
+            !isset($data["title"]) || !isset($data["description"]) ||
+            !isset($data["date"]) || !isset($data["visibility"])
+        ) {
+            $this->_setError("Required fields must be set.");
+            return null;
         }
 
-        $event->addEvent($data);
+        $user = User::newInstance();
+
+        if (isset($_SESSION["USER_ID"])) {
+            $data["creator_id"] = $user->getUserById($_SESSION["USER_ID"]);
+        }
+        return $data;
     }
 }
