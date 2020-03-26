@@ -26,8 +26,8 @@ class EventCreateController extends Controller
             $this->redirect('/event-overview');
         }
 
-        $this->view->pageTitle = "Create Event";
-        $this->view->isCreateEventError = isset($_GET["error"]);
+        $this->_view->pageTitle = "Create Event";
+        $this->_view->isCreateEventError = isset($_GET["error"]);
     }
 
     private function validateData($data)
@@ -35,28 +35,28 @@ class EventCreateController extends Controller
         $event = new Event();
 
         if (!isset($data["title"]) || !is_string($data["title"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!isset($data["description"]) || !is_string($data["description"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!is_string($data["location"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!isset($data["date"]) || !is_string($data["date"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!is_string($data["time"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!isset($data["visibility"]) || !is_string($data["visibility"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!is_string($data["maximum_attendees"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
         if (!is_numeric($data["price"])) {
-            $this->redirect("/event-create?error");
+            $this->_setError("");
         }
 
         $event->addEvent($data);
