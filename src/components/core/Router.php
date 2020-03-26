@@ -10,7 +10,7 @@ class Router
     /*
      * Transforms the URL into a Controller name
      */
-    private function _transformViewNameToControllerName($viewName)
+    private function transformViewNameToControllerName($viewName)
     {
         // If the url has '-' in it, convert it to CamelCase
         // e.g.: event-overview --> EventOverview
@@ -20,7 +20,7 @@ class Router
         return implode("", $parts);
     }
 
-    private function _transformPathToViewName($path)
+    private function transformPathToViewName($path)
     {
         // Cut the argument after the host to size
         // e.g. localhost:8080/event-overview?someparam --> event-overview
@@ -38,8 +38,8 @@ class Router
     public function route($params)
     {
         $path = $params[0];
-        $viewName = $this->_transformPathToViewName($path);
-        $controllerName = $this->_transformViewNameToControllerName($viewName);
+        $viewName = $this->transformPathToViewName($path);
+        $controllerName = $this->transformViewNameToControllerName($viewName);
 
         // This sets which Controller will be called if no path is given
         if (empty($controllerName))
