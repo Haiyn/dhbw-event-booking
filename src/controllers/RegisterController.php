@@ -6,30 +6,75 @@ use models\User;
 
 class RegisterController extends Controller
 {
-    public function render($parameters) {
-        if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"])) {
+    public function render($parameters)
+    {
+        session_start();
+        if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"]))
+        {
             $user_data = [
                 "username" => htmlspecialchars($_POST["username"]),
                 "password" => htmlspecialchars($_POST["password"]),
-                "email" => htmlspecialchars($_POST["email"])
+                "email" => filter_var(htmlspecialchars($_POST["email"]), FILTER_SANITIZE_EMAIL),
+                "first_name" => htmlspecialchars($_POST["first_name"]),
+                "last_name" => htmlspecialchars($_POST["last_name"]),
+                "age" => filter_var(htmlspecialchars($_POST["age"]), FILTER_SANITIZE_NUMBER_INT)
             ];
 
-            $user_model = new User();
+            $this->validateData($user_data);
 
-            $user_model->getUserByUsername($user_data["username"]);
-            if (!empty($user))
-                $this->redirect('/register?error');
+            $this->registerUser($user_data);
 
-            $passwordHash = password_hash($user_data["password"], PASSWORD_DEFAULT);
-            $user_data["password"] = $passwordHash;
-
-            $user_model->addUser($user_data);
-
-            $this->redirect('/login');
+            $this->setSuccess("You have been successfully registered to the website! 
+                    Please confirm your email address with the link you've received at 
+                    <strong>{$user_data['email']}</strong>");
         }
 
         $this->view->pageTitle = "Register";
-        $this->view->isRegistrationError = isset($_GET["error"]);
+        $this->view->isSuccess = isset($_GET["success"]);
+        $this->view->isError = isset($_GET["error"]);
+    }
+
+    /*
+     * Checks if all the form data is in a valid format.
+     * Redirects with an error if something is wrong with the data.
+     */
+    private function validateData($data)
+    {
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL))
+        {
+            $this->setError("Please enter a valid E-Mail address!");
+        }
+
+        if (!empty($data['age']) && !filter_var($data['age'], FILTER_VALIDATE_INT))
+        {
+            $this->setError("Please enter a valid age!");
+        }
+    }
+
+    /*
+     * Tries to register the user.
+     * Redirects with an error if something is wrong with the data.
+     */
+    private function registerUser($user_data)
+    {
+        $user = User::newInstance();
+
+        // Check if username is already in database
+        $existingUser = $user->getUserByUsername($user_data["username"]);
+        if (!empty($existingUser))
+        {
+            $this->setError("This username is already taken!");
+        }
+
+        // Check if email is already in database
+        $existingUser = $user->getUserByEmail($user_data["email"]);
+        if (!empty($existingUser))
+        {
+            $this->setError("An account with this E-Mail is already registered!");
+        }
+
+        // Add the user to the database
+        $user->addUser($user_data);
     }
 
 }

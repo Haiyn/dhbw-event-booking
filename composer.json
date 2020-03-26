@@ -11,14 +11,19 @@
   ],
   "require": {
     "squizlabs/php_codesniffer": "^3.5",
+    "components/jquery": "^3.3",
     "twbs/bootstrap": "4.3.1",
     "ext-spltype": "*",
+    "ext-openssl": "*",
     "ext-pdo": "*"
   },
   "scripts": {
     "post-install-cmd": [
       "rm -rf src/resources/assets/bootstrap",
-      "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap"
+      "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap",
+      "rm -rf src/resources/assets/jquery",
+      "mkdir src/resources/assets/jquery",
+      "cp -R vendor/components/jquery/*.js src/resources/assets/jquery"
     ]
   }
 }
