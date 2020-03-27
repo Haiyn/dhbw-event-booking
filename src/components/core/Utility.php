@@ -1,5 +1,7 @@
 <?php
 
+namespace components\core;
+
 class Utility
 {
     /*
@@ -29,5 +31,24 @@ class Utility
             // 48 bits for "node"
             mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
         );
+    }
+
+    public static function getIniFile()
+    {
+        // Specifies where the ini file is located
+        // Edit this if you want to change the location or name of the ini
+        $fileLocation = $_SERVER['DOCUMENT_ROOT'];
+        $fileName = "config.ini.php";
+        $filePath = $fileLocation . DIRECTORY_SEPARATOR . $fileName;
+
+        if (file_exists($filePath))
+        {
+            return parse_ini_file($filePath);
+        }
+        else
+        {
+            return false;
+        }
+
     }
 }

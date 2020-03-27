@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Register</title>
+    <title><?php if( isset($pageTitle)) $pageTitle?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -18,7 +18,7 @@
             </div>
         <?php endif ?>
         
-        <form method="post" target="RegisterController.php">
+        <form method="post">
             <div class="form-group">
                 <label for="js-register-username">Username*</label>
                 <input required id="js-register-username" type="text" name="username" class="form-control"><br/>
