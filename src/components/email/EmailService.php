@@ -22,6 +22,10 @@ class EmailService
         return self::$instance;
     }
 
+    /*
+     * Sends an email with http content to the specified email address
+     * Redirects to internal error page if it fails (indicates that SMTP is not working)
+     */
     public function sendEmail($to, $subject, $message) {
         // Set the headers needed for a html email
         $header[] = "From: " . Utility::getIniFile()['EMAIL_FROM'];

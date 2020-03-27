@@ -33,6 +33,10 @@ class Utility
         );
     }
 
+    /*
+     * This function opens and returns the contents of the config.ini.php file
+     * Returns false if the file is not found
+     */
     public static function getIniFile()
     {
         // Specifies where the ini file is located

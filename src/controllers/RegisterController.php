@@ -53,11 +53,11 @@ class RegisterController extends Controller
         {
             $this->setError("Please enter something valid for the required fields!");
         }
-        // If the sanitized optional fields are empty
-        if (empty($data['first_name']) || empty($data['last_name']) || empty($data['age']))
+
+        // Check if the username contains white spaces
+        if (preg_match('/\s/',$data['username']))
         {
-            $this->setError("One or more optional field value you tried to enter was not valid!
-                Please enter something valid!");
+            $this->setError("Your username cannot contain whitespaces!");
         }
 
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL))
