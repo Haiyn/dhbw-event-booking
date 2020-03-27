@@ -23,11 +23,6 @@ class Event
         return self::$instance;
     }
 
-    public static function newInstance()
-    {
-        return new self();
-    }
-
     /**
      * Add the event to the database
      * @param $data * Data of the event
@@ -43,6 +38,39 @@ class Event
     }
 
     /**
+     * Get all events
+     * @return array * Array of events
+     */
+    public function getEvents()
+    {
+        $events = self::$database->fetch(
+            "SELECT * FROM events",
+            []
+        );
+        if (empty($events)) {
+            return [];
+        }
+        return $events;
+    }
+
+    /**
+     * Get event by id
+     * @param $event_id * Id of the event
+     * @return array * Array with found events, returning the first result
+     */
+    public function getEventById($event_id)
+    {
+        $events = self::$database->fetch(
+            "SELECT * FROM events WHERE event_id = :event_id",
+            [":event_id" => $event_id]
+        );
+        if (empty($events)) {
+            return [];
+        }
+        return $events[0];
+    }
+
+    /**i
      * Maps the data to the database
      * @param $data * Data of the event
      * @return array * Modified data

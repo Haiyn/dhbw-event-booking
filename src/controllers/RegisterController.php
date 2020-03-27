@@ -69,6 +69,23 @@ class RegisterController extends Controller
         {
             $this->setError("Please enter a valid age!");
         }
+
+        // Check if maxlength is exceeded
+        if (strlen($data["username"]) > 32) {
+            $this->setError("Length of username cannot exceed max length of 32.");
+        }
+        if (strlen($data["email"]) > 32) {
+            $this->setError("Length of email cannot exceed max length of 32.");
+        }
+        if (strlen($data["password"]) > 32) {
+            $this->setError("Length of password cannot exceed max length of 32.");
+        }
+        if (strlen($data["first_name"]) > 32) {
+            $this->setError("Length of first_name cannot exceed max length of 32.");
+        }
+        if (strlen($data["last_name"]) > 32) {
+            $this->setError("Length of last_name cannot exceed max length of 32.");
+        }
     }
 
     /*
