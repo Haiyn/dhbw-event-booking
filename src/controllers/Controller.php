@@ -42,17 +42,17 @@ abstract class Controller
      */
     protected function setError($errorMessage)
     {
-        $_SESSION[strtoupper($this->viewName) . "_ERROR"] = $errorMessage;
+        $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_ERROR"] = $errorMessage;
         $this->redirect("/{$this->viewName}?error");
     }
 
     protected function setWarning($warningMessage) {
-        $_SESSION[strtoupper($this->viewName) . "_WARNING"] = $warningMessage;
+        $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_WARNING"] = $warningMessage;
         $this->redirect("/{$this->viewName}?warning");
     }
 
     protected function setSuccess($successMessage) {
-        $_SESSION[strtoupper($this->viewName) . "_SUCCESS"] = $successMessage;
+        $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_SUCCESS"] = $successMessage;
         $this->redirect("/{$this->viewName}?success");
     }
 

@@ -29,6 +29,18 @@ class User
     }
 
     /*
+     * Searches the users table for a user with the passed user id
+     */
+    public function getUserById($user_id) {
+        $users = self::$database->fetch(
+            "SELECT * from users WHERE user_id = :user_id",
+            [":user_id" => $user_id]
+        );
+        if (empty($users)) return [];
+        return $users[0];
+    }
+
+    /*
      * Searches the users table for a user with the passed username
      */
     public function getUserByUsername($username) {

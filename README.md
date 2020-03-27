@@ -37,7 +37,7 @@ all dependencies will be available to reference in ```src/resouces/assets/```.
 A Dockerfile and docker-compose is available for running the apache server and PostgreSQL database in a docker container. In order to set this up, the following two steps are needed:
 1. Building the image
 ```
-docker build -t event-booking:2020.
+docker build -t event-booking:2020 .
 ```
 
 2. Running docker-compose

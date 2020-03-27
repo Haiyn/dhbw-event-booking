@@ -2,10 +2,20 @@
 
 namespace models\enums;
 
-use SplEnum;
+use ReflectionClass;
 
-class Status extends SplEnum
+class Status
 {
-    public const INVITED = 0;
-    public const ACCEPTED = 1;
+    public static $INVITED = "invited";
+    public static $ACCEPTED = "accepted";
+
+    public static function staticProperties()
+    {
+        $class = new ReflectionClass('\models\enums\Status');
+        $properties = [];
+        foreach ($class->getStaticProperties() as $key => $value) {
+            array_push($properties, $value);
+        }
+        return $properties;
+    }
 }
