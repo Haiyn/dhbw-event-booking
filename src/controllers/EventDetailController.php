@@ -18,10 +18,9 @@ class EventDetailController extends Controller
             if (isset($eventById->creator_id)) {
                 $creator = $user->getUserById($eventById->creator_id);
             }
-            if (empty($creator)) {
-                $creator = "";
+            if (isset($creator)) {
+                $eventById->creator = $creator->username;
             }
-            $eventById->creator = $creator->username;
 
             $booking = Booking::getInstance();
             $attendees = $booking->getBookingsByEventId($eventById->event_id);

@@ -30,13 +30,19 @@
                                 <ul class="list-group list-group-flush mb-3">
                                     <?php if (!empty($value->location)): ?>
                                         <li class="list-group-item">Location: <?php echo $value->location; ?></li>
+                                    <?php else: ?>
+                                        <li class="list-group-item">Location: not specified</li>
                                     <?php endif; ?>
                                     <li class="list-group-item">Date: <?php echo $value->date; ?></li>
                                     <?php if (!empty($value->time)): ?>
                                         <li class="list-group-item">Time: <?php echo $value->time; ?></li>
+                                    <?php else: ?>
+                                        <li class="list-group-item">Time: not specified</li>
                                     <?php endif; ?>
                                     <?php if (!empty($value->price)): ?>
                                         <li class="list-group-item">Price: <?php echo $value->price; ?></li>
+                                    <?php else: ?>
+                                        <li class="list-group-item">Price: free</li>
                                     <?php endif; ?>
                                 </ul>
                                 <a href="/event-detail?event_id=<?php echo $value->event_id; ?>" class="btn btn-primary">Details</a>
