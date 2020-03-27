@@ -42,7 +42,31 @@ class Event
         );
     }
 
-    /**
+    public function getEvents()
+    {
+        $events = self::$database->fetch(
+            "SELECT * FROM events",
+            []
+        );
+        if (empty($events)) {
+            return [];
+        }
+        return $events;
+    }
+
+    public function getEventById($event_id)
+    {
+        $events = self::$database->fetch(
+            "SELECT * FROM events WHERE event_id = :event_id",
+            [":event_id" => $event_id]
+        );
+        if (empty($events)) {
+            return [];
+        }
+        return $events[0];
+    }
+
+    /**i
      * Maps the data to the database
      * @param $data * Data of the event
      * @return array * Modified data

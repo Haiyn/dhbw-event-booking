@@ -112,7 +112,7 @@ class EventCreateController extends Controller
 
         $this->validateData($data);
 
-        $event = Event::newInstance();
+        $event = Event::getInstance();
         $event->addEvent($data);
     }
 }

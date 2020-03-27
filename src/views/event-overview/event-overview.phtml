@@ -1,6 +1,46 @@
 <head>
     <title>Event Overview</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/views/event-overview/event-overview.js"></script>
+    <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div></div>
+    <div class="container">
+        <h1>Event Overview</h1><br>
+        <a id="event-overview-create-button" href="/event-create" class="btn btn-primary mb-5">Create Event</a>
+        <?php
+            if (isset($events)) {
+                $counter = 0;
+                foreach ($events as $value) {
+                    if ($counter === 0) { ?>
+                        <div class="row">
+                    <?php }
+                    if ($counter === 2) {
+                        $counter = 0; ?>
+                        </div>
+                        <div class="row">
+                    <?php } ?>
+                    <div class="col">
+                        <div class="card m-2" style="width: 100%;">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo $value->title ?></h5>
+                                <p class="card-text"><?php echo $value->description ?></p>
+                                <ul class="list-group list-group-flush mb-3">
+                                    <li class="list-group-item">Location: <?php echo $value->location; ?></li>
+                                    <li class="list-group-item">Date: <?php echo $value->date; ?></li>
+                                    <li class="list-group-item">Time: <?php echo $value->time; ?></li>
+                                    <li class="list-group-item">Price: <?php echo $value->price ?></li>
+                                </ul>
+                                <a href="/event-detail?event_id=<?php echo $value->event_id; ?>" class="btn btn-primary">Details</a>
+                                <a href="#" class="btn btn-primary">Book Event</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php $counter++;
+                }
+            }
+        ?>
+    </div>
 </body>
