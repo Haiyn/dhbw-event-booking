@@ -54,6 +54,17 @@ class EventCreateController extends Controller
             $this->setError("Please fill out all required fields.");
         }
 
+        // Check if maxlength is exceeded
+        if (strlen($data["title"]) > 32) {
+            $this->setError("Length of title cannot exceed max length of 32.");
+        }
+        if (strlen($data["description"]) > 256) {
+            $this->setError("Length of description cannot exceed max length of 256.");
+        }
+        if (strlen($data["location"]) > 32) {
+            $this->setError("Length of location cannot exceed max length of 32.");
+        }
+
         // Check if time is valid
         if (!empty($data['time']) && !preg_match("/^([0-1][0-9]|[2][0-3]):([0-5][0-9])$/", $data['time'])) {
             $this->setError("Please enter a valid time.");

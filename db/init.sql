@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users (
     first_name VARCHAR(32),
     last_name VARCHAR(32),
     age SMALLINT,
-    verification_hash VARCHAR(16),
+    verification_hash VARCHAR(32),
     verified BOOLEAN,
     registration_date TIMESTAMP DEFAULT NOW()
 );
