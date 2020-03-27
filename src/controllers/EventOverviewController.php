@@ -8,8 +8,6 @@ class EventOverviewController extends Controller
 {
     public function render($params)
     {
-        session_start();
-
         $event = Event::getInstance();
         $events = $event->getEvents();
 
