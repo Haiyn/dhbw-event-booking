@@ -1,0 +1,34 @@
+<html lang="en">
+    <head>
+        <title><?php if( isset($pageTitle)) echo($pageTitle)?></title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
+        <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            <h1>Email Confirmation</h1>
+            <?php if(isset($isError) && $isError): ?>
+                <div class="alert alert-danger" role="alert">
+                    <p class="text-danger"><?php echo $_SESSION['CONFIRM_ERROR']; ?></p>
+                </div>
+            <?php endif ?>
+
+            <?php if(isset($isSuccess) && $isSuccess): ?>
+                <div class="alert alert-success" role="alert">
+                    <p class="text-success"><?php echo $_SESSION["CONFIRM_SUCCESS"]; ?></p>
+                </div>
+            <?php endif ?>
+            <div>
+                <a href="/login">
+                    <button class="btn btn-primary" >To Login</button>
+                </a>
+                <a href="/register">
+                    <button class="btn btn-secondary" >Back to Register</button>
+                </a>
+            </div>
+        </div>
+
+    </body>
+</html>

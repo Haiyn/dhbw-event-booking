@@ -2,6 +2,7 @@
 
 namespace components\database;
 
+use components\core\Utility;
 use PDO;
 use PDOException;
 
@@ -43,7 +44,7 @@ class Database
 
         try
         {
-            $ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . "/config.ini.php");
+            $ini = Utility::getIniFile();
             self::$connection = new PDO(
                 $ini['DB_TYPE'] . ':host=' . $ini['DB_HOST']  . ';port=' . $ini['DB_PORT']  . ';dbname=' . $ini['DB_NAME'] ,
                 $ini['DB_USER'] ,
@@ -57,8 +58,6 @@ class Database
             header("Location: /internal-error");
             return;
         }
-
-
     }
 
     /*

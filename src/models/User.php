@@ -3,6 +3,7 @@
 namespace models;
 
 use components\database\Database;
+use components\core\Utility;
 
 class User
 {
@@ -42,6 +43,7 @@ class User
 
     /*
      * Searches the users table for a user with the passed username
+     * Returns an object
      */
     public function getUserByUsername($username) {
         $users = self::$database->fetch(
@@ -57,6 +59,7 @@ class User
 
     /*
      * Searches the users table for a user with the passed email
+     * Returns an object
      */
     public function getUserByEmail($email) {
         $users = self::$database->fetch(
@@ -74,9 +77,19 @@ class User
      * Adds a new user to the users table
      */
     public function addUser($user_data) {
-        self::$database->execute(
+        return self::$database->execute(
             "INSERT INTO users VALUES (DEFAULT, :username, :email, :password, :first_name, :last_name, :age, :verification_hash, :verified, DEFAULT)",
             $this->mapRegisterDataToUserTableData($user_data)
+        );
+    }
+
+    /*
+     * Sets the verified field of the user to true when the email was verified
+     */
+    public function confirmUser($hash) {
+        self::$database->execute(
+            "UPDATE users SET verified = true WHERE verification_hash = :hash",
+            [":hash" => $hash]
         );
     }
 
@@ -85,7 +98,6 @@ class User
      * user_id and creation_date are generated in database
      */
     private function mapRegisterDataToUserTableData($user_data) {
-        $ini = parse_ini_file($_SERVER['DOCUMENT_ROOT'] . "/config.ini.php");
 
         // Check for empty values, postgres must receive null not ""
         if (empty($user_data['first_name'])) {
@@ -102,7 +114,7 @@ class User
             ":username" => $user_data['username'],
             ":email" => $user_data['email'],
             // Hash the password with the salt from config.ini.php
-            ":password" => md5($ini['AUTH_SALT'] . $user_data["password"]),
+            ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $user_data["password"]),
             ":first_name" => $user_data['first_name'],
             ":last_name" => $user_data['last_name'],
             ":age" => $user_data['age'],
