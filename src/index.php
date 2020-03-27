@@ -1,15 +1,8 @@
 <?php
 
 // Initialize autoloader
-spl_autoload_register("autoLoader");
-
-function autoLoader($className) {
-    $className = str_replace('\\', DIRECTORY_SEPARATOR, $className);
-    $file = __DIR__.DIRECTORY_SEPARATOR.$className.".php";
-    if (is_readable($file)) {
-        require_once $file;
-    }
-}
+use components\core;
+require_once 'components/core/Autoloader.php';
 
 // Initialize Router
 use components\core\Router;

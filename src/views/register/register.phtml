@@ -12,7 +12,7 @@
         <h1>Register</h1><br>
         <p>Please enter following values to register.</p>
 
-        <?php if($isError): ?>
+        <?php if(isset($isError) && $isError): ?>
             <div class="alert alert-danger" role="alert">
                 <p class="text-danger"><?php echo $_SESSION['REGISTER_ERROR']; ?></p>
             </div>
@@ -47,7 +47,7 @@
             <button id="js-register-submit" type="submit" class="btn btn-primary">Register</button>
         </form>
 
-        <?php if($isSuccess): ?>
+        <?php if(isset($isSuccess) && $isSuccess): ?>
             <div class="alert alert-success" role="alert">
                 <p class="text-success"><?php echo $_SESSION["REGISTER_SUCCESS"]; ?></p>
             </div>
