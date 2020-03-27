@@ -22,11 +22,6 @@ class EmailService
         return self::$instance;
     }
 
-    public static function newInstance()
-    {
-        return new self();
-    }
-
     public function sendEmail($to, $subject, $message) {
         // Set the headers needed for a html email
         $header[] = "From: " . Utility::getIniFile()['EMAIL_FROM'];

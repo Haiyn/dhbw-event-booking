@@ -1,8 +1,6 @@
 <?php
 
-
 namespace components\core;
-
 
 function autoLoader($className) {
     $className = str_replace('\\', DIRECTORY_SEPARATOR, $className);
