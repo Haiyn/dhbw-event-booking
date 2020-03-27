@@ -28,6 +28,10 @@ class Event
         return new self();
     }
 
+    /**
+     * Add the event to the database
+     * @param $data * Data of the event
+     */
     public function addEvent($data)
     {
         self::$database->execute(
@@ -38,8 +42,27 @@ class Event
         );
     }
 
+    /**
+     * Maps the data to the database
+     * @param $data * Data of the event
+     * @return array * Modified data
+     */
     private function mapEventDataToUserTableData($data)
     {
+        // Check for empty values, postgres must receive null not ""
+        if (empty($data['location'])) {
+            $data['location'] = null;
+        }
+        if (empty($data['time'])) {
+            $data['time'] = null;
+        }
+        if (empty($data['maximum_attendees'])) {
+            $data['maximum_attendees'] = null;
+        }
+        if (empty($data['price'])) {
+            $data['price'] = null;
+        }
+
         return $data = [
             ":creator_id" => $data['creator_id'],
             ":title" => $data["title"],
