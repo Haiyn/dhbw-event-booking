@@ -32,15 +32,15 @@
         <form method="post">
             <div class="form-group">
                 <label for="event-create-title">Title*</label>
-                <input id="event-create-title" type="text" name="title" required class="form-control"><br/>
+                <input id="event-create-title" type="text" name="title" maxlength="32" required class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-create-description">Description*</label>
-                <input id="event-create-description" type="text" name="description" required class="form-control"><br/>
+                <input id="event-create-description" type="text" name="description" maxlength="256" required class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-create-location">Location</label>
-                <input id="event-create-location" type="text" name="location" class="form-control"><br/>
+                <input id="event-create-location" type="text" name="location" maxlength="32" class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-create-date">Date*</label>

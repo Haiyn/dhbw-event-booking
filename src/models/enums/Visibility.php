@@ -13,15 +13,19 @@ class Visibility
     /**
      * Get all static properties of this class
      * @return array * Array of static properties
-     * @throws ReflectionException
      */
     public static function staticProperties()
     {
-        $class = new ReflectionClass('\models\enums\Visibility');
-        $properties = [];
-        foreach ($class->getStaticProperties() as $key => $value) {
-            array_push($properties, $value);
+        try {
+            $class = new ReflectionClass('\models\enums\Visibility');
+            $properties = [];
+            foreach ($class->getStaticProperties() as $key => $value) {
+                array_push($properties, $value);
+            }
+            return $properties;
+        } catch (ReflectionException $exception) {
+            header("Location: /internal-error");
+            return [];
         }
-        return $properties;
     }
 }
