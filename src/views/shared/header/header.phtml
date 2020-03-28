@@ -1,0 +1,12 @@
+<header>
+    <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="navbar-brand" href="/event-overview"><img alt="Logo" src="/resources/icons/calendar.ico" height="32px"></a>
+                <a class="nav-item nav-link <?= strpos($_SERVER['REQUEST_URI'], "event") ? "active" : "" ?>" href="/event-overview">Events</a>
+                <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "profile") ? "active" : "" ?> href="#">My Profile</a>
+                <a class="nav-item nav-link" href="/login?logout">Logout</a>
+            </div>
+        </div>
+    </nav>
+</header>
