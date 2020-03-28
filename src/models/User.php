@@ -18,4 +18,8 @@ class User
 
     }
 
+    public function validatePassword($password){
+
+    }
+
 }
