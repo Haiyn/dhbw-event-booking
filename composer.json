@@ -12,13 +12,22 @@
   "require": {
     "squizlabs/php_codesniffer": "^3.5",
     "twbs/bootstrap": "4.3.1",
-    "ext-spltype": "*",
+    "components/jquery": "^3.4",
+    "components/jqueryui": "^1.12",
+    "ext-openssl": "*",
     "ext-pdo": "*"
   },
   "scripts": {
     "post-install-cmd": [
       "rm -rf src/resources/assets/bootstrap",
-      "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap"
+      "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap",
+      "rm -rf src/resources/assets/jquery",
+      "mkdir src/resources/assets/jquery",
+      "cp -R vendor/components/jquery/*.js src/resources/assets/jquery",
+      "rm -rf src/resources/assets/jqueryui",
+      "mkdir src/resources/assets/jqueryui",
+      "cp -R vendor/components/jqueryui/*.js src/resources/assets/jqueryui",
+      "cp vendor/components/jqueryui/themes/base/jquery-ui.css src/resources/assets/jqueryui/jquery-ui.css"
     ]
   }
 }

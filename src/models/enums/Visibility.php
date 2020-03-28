@@ -2,12 +2,30 @@
 
 namespace models\enums;
 
-use SplEnum;
+use ReflectionClass;
+use ReflectionException;
 
-class Visibility extends SplEnum
+class Visibility
 {
-    public const DEFAULT = self::PUBLIC;
+    public static $INVITE_ONLY = "invite-only";
+    public static $PUBLIC = "public";
 
-    public const PUBLIC = 0;
-    public const INVITE_ONLY = 1;
+    /**
+     * Get all static properties of this class
+     * @return array * Array of static properties
+     */
+    public static function staticProperties()
+    {
+        try {
+            $class = new ReflectionClass('\models\enums\Visibility');
+            $properties = [];
+            foreach ($class->getStaticProperties() as $key => $value) {
+                array_push($properties, $value);
+            }
+            return $properties;
+        } catch (ReflectionException $exception) {
+            header("Location: /internal-error");
+            return [];
+        }
+    }
 }
