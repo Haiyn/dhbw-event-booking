@@ -73,6 +73,23 @@ class User
         return $users[0];
     }
 
+    /*Searches the users table for a user with passed hashed password
+    *
+    */
+    public function getPassword($password) {
+        $users = self::$database->fetch(
+            "SELECT * from users WHERE password = :password",
+            [":password" => $password]
+        );
+        if (empty($users))
+        {
+            return [];
+        }
+        return $users[0];
+    }
+
+
+
     /*
      * Adds a new user to the users table
      */
@@ -123,8 +140,5 @@ class User
         ];
     }
 
-    public function validatePassword($password){
-
-    }
 
 }

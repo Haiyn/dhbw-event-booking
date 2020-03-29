@@ -5,17 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="C:\Users\Merida\PhpstormProjects\dhbw-event-booking\src\views\login\login.css">
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
 <div class="container-fluid">
     <div class="modal-dialog text-center">
-        <div class="modal-content">
+        <div class="modal-content text-center">
             <div class="col-12">
                 <h1>Login</h1>
                 <h3>Event Booking</h3>
-                <form method="post" target="LoginController.php">
+                <form action="#" method="post" target="LoginController.php">
                     <div class="form-group">
                         <input type="text" class="form-control" name="emailOrId" placeholder="Username/E-Mail"
                                required>
@@ -23,7 +24,9 @@
                     <div class="form-group">
                         <input type="password" class="form-control" name="password" placeholder="Password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary" name="login">Login</button>
+                    <div>
+                        <button type="submit" class="btn btn-primary" name="login">Login</button>
+                    </div>
                 </form>
                 <div>
                     <a href="register/register.phtml">Register</a>

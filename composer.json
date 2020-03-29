@@ -15,7 +15,8 @@
     "components/jquery": "^3.4",
     "components/jqueryui": "^1.12",
     "ext-openssl": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-pgsql": "*"
   },
   "scripts": {
     "post-install-cmd": [
