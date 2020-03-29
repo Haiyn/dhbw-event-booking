@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <title><?php if( isset($pageTitle)) echo($pageTitle)?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="C:\Users\Merida\PhpstormProjects\dhbw-event-booking\src\views\login\login.css">
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -16,7 +15,20 @@
             <div class="col-12">
                 <h1>Login</h1>
                 <h3>Event Booking</h3>
-                <form action="#" method="post" target="LoginController.php">
+
+                <?php if(isset($isError) && $isError): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <p class="text-danger"><?php echo $_SESSION['LOGIN_ERROR']; ?></p>
+                    </div>
+                <?php endif ?>
+
+                <?php if(isset($isSuccess) && $isSuccess): ?>
+                    <div class="alert alert-success" role="alert">
+                        <p class="text-success"><?php echo $_SESSION["LOGIN_ERROR"]; ?></p>
+                    </div>
+                <?php endif ?>
+
+                <form method="post">
                     <div class="form-group">
                         <input type="text" class="form-control" name="emailOrId" placeholder="Username/E-Mail"
                                required>
