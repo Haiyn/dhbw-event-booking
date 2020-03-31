@@ -37,23 +37,20 @@ class Database
     private function openConnection($options)
     {
         // fetch all results as an object by default
-        if(empty($options))
-        {
+        if (empty($options)) {
             $options = array(PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING);
         }
 
-        try
-        {
+        try {
             $ini = Utility::getIniFile();
             self::$connection = new PDO(
-                $ini['DB_TYPE'] . ':host=' . $ini['DB_HOST']  . ';port=' . $ini['DB_PORT']  . ';dbname=' . $ini['DB_NAME'] ,
-                $ini['DB_USER'] ,
-                $ini['DB_PASS'] ,
+                $ini['DB_TYPE'] . ':host=' . $ini['DB_HOST']  . ';port=' . $ini['DB_PORT']  . ';dbname=' .
+                $ini['DB_NAME'],
+                $ini['DB_USER'],
+                $ini['DB_PASS'],
                 $options
             );
-        }
-        catch(PDOException $exception)
-        {
+        } catch (PDOException $exception) {
             // Connection to the database failed, redirect to error page to not expose stack trace
             header("Location: /internal-error");
             return;

@@ -6,7 +6,6 @@ use controllers\NotFoundController;
 
 class Router
 {
-
     /*
      * Transforms the URL into a Controller name
      */
@@ -15,8 +14,9 @@ class Router
         // If the url has '-' in it, convert it to CamelCase
         // e.g.: event-overview --> EventOverview
         $parts = explode("-", $viewName);
-        foreach($parts as &$part)
+        foreach ($parts as &$part) {
             $part = ucfirst(strtolower($part));
+        }
         return implode("", $parts);
     }
 
@@ -42,20 +42,17 @@ class Router
         $controllerName = $this->transformViewNameToControllerName($viewName);
 
         // This sets which Controller will be called if no path is given
-        if (empty($controllerName))
+        if (empty($controllerName)) {
             $controllerName = "EventOverview";
+        }
 
         $controllerClassName = $controllerName . "Controller";
 
         // See if the called controller exists in the controllers folder
-        if (file_exists("controllers/{$controllerClassName}.php"))
-        {
-            $className = "\\controllers\\"."$controllerClassName";
-            $controller = new $className;
-
-        }
-        else
-        {
+        if (file_exists("controllers/{$controllerClassName}.php")) {
+            $className = "\\controllers\\" . "$controllerClassName";
+            $controller = new $className();
+        } else {
             // If not, use the NotFoundController
             $controller = new NotFoundController();
             $viewName = "not-found";
