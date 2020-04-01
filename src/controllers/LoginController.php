@@ -43,23 +43,25 @@ class LoginController extends Controller
             $validEmail = $user->getUserByEmail($user_data['emailOrId']);
 
 
-            if ($validUsername) {
-                $validPassword = $validUsername->password;
-                if ($password_hash == $validPassword) {
-                    $this->redirect("event-overview");
-                } else {
-                    $this->setError("Invalid password");
+                if(!empty($validUsername)){
+                    $validPassword = $validUsername->password;
+                    if ($password_hash == $validPassword){
+                        $this->redirect("event-overview");
+                    } else {
+                        $this->setError("Invalid password");
+                    }
                 }
-            } else if ($validEmail) {
-                $validPassword = $validEmail->password;
-                if ($password_hash == $validPassword) {
-                    $this->redirect("event-overview");
-                } else {
-                    $this->setError("Invalid password");
+                elseif (!empty($validEmail)){
+                    $validPassword = $validEmail->password;
+                    if($password_hash == $validPassword){
+                        $this->redirect("event-overview");
+                    } else {
+                        $this->setError("Invalid password");
+                    }
                 }
-            } else {
-                $this->setError("Invalid Username or Password");
-            }
+                else {
+                    $this->setError("Invalid Username or Password");
+                }
         }
     }
 }
