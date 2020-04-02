@@ -1,7 +1,10 @@
 <?php
 
 namespace components\core;
-
+/**
+ * Automatic loading of classes
+ * @param $className
+ */
 function autoLoader($className)
 {
     $className = str_replace('\\', DIRECTORY_SEPARATOR, $className);

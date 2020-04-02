@@ -6,8 +6,10 @@ use controllers\NotFoundController;
 
 class Router
 {
-    /*
+    /**
      * Transforms the URL into a Controller name
+     * @param $viewName
+     * @return string * controller name
      */
     private function transformViewNameToControllerName($viewName)
     {
@@ -20,6 +22,11 @@ class Router
         return implode("", $parts);
     }
 
+    /**
+     * Transforms a path to a view name
+     * @param $path * URI path
+     * @return string * view name
+     */
     private function transformPathToViewName($path)
     {
         // Cut the argument after the host to size
@@ -32,8 +39,9 @@ class Router
         return $path[0];
     }
 
-    /*
+    /**
      * Routes from the URL to the correct Controller
+     * @param $params * URI parameters
      */
     public function route($params)
     {

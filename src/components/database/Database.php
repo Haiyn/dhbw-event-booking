@@ -33,6 +33,7 @@ class Database
 
     /**
      * Open the database connection with the credentials from config.ini.php
+     * @param $options * PDO Connection options
      */
     private function openConnection($options)
     {
@@ -57,8 +58,11 @@ class Database
         }
     }
 
-    /*
+    /**
      * Query and return all fetched data
+     * @param $query * SQL query
+     * @param $data * Data to bind to SQL query
+     * @return array of fetched objects (rows)
      */
     public function fetch($query, $data)
     {
@@ -70,8 +74,11 @@ class Database
         return $result->fetchAll();
     }
 
-    /*
+    /**
      * Query and return result
+     * @param $query * SQL query
+     * @param $data * Data to bind to SQL query
+     * @return boolean successful
      */
     public function execute($query, $data)
     {

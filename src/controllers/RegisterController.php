@@ -40,9 +40,10 @@ class RegisterController extends Controller
         $this->view->isError = isset($_GET["error"]);
     }
 
-    /*
+    /**
      * Checks if all the form data is in a valid format.
      * Redirects with an error if something is wrong with the data.
+     * @param $data * data array to validate
      */
     private function validateData($data)
     {
@@ -82,9 +83,10 @@ class RegisterController extends Controller
         }
     }
 
-    /*
+    /**
      * Tries to register the user
      * Redirects with an error if something is wrong with the data.
+     * @param $user_data * data array for adding the user
      */
     private function registerUser($user_data)
     {

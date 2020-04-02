@@ -4,11 +4,12 @@ namespace components\core;
 
 class Utility
 {
-    /*
+    /**
      * [...] generates VALID RFC 4211 COMPLIANT Universally Unique Identifiers (UUID) version [...] 4 [...].
      *
      * (This function was taken from the official PHP Manual by Andrew Moore:
      * https://www.php.net/manual/en/function.uniqid.php#94959)
+     * @return string * generated uuidv4
      */
     public static function generateUUIDv4()
     {
@@ -33,9 +34,9 @@ class Utility
         );
     }
 
-    /*
+    /**
      * This function opens and returns the contents of the config.ini.php file
-     * Returns false if the file is not found
+     * @return array|boolean * array of ini file contents or false on failure
      */
     public static function getIniFile()
     {

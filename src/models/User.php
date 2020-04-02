@@ -24,8 +24,10 @@ class User
         return self::$instance;
     }
 
-    /*
+    /**
      * Searches the users table for a user with the passed user id
+     * @param $user_id * user id to search for
+     * @return array|object * found users
      */
     public function getUserById($user_id)
     {
@@ -39,9 +41,10 @@ class User
         return $users[0];
     }
 
-    /*
+    /**
      * Searches the users table for a user with the passed username
-     * Returns an object
+     * @param $username * username to search for
+     * @return array|object * found users
      */
     public function getUserByUsername($username)
     {
@@ -55,9 +58,10 @@ class User
         return $users[0];
     }
 
-    /*
+    /**
      * Searches the users table for a user with the passed email
-     * Returns an object
+     * @param $email * email to search for
+     * @return array|object * found users
      */
     public function getUserByEmail($email)
     {
@@ -71,8 +75,10 @@ class User
         return $users[0];
     }
 
-    /*
+    /**
      * Adds a new user to the users table
+     * @param $user_data * data needed by database
+     * @return bool * successful/not successful
      */
     public function addUser($user_data)
     {
@@ -83,8 +89,9 @@ class User
         );
     }
 
-    /*
+    /**
      * Sets the verified field of the user to true when the email was verified
+     * @param $hash * verification hash of the user
      */
     public function confirmUser($hash)
     {
@@ -94,9 +101,11 @@ class User
         );
     }
 
-    /*
+    /**
      * Maps the data from user_data to a users database object
      * user_id and creation_date are generated in database
+     * @param $user_data * data to map
+     * @return array * mapped data that fits users table data
      */
     private function mapRegisterDataToUserTableData($user_data)
     {

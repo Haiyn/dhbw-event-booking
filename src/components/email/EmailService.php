@@ -22,9 +22,12 @@ class EmailService
         return self::$instance;
     }
 
-    /*
+    /**
      * Sends an email with http content to the specified email address
      * Redirects to internal error page if it fails (indicates that SMTP is not working)
+     * @param $to * email recipient
+     * @param $subject * subject of the email
+     * @param $message * body of the email
      */
     public function sendEmail($to, $subject, $message)
     {
@@ -42,8 +45,11 @@ class EmailService
         }
     }
 
-    /*
+    /**
      * Wraps the passed message with the spcecified header and footer
+     * @param $to * email recipient
+     * @param $message * email body
+     * @return string * wrapped email body
      */
     private function wrapMessage($to, $message)
     {
