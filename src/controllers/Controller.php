@@ -9,7 +9,8 @@ abstract class Controller
     public $viewName;
     protected $view;
 
-    function __construct() {
+    public function __construct()
+    {
         $this->view = new stdClass();
     }
 
@@ -18,7 +19,7 @@ abstract class Controller
     /*
      * Redirects to the given url. Makes use of the router.
      */
-    protected final function redirect($url)
+    final protected function redirect($url)
     {
         header("Location: $url");
         header("Connection: close");
@@ -28,10 +29,10 @@ abstract class Controller
     /*
      * Opens the phtml file in /views/[viewname]/[viewname].phtml
      */
-    public final function showView()
+    final public function showView()
     {
         extract((array)$this->view);
-        require dirname(__DIR__)."/views/{$this->viewName}/{$this->viewName}.phtml";
+        require dirname(__DIR__) . "/views/{$this->viewName}/{$this->viewName}.phtml";
     }
 
     /*
@@ -46,15 +47,15 @@ abstract class Controller
         $this->redirect("/{$this->viewName}?error");
     }
 
-    protected function setWarning($warningMessage) {
+    protected function setWarning($warningMessage)
+    {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_WARNING"] = $warningMessage;
         $this->redirect("/{$this->viewName}?warning");
     }
 
-    protected function setSuccess($successMessage) {
+    protected function setSuccess($successMessage)
+    {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_SUCCESS"] = $successMessage;
         $this->redirect("/{$this->viewName}?success");
     }
-
-
 }

@@ -77,7 +77,13 @@ Installation:
 ## Release History
 
 * 0.1
-    * t.b.a.
+    * Docker Setup for webserver and Database
+    * Website MVC structure with router and autoloader
+    * User Registration
+    * Event Create
+    * Event Overview
+    * Event Detail View
+    
 * 0.2
     * t.b.a.
 * 0.3
