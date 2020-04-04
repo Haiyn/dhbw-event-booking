@@ -11,7 +11,7 @@ class EventDetailController extends Controller
     public function render($params)
     {
         session_start();
-        $_SESSION['USER_ID'] = "b89fe465-b4cf-4a3d-a006-19951bc31ae4";
+        $_SESSION['USER_ID'] = "96d50525-f742-4545-9340-21e9cd90b448";
         if (isset($_GET['event_id'])) {
             $event = Event::getInstance();
             $eventById = $event->getEventById(trim(htmlspecialchars($_GET['event_id'])));

@@ -70,10 +70,6 @@
                        <?php if (isset($edit) && !$edit) echo 'readonly'; ?> class="form-control datepicker"><br/>
             </div>
             <div class="form-group">
-                <label for="event-create-date">Date*</label>
-                <input id="event-create-date" name="date" placeholder="yyyy-mm-dd" required class="form-control datepicker"><br/>
-            </div>
-            <div class="form-group">
                 <label for="event-detail-time">Time</label>
                 <input id="event-detail-time" type="text" name="time"
                        value="<?php if (isset($event)) echo date("H:i", strtotime($event->time)); ?>"
