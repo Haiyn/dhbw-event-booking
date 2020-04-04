@@ -5,47 +5,56 @@
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/views/event-overview/event-overview.js"></script>
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/resources/assets/font-awesome/css/all.css" rel="stylesheet">
 </head>
 <body>
 <div class="container">
     <h1>Event Details</h1><br>
+    <?php if (isset($event) && isset($isCreator) && $isCreator): ?>
+        <a href="/event-detail?event_id=<?php echo $event->event_id . '&edit=' . $isCreator; ?>"
+           class="btn btn-primary mb-3">Edit</a>
+    <?php endif; ?>
     <form method="post">
         <div class="form-group">
             <label for="event-detail-title">Title</label>
             <input id="event-detail-title" type="text" name="title"
-                   value="<?php if (isset($event)) echo $event->title; ?>" readonly class="form-control"><br/>
+                    value="<?php if (isset($event)) echo $event->title; ?>"
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-title">Creator</label>
             <input id="event-detail-title" type="text" name="title"
-                   value="<?php if (isset($event)) echo $event->creator; ?>" readonly class="form-control"><br/>
+                   value="<?php if (isset($event)) echo $event->creator; ?>"
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-title">Creation Date</label>
             <input id="event-detail-title" type="text" name="title"
                    value="<?php if (isset($event)) echo date("Y-m-d H:i:s", strtotime($event->creation_date)); ?>"
-                   readonly class="form-control"><br/>
+                    <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-description">Description</label>
-            <textarea id="event-detail-description" name="description"
-                   readonly class="form-control"><?php if (isset($event)) echo $event->description; ?></textarea><br/>
+            <textarea id="event-detail-description" name="description" <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?>
+                   class="form-control"><?php if (isset($event)) echo $event->description; ?></textarea><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-location">Location</label>
             <input id="event-detail-location" type="text" name="location"
-                   value="<?php if (isset($event)) echo $event->location; ?>" readonly class="form-control"><br/>
+                   value="<?php if (isset($event)) echo $event->location; ?>"
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-date">Date</label>
             <input id="event-detail-date" type="text" name="date"
-                   value="<?php if (isset($event)) echo $event->date; ?>" readonly class="form-control"><br/>
+                   value="<?php if (isset($event)) echo $event->date; ?>"
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-time">Time</label>
             <input id="event-detail-time" type="text" name="time"
                    value="<?php if (isset($event)) echo date("H:i", strtotime($event->time)); ?>"
-                   readonly class="form-control"><br/>
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-visibility">Visibility</label>
@@ -56,7 +65,7 @@
             <label for="event-detail-maximum-attendees">Maximum Attendees</label>
             <input id="event-detail-maximum-attendees" type="number" name="maximum_attendees"
                    value="<?php if (isset($event)) echo $event->maximum_attendees; ?>"
-                   readonly class="form-control"><br/>
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
         <div class="form-group">
             <label for="event-detail-maximum-attendees">Current Attendees</label>
@@ -66,6 +75,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Username</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -76,6 +86,10 @@
                                <th scope="row"><?php echo $i + 1; ?></th>
                                <td><?php echo $attendees[$i]->username; ?></td>
                                <td><?php echo $attendees[$i]->status; ?></td>
+                               <td>
+                                   <button type="button" title="Edit" class="btn btn-success"><i class="fa fa-edit"></i></button>
+                                   <button type="button" title="Delete" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                               </td>
                            </tr>
                        <?php }
                     }
@@ -86,7 +100,8 @@
         <div class="form-group">
             <label for="event-detail-price">Price</label>
             <input id="event-detail-price" type="number" name="price"
-                   value="<?php if (isset($event)) echo $event->price; ?>" readonly class="form-control"><br/>
+                   value="<?php if (isset($event)) echo $event->price; ?>"
+                   <?php if (isset($isReadonly) && $isReadonly) echo 'readonly'; ?> class="form-control"><br/>
         </div>
     </form>
     <a href="#" class="btn btn-primary">Contact Creator</a>
