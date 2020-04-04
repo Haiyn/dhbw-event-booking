@@ -19,13 +19,13 @@
 
         <?php if (isset($isError) && $isError): ?>
             <div class="alert alert-danger" role="alert">
-                <p class="text-danger"><?php echo $_SESSION["EVENT_CREATE_ERROR"]; ?></p>
+                <p class="text-danger"><?=$_SESSION["EVENT_CREATE_ERROR"]?></p>
             </div>
         <?php endif ?>
 
         <?php if(isset($isSuccess) && $isSuccess): ?>
             <div class="alert alert-success" role="alert">
-                <p class="text-success"><?php echo $_SESSION["EVENT_CREATE_SUCCESS"]; ?></p>
+                <p class="text-success"><?=$_SESSION["EVENT_CREATE_SUCCESS"]?></p>
             </div>
         <?php endif ?>
 
