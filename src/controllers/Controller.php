@@ -53,9 +53,9 @@ abstract class Controller
         $this->redirect("/{$this->viewName}?warning");
     }
 
-    protected function setSuccess($successMessage)
+    protected function setSuccess($successMessage, $params = "")
     {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_SUCCESS"] = $successMessage;
-        $this->redirect("/{$this->viewName}?success");
+        $this->redirect("/{$this->viewName}?success{$params}");
     }
 }

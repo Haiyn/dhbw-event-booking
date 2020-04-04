@@ -28,8 +28,6 @@ class EventCreateController extends Controller
                 "price" => filter_var(htmlspecialchars($_POST["price"]), FILTER_SANITIZE_NUMBER_INT)
             ];
 
-            $this->validateData($event_data);
-
             $this->createEvent($event_data);
 
             $this->setSuccess("Event successfully created.");
