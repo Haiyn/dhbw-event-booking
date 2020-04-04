@@ -78,22 +78,17 @@ class EventCreateController extends Controller
             $this->setError("Please change the time to one not in the past.");
         }
 
-
         // Check if maximum attendees is an valid int
-        if (!empty($data['maximum_attendees']) && !filter_var($data['maximum_attendees'], FILTER_VALIDATE_INT)) {
+        if (
+            (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') &&
+            filter_var($new_data['maximum_attendees'], FILTER_VALIDATE_INT)
+        ) {
             // Check if maximum attendees is bigger than 0
-            if ((int) $data['maximum_attendees'] < 1) {
+            if ((int) $new_data['maximum_attendees'] < 1) {
                 $this->setError("Please enter a number of maximum attendees that is at least 1!");
             }
+        } else {
             $this->setError("Please enter a valid number of maximum attendees!");
-        }
-
-        // Check if maximum attendees is bigger than 0
-        if (
-            (!empty($data['maximum_attendees']) || $data['maximum_attendees'] === '0') &&
-            (int) $data['maximum_attendees'] <= 0
-        ) {
-            $this->setError("Please enter a number of maximum attendees that is at least 1!");
         }
 
         // Check if price is a valid float
@@ -113,10 +108,8 @@ class EventCreateController extends Controller
      */
     private function createEvent($data)
     {
-        $user = User::getInstance();
-
         if (isset($_SESSION["USER_ID"])) {
-            $data["creator_id"] = $user->getUserById($_SESSION["USER_ID"]);
+            $data["creator_id"] = $_SESSION["USER_ID"];
         }
 
         $this->validateData($data);

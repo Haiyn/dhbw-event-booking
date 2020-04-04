@@ -28,18 +28,19 @@ class EventDetailController extends Controller
                 $current_user_id = $_SESSION['USER_ID'];
                 $current_user = $user->getUserById($current_user_id);
 
+                // Check if the current user is the same as the creator
                 if (isset($current_user) && isset($creator) && $current_user->user_id === $creator->user_id) {
                     $this->view->isCreator = true;
 
+                    // Check if editing is enabled, if so, enable it
                     if (isset($_GET['edit'])) {
-                        $edit = $_GET['edit'];
+                        $this->view->edit = true;
 
-                        if ($edit) {
-                            $this->view->edit = true;
-                        }
-
+                        // Delete attendee if delete_attendee is set
                         if (isset($_GET['delete_attendee'])) {
                             $booking->deleteBookingByEventIdAndUserId($_GET['event_id'], $_GET['delete_attendee']);
+
+                            // TODO: Notify attendee that he has been removed
                         }
                     }
                 }
@@ -53,19 +54,23 @@ class EventDetailController extends Controller
             if (isset($_POST['title']) && isset($_POST['description']) && isset($_POST['date'])) {
                 $event_data = [
                     "event_id" => trim(htmlspecialchars($_GET['event_id'])),
-                    "title" => trim(htmlspecialchars($_POST["title"])),
-                    "description" => trim(htmlspecialchars($_POST["description"])),
-                    "location" => trim(htmlspecialchars($_POST["location"])),
-                    "date" => htmlspecialchars($_POST["date"]),
-                    "time" => trim(htmlspecialchars($_POST["time"])),
+                    "title" => trim(htmlspecialchars($_POST['title'])),
+                    "description" => trim(htmlspecialchars($_POST['description'])),
+                    "location" => trim(htmlspecialchars($_POST['location'])),
+                    "date" => htmlspecialchars($_POST['date']),
+                    "time" => trim(htmlspecialchars($_POST['time'])),
                     "maximum_attendees" => filter_var(
-                        htmlspecialchars($_POST["maximum_attendees"]),
+                        htmlspecialchars($_POST['maximum_attendees']),
                         FILTER_SANITIZE_NUMBER_INT
                     ),
                     "price" => filter_var(htmlspecialchars($_POST["price"]), FILTER_SANITIZE_NUMBER_INT)
                 ];
 
                 $this->updateEvent($event_data, $eventById);
+
+                if (isset($_POST['notify']) && $_POST['notify'] === "on") {
+                    // TODO: Notify the attendees that the event has been updated
+                }
 
                 $this->setSuccess("Event successfully updated.", "&event_id={$_GET['event_id']}");
             }
@@ -93,35 +98,53 @@ class EventDetailController extends Controller
     {
         // Double check if all required fields have been set
         if (empty($new_data["title"]) || empty($new_data["description"]) || empty($new_data["date"])) {
-            $this->setError("Please fill out all required fields.");
+            $this->setError(
+                "Please fill out all required fields.",
+                "&event_id={$_GET['event_id']}&edit"
+            );
         }
 
         // Check if maxlength is exceeded
         if ($new_data['title'] !== $old_data->title && strlen($new_data["title"]) > 32) {
-            $this->setError("Length of title cannot exceed max length of 32.");
+            $this->setError(
+                "Length of title cannot exceed max length of 32.",
+                "&event_id={$_GET['event_id']}&edit"
+            );
         }
         if ($new_data['description'] !== $old_data->description && strlen($new_data["description"]) > 256) {
-            $this->setError("Length of description cannot exceed max length of 256.");
+            $this->setError(
+                "Length of description cannot exceed max length of 256.",
+                "&event_id={$_GET['event_id']}&edit"
+            );
         }
         if ($new_data['location'] !== $old_data->location && strlen($new_data["location"]) > 32) {
-            $this->setError("Length of location cannot exceed max length of 32.");
+            $this->setError(
+                "Length of location cannot exceed max length of 32.",
+                "&event_id={$_GET['event_id']}&edit"
+            );
         }
 
         if ($new_data['time'] !== $old_data->time) {
             // Check if time is valid
             if (!empty($new_data['time']) && !preg_match("/^([0-1][0-9]|[2][0-3]):([0-5][0-9])$/", $new_data['time'])) {
-                $this->setError("Please enter a valid time.");
+                $this->setError("Please enter a valid time.", "&event_id={$_GET['event_id']}&edit");
             }
 
             // Check if date/ time is in the past
             if ($new_data['date'] !== $old_data->date) {
                 if (strtotime($new_data["date"]) < strtotime(date("Y-m-d"))) {
-                    $this->setError("Please change the date to one not in the past.");
+                    $this->setError(
+                        "Please change the date to one not in the past.",
+                        "&event_id={$_GET['event_id']}&edit"
+                    );
                 } elseif (
                     strtotime($new_data["date"]) === strtotime(date("Y-m-d")) && !empty($new_data["time"]) &&
                     strtotime($new_data["time"]) < strtotime(date("H:i:s"))
                 ) {
-                    $this->setError("Please change the time to one not in the past.");
+                    $this->setError(
+                        "Please change the time to one not in the past.",
+                        "&event_id={$_GET['event_id']}&edit"
+                    );
                 }
             }
         }
@@ -129,34 +152,36 @@ class EventDetailController extends Controller
         if ($new_data['maximum_attendees'] !== $old_data->maximum_attendees) {
             // Check if maximum attendees is an valid int
             if (
-                !empty($new_data['maximum_attendees']) &&
-                !filter_var($new_data['maximum_attendees'], FILTER_VALIDATE_INT)
+                (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') &&
+                filter_var($new_data['maximum_attendees'], FILTER_VALIDATE_INT)
             ) {
                 // Check if maximum attendees is bigger than 0
                 if ((int) $new_data['maximum_attendees'] < 1) {
-                    $this->setError("Please enter a number of maximum attendees that is at least 1!");
+                    $this->setError(
+                        "Please enter a number of maximum attendees that is at least 1!",
+                        "&event_id={$_GET['event_id']}&edit"
+                    );
                 }
-                $this->setError("Please enter a valid number of maximum attendees!");
-            }
-
-            // Check if maximum attendees is bigger than 0
-            if (
-                (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') &&
-                (int) $new_data['maximum_attendees'] <= 0
-            ) {
-                $this->setError("Please enter a number of maximum attendees that is at least 1!");
+            } else {
+                $this->setError(
+                    "Please enter a valid number of maximum attendees!",
+                    "&event_id={$_GET['event_id']}&edit"
+                );
             }
         }
 
         if ($new_data['price'] !== $old_data->price) {
             // Check if price is a valid float
             if (!empty($new_data['price']) && !filter_var($new_data['price'], FILTER_VALIDATE_FLOAT)) {
-                $this->setError("Please enter a valid price!");
+                $this->setError("Please enter a valid price!", "&event_id={$_GET['event_id']}&edit");
             }
 
             // Check if price is 0 or bigger
             if (!empty($new_data['price']) && (int) $new_data['price'] < 0) {
-                $this->setError("Please enter a price that is at least 0!");
+                $this->setError(
+                    "Please enter a price that is at least 0!",
+                    "&event_id={$_GET['event_id']}&edit"
+                );
             }
         }
     }

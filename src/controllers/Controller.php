@@ -41,16 +41,16 @@ abstract class Controller
      *
      * e.g. in register, the _setError method creates $_SESSION['REGISTER_ERROR'] and reroutes to /register?error
      */
-    protected function setError($errorMessage)
+    protected function setError($errorMessage, $params = "")
     {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_ERROR"] = $errorMessage;
-        $this->redirect("/{$this->viewName}?error");
+        $this->redirect("/{$this->viewName}?error{$params}");
     }
 
-    protected function setWarning($warningMessage)
+    protected function setWarning($warningMessage, $params = "")
     {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_WARNING"] = $warningMessage;
-        $this->redirect("/{$this->viewName}?warning");
+        $this->redirect("/{$this->viewName}?warning{$params}");
     }
 
     protected function setSuccess($successMessage, $params = "")
