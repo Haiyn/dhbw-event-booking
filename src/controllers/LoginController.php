@@ -24,11 +24,10 @@ class LoginController extends Controller
             }
 
             $this->loginUser($user_data);
-
-            $this->view->pageTitle = "Login";
-            $this->view->isSuccess = isset($_GET["success"]);
-            $this->view->isError = isset($_GET["error"]);
         }
+        $this->view->pageTitle = "Login";
+        $this->view->isSuccess = isset($_GET["success"]);
+        $this->view->isError = isset($_GET["error"]);
     }
 
     private function loginUser($user_data)
@@ -41,31 +40,40 @@ class LoginController extends Controller
 
             $validUsername = $user->getUserByUsername($user_data['emailOrId']);
             $validEmail = $user->getUserByEmail($user_data['emailOrId']);
+            $confirmedEmail = $user->getUserByEmail($user_data["emailOrId"])->verification_hash;
 
 
-                if(!empty($validUsername)){
-                    $validPassword = $validUsername->password;
-                    if ($password_hash == $validPassword){
-                        $this->redirect("event-overview");
+            if (!empty($validUsername)) {
+                $validPassword = $validUsername->password;
+                if ($password_hash == $validPassword) {
+                    if (empty($confirmedEmail)) {
+                        $url = Utility::getIniFile()['URL'];
+                        $this->setError("Please confirm your email address. Follow
+                        <a href='{$url}/confirm?hash={$confirmedEmail}'> to confirm.");
                     } else {
-                        $this->setError("Invalid password");
-                    }
-                }
-                elseif (!empty($validEmail)){
-                    $validPassword = $validEmail->password;
-                    if($password_hash == $validPassword){
                         $this->redirect("event-overview");
-                    } else {
-                        $this->setError("Invalid password");
                     }
+                } else {
+                    $this->setError("Invalid password");
                 }
-                else {
-                    $this->setError("Invalid Username or Password");
+            } elseif (!empty($validEmail)) {
+                $validPassword = $validEmail->password;
+                if ($password_hash == $validPassword) {
+                    if (empty($confirmedEmail)) {
+                        $url = Utility::getIniFile()['URL'];
+                        $this->setError("Please confirm your email address. Follow
+                        <a href='{$url}/confirm?hash={$confirmedEmail}'> to confirm.");
+                    } else {
+                        $this->redirect("event-overview");
+                    }
+                } else {
+                    $this->setError("Invalid password");
                 }
+            } else {
+                $this->setError("Invalid Username or Password");
+            }
         }
     }
 }
-
-
 
 

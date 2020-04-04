@@ -17,6 +17,12 @@
                 <h1>Login</h1>
                 <h3>Event Booking</h3>
 
+                <?php if(isset($isError) && $isError): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <p class="text-danger"><?php echo $_SESSION['REGISTER_ERROR']; ?></p>
+                    </div>
+                <?php endif ?>
+
                 <form method="post">
                     <div class="form-group">
                         <input type="text" class="form-control" name="emailOrId" placeholder="Username/E-Mail"
