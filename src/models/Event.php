@@ -107,6 +107,7 @@ class Event
         }
 
         return $data = [
+            ":creator_id" => $data['creator_id']->user_id,
             ":title" => $data['title'],
             ":description" => $data['description'],
             ":location" => $data['location'],
