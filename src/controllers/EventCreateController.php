@@ -87,7 +87,7 @@ class EventCreateController extends Controller
             if ((int) $data['maximum_attendees'] < 1) {
                 $this->setError("Please enter a number of maximum attendees that is at least 1!");
             }
-        } else {
+        } elseif (!empty($data['maximum_attendees']) || $data['maximum_attendees'] === '0') {
             $this->setError("Please enter a valid number of maximum attendees!");
         }
 

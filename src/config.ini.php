@@ -12,7 +12,7 @@ DB_PASS     = "dev"
 
 [Email]
 ; Disable this setting to show email contents directly on screen
-EMAIL_ENABLED   = "false"
+EMAIL_ENABLED   = "true"
 EMAIL_FROM      = "DHBW Event Booking <noreply@dhbw-event-booking.com>"
                             
 

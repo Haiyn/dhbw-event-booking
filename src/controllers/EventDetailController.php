@@ -2,7 +2,10 @@
 
 namespace controllers;
 
+use components\core\Utility;
+use components\email\EmailService;
 use models\Booking;
+use models\enums\Status;
 use models\Event;
 use models\User;
 
@@ -11,7 +14,7 @@ class EventDetailController extends Controller
     public function render($params)
     {
         session_start();
-        $_SESSION['USER_ID'] = "96d50525-f742-4545-9340-21e9cd90b448";
+        $_SESSION['USER_ID'] = "1bef9237-0427-4731-9a0e-0a3025b3b5e7";
         if (isset($_GET['event_id'])) {
             $event = Event::getInstance();
             $eventById = $event->getEventById(trim(htmlspecialchars($_GET['event_id'])));
@@ -39,8 +42,25 @@ class EventDetailController extends Controller
                         // Delete attendee if delete_attendee is set
                         if (isset($_GET['delete_attendee'])) {
                             $booking->deleteBookingByEventIdAndUserId($_GET['event_id'], $_GET['delete_attendee']);
-
-                            // TODO: Notify attendee that he has been removed
+                            // Check if Email Sending is enabled
+                            $initFile = Utility::getIniFile();
+                            $attendee = $user->getUserById($_GET['delete_attendee']);
+                            if (filter_var($initFile['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
+                                // Send the notification email to the email address
+                                $emailService = EmailService::getInstance();
+                                $emailService->sendEmail(
+                                    $attendee->email,
+                                    "You have been removed from an event",
+                                    "You have been removed from the event with the title '{$eventById->title}'.<br/>
+                                    Use this <a href='{$initFile['URL']}/event-detail?event_id={$eventById->event_id}'
+                                    > link</a> to view the event."
+                                );
+                            } else {
+                                $this->setError(
+                                    "An internal error occurred, notifications could not be sent!",
+                                    "&event_id={$_GET['event_id']}"
+                                );
+                            }
                         }
                     }
                 }
@@ -68,8 +88,30 @@ class EventDetailController extends Controller
 
                 $this->updateEvent($event_data, $eventById);
 
-                if (isset($_POST['notify']) && $_POST['notify'] === "on") {
-                    // TODO: Notify the attendees that the event has been updated
+                if (isset($_POST['notify']) && filter_var($_POST['notify'], FILTER_VALIDATE_BOOLEAN)) {
+                    // Check if Email Sending is enabled
+                    $initFile = Utility::getIniFile();
+                    if (filter_var($initFile['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
+                        // Iterate through each attendee
+                        foreach ($attendees as $attendee) {
+                            if ($attendee->status == Status::$ACCEPTED) {
+                                // Send the notification email to the email address
+                                $emailService = EmailService::getInstance();
+                                $emailService->sendEmail(
+                                    $attendee->email,
+                                    "An event you are attending has been updated",
+                                    "The event with title '{$event_data['title']}' has been updated by the creator.<br/>
+                                    Use this <a href='{$initFile['URL']}/event-detail?event_id=
+                                    {$event_data['event_id']}'>link</a> to view the event."
+                                );
+                            }
+                        }
+                    } else {
+                        $this->setError(
+                            "An internal error occurred, notifications could not be sent!",
+                            "&event_id={$_GET['event_id']}"
+                        );
+                    }
                 }
 
                 $this->setSuccess("Event successfully updated.", "&event_id={$_GET['event_id']}");
@@ -162,21 +204,23 @@ class EventDetailController extends Controller
                         "&event_id={$_GET['event_id']}&edit"
                     );
                 }
-            } else {
+            } elseif (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') {
                 $this->setError(
                     "Please enter a valid number of maximum attendees!",
                     "&event_id={$_GET['event_id']}&edit"
                 );
             }
 
-            // Check if new number of maximum attendees is lower than the current amount of maximum attendees
-            $booking = Booking::getInstance();
-            $bookings = $booking->getBookingsByEventId($old_data->event_id);
-            if (sizeof($bookings) > $new_data['maximum_attendees']) {
-                $this->setError(
-                    "New number of maximum attendees cannot be lower than the current number of attendees!",
-                    "&event_id={$_GET['event_id']}&edit"
-                );
+            if (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') {
+                // Check if new number of maximum attendees is lower than the current amount of maximum attendees
+                $booking = Booking::getInstance();
+                $bookings = $booking->getBookingsByEventId($old_data->event_id);
+                if (sizeof($bookings) > $new_data['maximum_attendees']) {
+                    $this->setError(
+                        "New number of maximum attendees cannot be lower than the current number of attendees!",
+                        "&event_id={$_GET['event_id']}&edit"
+                    );
+                }
             }
         }
 

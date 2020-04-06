@@ -31,7 +31,7 @@ class Booking
     public function getBookingsByEventId($event_id)
     {
         return self::$database->fetch(
-            "SELECT users.username, bookings.user_id, bookings.status FROM bookings
+            "SELECT users.username, users.email, bookings.user_id, bookings.status FROM bookings
             INNER JOIN users ON bookings.user_id = users.user_id WHERE event_id = :event_id",
             [":event_id" => $event_id]
         );
