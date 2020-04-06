@@ -73,8 +73,6 @@ class User
         return $users[0];
     }
 
-
-
     /*
      * Adds a new user to the users table
      */
@@ -124,6 +122,5 @@ class User
             ":verified" => "false"
         ];
     }
-
 
 }
