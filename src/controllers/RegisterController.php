@@ -156,7 +156,7 @@ class RegisterController extends Controller
         }
 
         // Check if Email Sending is enabled
-        if(Utility::getIniFile()['EMAIL_ENABLED'])
+        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN))
         {
             // Send a verification email to the email address
             $emailService = EmailService::getInstance();
