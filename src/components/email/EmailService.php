@@ -22,11 +22,15 @@ class EmailService
         return self::$instance;
     }
 
-    /*
+    /**
      * Sends an email with http content to the specified email address
      * Redirects to internal error page if it fails (indicates that SMTP is not working)
+     * @param $to * email recipient
+     * @param $subject * subject of the email
+     * @param $message * body of the email
      */
-    public function sendEmail($to, $subject, $message) {
+    public function sendEmail($to, $subject, $message)
+    {
         // Set the headers needed for a html email
         $sender = Utility::getIniFile()['EMAIL_FROM'];
         $header[] = "From: " . $sender;
@@ -35,27 +39,27 @@ class EmailService
         $header[] = 'Content-type: text/html; charset=iso-8859-1';
 
         // Call PHPs mail function with the wrapped message and header array imploded into single string
-        if (!mail($to, $subject, $this->wrapMessage($to, $message), implode("\r\n", $header)))
-        {
+        if (!mail($to, $subject, $this->wrapMessage($to, $message), implode("\r\n", $header))) {
             // Email send failed
             header("Location: /internal-error");
             exit();
         }
     }
 
-    /*
+    /**
      * Wraps the passed message with the spcecified header and footer
+     * @param $to * email recipient
+     * @param $message * email body
+     * @return string * wrapped email body
      */
-    private function wrapMessage($to, $message) {
+    private function wrapMessage($to, $message)
+    {
         // Get the username or first name (if available) via the email
-        $user = User::newInstance();
+        $user = User::getInstance();
         $foundUser = $user->getUserByEmail($to);
-        if(empty($foundUser->first_name))
-        {
+        if (empty($foundUser->first_name)) {
             $name = $foundUser->username;
-        }
-        else
-        {
+        } else {
             $name = $foundUser->first_name;
         }
 
