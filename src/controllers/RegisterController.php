@@ -111,16 +111,21 @@ class RegisterController extends Controller
 
         $hash = $user->getUserByUsername($user_data['username'])->verification_hash;
 
-        // TODO: Remove this when SMTP Server available
-        $this->setSuccess("You have been successfully registered to the website! 
+        // Check if Email Sending is enabled
+        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN))
+        {
+            // Send a verification email to the email address
+            $emailService = EmailService::getInstance();
+            $url = Utility::getIniFile()['URL'];
+            $emailService->sendEmail($email,
+                "Confirm your email address",
+                "Follow <a href='{$url}/confirm?hash={$hash}'>this link</a> to confirm your email address.");
+        }
+        else
+        {
+            // Display the verification link in the browser for testing
+            $this->setSuccess("You have been successfully registered to the website! 
                     Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");
-
-        // Send a verification email to the email address
-        // TODO: Uncomment when SMTP Server available
-        /*$emailService = EmailService::getInstance();
-        $url = Utility::getIniFile()['URL'];
-        $emailService->sendEmail($user_data['email'],s
-            "Confirm your email address",
-            "Follow <a href='{$url}/confirm?hash={$hash}'>this link</a> to confirm your email address.");*/
+        }
     }
 }

@@ -56,7 +56,6 @@ class EmailService
         // Get the username or first name (if available) via the email
         $user = User::getInstance();
         $foundUser = $user->getUserByEmail($to);
-        $name = "User"; // default value if no user is found (should never happen)
         if (empty($foundUser->first_name)) {
             $name = $foundUser->username;
         } else {
@@ -67,7 +66,7 @@ class EmailService
         // but since the email contents are very basic, this is not really necessary
         $header = "<p>Dear {$name},</p><br/><br/><p>";
         $footer = "</p><br/><br/><p>Your DHBW Event Booking Team</p>
-            <p style='font-size: 0.6rem'>his E-Mail was automatically generated. Please don't reply to it!</p>";
+            <p style='font-size: 0.6rem'>This E-Mail was automatically generated. Please don't reply to it!</p>";
 
         return $header . $message . $footer;
     }
