@@ -168,6 +168,16 @@ class EventDetailController extends Controller
                     "&event_id={$_GET['event_id']}&edit"
                 );
             }
+
+            // Check if new number of maximum attendees is lower than the current amount of maximum attendees
+            $booking = Booking::getInstance();
+            $bookings = $booking->getBookingsByEventId($old_data->event_id);
+            if (sizeof($bookings) > $new_data['maximum_attendees']) {
+                $this->setError(
+                    "New number of maximum attendees cannot be lower than the current number of attendees!",
+                    "&event_id={$_GET['event_id']}&edit"
+                );
+            }
         }
 
         if ($new_data['price'] !== $old_data->price) {

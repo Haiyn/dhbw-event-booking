@@ -80,11 +80,11 @@ class EventCreateController extends Controller
 
         // Check if maximum attendees is an valid int
         if (
-            (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') &&
-            filter_var($new_data['maximum_attendees'], FILTER_VALIDATE_INT)
+            (!empty($data['maximum_attendees']) || $data['maximum_attendees'] === '0') &&
+            filter_var($data['maximum_attendees'], FILTER_VALIDATE_INT)
         ) {
             // Check if maximum attendees is bigger than 0
-            if ((int) $new_data['maximum_attendees'] < 1) {
+            if ((int) $data['maximum_attendees'] < 1) {
                 $this->setError("Please enter a number of maximum attendees that is at least 1!");
             }
         } else {
