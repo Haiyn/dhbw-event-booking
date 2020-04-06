@@ -11,38 +11,15 @@ class RegisterController extends Controller
     public function render($parameters)
     {
         session_start();
-
-        // /register?verify=[email] was called to resend a verification link
-        if (isset($_GET['verify']))
-        {
-            $email = filter_var(htmlspecialchars($_GET['verify']), FILTER_SANITIZE_EMAIL);
-
-            // if the sanitized value is still a valid email, generate the link
-            // otherwise show an error message
-            if (filter_var($email, FILTER_VALIDATE_EMAIL))
-            {
-                $this->generateEmailConfirmation($email);
-
-                $this->setSuccess("The E-Mail confirmation link has been successfully sent to 
-                    <strong>{$email}</strong>");
-            }
-            else
-            {
-                $this->setError("Sorry, we cannot a send a verification link to this email!");
-            }
-        }
-
-        // The register button was pressed
-        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email']))
-        {
+        if (isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"])) {
             // Sanitize the data by removing any harmful code and markup
             $user_data = [
-                'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
-                'password' => htmlspecialchars($_POST['password']),
-                'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL),
-                'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
-                'last_name' => filter_var(htmlspecialchars($_POST['last_name']), FILTER_SANITIZE_STRING),
-                'age' => filter_var(htmlspecialchars($_POST['age']), FILTER_SANITIZE_NUMBER_INT)
+                "username" => filter_var(htmlspecialchars($_POST["username"]), FILTER_SANITIZE_STRING),
+                "password" => htmlspecialchars($_POST["password"]),
+                "email" => filter_var(htmlspecialchars($_POST["email"]), FILTER_SANITIZE_EMAIL),
+                "first_name" => filter_var(htmlspecialchars($_POST["first_name"]), FILTER_SANITIZE_STRING),
+                "last_name" => filter_var(htmlspecialchars($_POST["last_name"]), FILTER_SANITIZE_STRING),
+                "age" => filter_var(htmlspecialchars($_POST["age"]), FILTER_SANITIZE_NUMBER_INT)
             ];
             // Trim every value to assert that no whitespaces are submitted
             foreach ($user_data as $key => &$value) {
@@ -52,8 +29,6 @@ class RegisterController extends Controller
             $this->validateData($user_data);
 
             $this->registerUser($user_data);
-
-            $this->generateEmailConfirmation($user_data['email']);
 
             $this->setSuccess("You have been successfully registered to the website! 
                     Please confirm your email address with the link you've received at 
@@ -133,24 +108,11 @@ class RegisterController extends Controller
         if (!$user->addUser($user_data)) {
             $this->setError("Sorry, something went wrong while creating your user! Please try again.");
         }
-    }
 
-    /*
-     * Generates a confirmation link for the registered user and sends it depending on ini settings
-     */
-    private function generateEmailConfirmation($email)
-    {
-        $user = User::getInstance();
-
-        $hash = $user->getUserByEmail($email)->verification_hash;
-
-        if (empty($hash))
-        {
-            $this->setError("Sorry, the user to the email <strong>{$email}</strong> does not exist!");
-        }
+        $hash = $user->getUserByUsername($user_data['username'])->verification_hash;
 
         // Check if Email Sending is enabled
-        if(Utility::getIniFile()['EMAIL_ENABLED'])
+        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN))
         {
             // Send a verification email to the email address
             $emailService = EmailService::getInstance();
