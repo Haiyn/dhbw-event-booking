@@ -14,10 +14,6 @@ RUN echo 'xdebug.remote_port=9000' >> /usr/local/etc/php/conf.d/xdebug.ini
 RUN echo 'xdebug.remote_enable=1' >> /usr/local/etc/php/conf.d/xdebug.ini
 RUN echo 'xdebug.remote_connect_back=1' >> /usr/local/etc/php/conf.d/xdebug.ini
 
-# Enable mail sending
-RUN apt-get install -y sendmail
-RUN echo 'sendmail_path = /usr/sbin/sendmail -t -i' >> /usr/local/etc/php/php.ini
-
 # Install Postgre PDO
 RUN apt-get install -y libpq-dev
 RUN docker-php-ext-install pdo pdo_pgsql pgsql
