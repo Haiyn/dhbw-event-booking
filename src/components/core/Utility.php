@@ -2,7 +2,9 @@
 
 namespace components\core;
 
-class Utility
+use components\InternalComponent;
+
+class Utility extends InternalComponent
 {
     /**
      * [...] generates VALID RFC 4211 COMPLIANT Universally Unique Identifiers (UUID) version [...] 4 [...].
@@ -36,9 +38,10 @@ class Utility
 
     /**
      * This function opens and returns the contents of the config.ini.php file
+     * @param bool $process_sections * Get the ini contents as array with sections or without (default is without)
      * @return array|boolean * array of ini file contents or false on failure
      */
-    public static function getIniFile()
+    public static function getIniFile($process_sections = false)
     {
         // Specifies where the ini file is located
         // Edit this if you want to change the location or name of the ini
@@ -47,7 +50,7 @@ class Utility
         $filePath = $fileLocation . DIRECTORY_SEPARATOR . $fileName;
 
         if (file_exists($filePath)) {
-            return parse_ini_file($filePath);
+            return parse_ini_file($filePath, $process_sections);
         } else {
             return false;
         }
