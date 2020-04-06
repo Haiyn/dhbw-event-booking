@@ -45,8 +45,7 @@ class RegisterController extends Controller
                 'age' => filter_var(htmlspecialchars($_POST['age']), FILTER_SANITIZE_NUMBER_INT)
             ];
             // Trim every value to assert that no whitespaces are submitted
-            foreach ($user_data as $key => &$value)
-            {
+            foreach ($user_data as $key => &$value) {
                 $user_data[$key] = trim($value);
             }
 
@@ -66,31 +65,28 @@ class RegisterController extends Controller
         $this->view->isError = isset($_GET["error"]);
     }
 
-    /*
+    /**
      * Checks if all the form data is in a valid format.
      * Redirects with an error if something is wrong with the data.
+     * @param $data * data array to validate
      */
     private function validateData($data)
     {
         // If the sanitized required values are empty
-        if (empty($data['username']) || empty($data['email']) || empty($data['password']))
-        {
+        if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
             $this->setError("Please enter something valid for the required fields!");
         }
 
         // Check if the username contains white spaces
-        if (preg_match('/\s/',$data['username']))
-        {
+        if (preg_match('/\s/', $data['username'])) {
             $this->setError("Your username cannot contain whitespaces!");
         }
 
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL))
-        {
+        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             $this->setError("Please enter a valid E-Mail address!");
         }
 
-        if (!empty($data['age']) && !filter_var($data['age'], FILTER_VALIDATE_INT))
-        {
+        if (!empty($data['age']) && !filter_var($data['age'], FILTER_VALIDATE_INT)) {
             $this->setError("Please enter a valid age!");
         }
 
@@ -112,9 +108,10 @@ class RegisterController extends Controller
         }
     }
 
-    /*
+    /**
      * Tries to register the user
      * Redirects with an error if something is wrong with the data.
+     * @param $user_data * data array for adding the user
      */
     private function registerUser($user_data)
     {
@@ -122,21 +119,18 @@ class RegisterController extends Controller
 
         // Check if username is already in database
         $existingUser = $user->getUserByUsername($user_data["username"]);
-        if (!empty($existingUser))
-        {
+        if (!empty($existingUser)) {
             $this->setError("This username is already taken!");
         }
 
         // Check if email is already in database
         $existingUser = $user->getUserByEmail($user_data["email"]);
-        if (!empty($existingUser))
-        {
+        if (!empty($existingUser)) {
             $this->setError("An account with this E-Mail is already registered!");
         }
 
         // Add the user to the database
-        if(!$user->addUser($user_data))
-        {
+        if (!$user->addUser($user_data)) {
             $this->setError("Sorry, something went wrong while creating your user! Please try again.");
         }
     }
@@ -172,5 +166,4 @@ class RegisterController extends Controller
                     Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");
         }
     }
-
 }
