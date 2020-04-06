@@ -40,16 +40,14 @@ class LoginController extends Controller
 
             $validUsername = $user->getUserByUsername($user_data['emailOrId']);
             $validEmail = $user->getUserByEmail($user_data['emailOrId']);
-            $confirmedEmail = $user->getUserByEmail($user_data["emailOrId"])->verification_hash;
 
 
             if (!empty($validUsername)) {
                 $validPassword = $validUsername->password;
                 if ($password_hash == $validPassword) {
-                    if (empty($confirmedEmail)) {
-                        $url = Utility::getIniFile()['URL'];
+                    if (!$validUsername->verified) {
                         $this->setError("Please confirm your email address. Follow
-                        <a href='{$url}/confirm?hash={$confirmedEmail}'> to confirm.");
+                        <a href='/register?verify={$validUsername->email}'> to confirm</a>.");
                     } else {
                         $this->redirect("event-overview");
                     }
@@ -59,10 +57,9 @@ class LoginController extends Controller
             } elseif (!empty($validEmail)) {
                 $validPassword = $validEmail->password;
                 if ($password_hash == $validPassword) {
-                    if (empty($confirmedEmail)) {
-                        $url = Utility::getIniFile()['URL'];
+                    if (!$validEmail->verified) {
                         $this->setError("Please confirm your email address. Follow
-                        <a href='{$url}/confirm?hash={$confirmedEmail}'> to confirm.");
+                        <a href='/register?verify={$validEmail->email}'> to confirm</a>.");
                     } else {
                         $this->redirect("event-overview");
                     }
@@ -75,5 +72,4 @@ class LoginController extends Controller
         }
     }
 }
-
 
