@@ -32,16 +32,17 @@ class EmailService
     public function sendEmail($to, $subject, $message)
     {
         // Set the headers needed for a html email
-        $header[] = "From: " . Utility::getIniFile()['EMAIL_FROM'];
+        $sender = Utility::getIniFile()['EMAIL_FROM'];
+        $header[] = "From: " . $sender;
+        $header[] = "ReplyTo: " . $sender;
         $header[] = 'MIME-Version: 1.0';
         $header[] = 'Content-type: text/html; charset=iso-8859-1';
 
         // Call PHPs mail function with the wrapped message and header array imploded into single string
-        // TODO: Configure SMTP Server on localhost:25 for mails to actually be sent
         if (!mail($to, $subject, $this->wrapMessage($to, $message), implode("\r\n", $header))) {
             // Email send failed
             header("Location: /internal-error");
-            return;
+            exit();
         }
     }
 
