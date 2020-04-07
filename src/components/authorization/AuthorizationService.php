@@ -3,6 +3,7 @@
 namespace components\authorization;
 
 use components\core\Utility;
+use models\Session;
 
 class AuthorizationService
 {
@@ -36,7 +37,7 @@ class AuthorizationService
 
         // Set the server session
         if (!empty($user_id)) {
-            $_SESSION['USERNAME'] = $session_data['user_id'];
+            $_SESSION['USER_ID'] = $session_data['user_id'];
             $_SESSION['LOGIN_TIME'] = $session_data['login_time'];
         }
         $_SESSION['IP_ADDRESS'] = $session_data['ip_address'];
@@ -47,7 +48,7 @@ class AuthorizationService
         if (!$session->saveSession($session_data))
         {
             // Insert/Update was unsuccessful
-            header("Locatin: /internal-error");
+            header("Location: /internal-error");
             exit(1);
         }
     }
@@ -55,7 +56,7 @@ class AuthorizationService
     /**
      * Unset the server session and delete the session from the database
      * Creates a new, not logged in session upon unset and redirects to the login page
-     * Used by logout
+     * Used by logout and failed session check
      */
     public function unsetSession()
     {
@@ -89,7 +90,7 @@ class AuthorizationService
     public function checkSession()
     {
         // If user_id is not set, the user is not logged in
-        if (empty($_SESSION['user_id']))
+        if (empty($_SESSION['USER_ID']))
         {
             header("Location: /login");
             exit(0);
@@ -121,6 +122,23 @@ class AuthorizationService
         }
         // Beyond this point, the user is logged in and actually the session owner of the session ID
         // It is now safe to show the web page to this user
+    }
+
+    /**
+     * Resume an existing session from the cookie regardless of login status
+     * Used for pages that require a session but not a logged in session (-> checkSession)
+     */
+    public function resumeSession() {
+        session_start();
+
+        // Check if a logged in user called /login or /register
+        if(strpos($_SERVER['REQUEST_URI'], "login") || strpos($_SERVER['REQUEST_URI'], "register")) {
+            if($_SESSION['USER_ID']) {
+                // Logged in users cannot access these pages, redirect
+                header("Location: /event-overview");
+                exit;
+            }
+        }
     }
 
     /**

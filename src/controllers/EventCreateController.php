@@ -9,7 +9,8 @@ class EventCreateController extends Controller
 {
     public function render($params)
     {
-        session_start();
+        $this->session->checkSession();
+
         if (
             isset($_POST["title"]) && isset($_POST["description"]) && isset($_POST["date"]) &&
             isset($_POST["visibility"])

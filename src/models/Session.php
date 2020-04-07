@@ -1,10 +1,11 @@
 <?php
 
-namespace components\authorization;
+namespace models;
 
 use components\database\Database;
 
-class Session{
+class Session
+{
 
     private static $instance;
     private static $database;
@@ -75,7 +76,7 @@ class Session{
         {
             // Session ID already exists in database, update the existing entry
             $query = "UPDATE sessions
-                SET user_id = :user_id, login_time = :login_tme, ip_address = :ip_address, user_agent = :user_agent
+                SET user_id = :user_id, login_time = :login_time, ip_address = :ip_address, user_agent = :user_agent
                 WHERE session_id = :session_id";
         }
 

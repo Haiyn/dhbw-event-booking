@@ -10,8 +10,6 @@ class RegisterController extends Controller
 {
     public function render($parameters)
     {
-        session_start();
-
         // /register?verify=[email] was called to resend a verification link
         if (isset($_GET['verify'])) {
             $email = filter_var(htmlspecialchars($_GET['verify']), FILTER_SANITIZE_EMAIL);
