@@ -14,11 +14,15 @@
     "twbs/bootstrap": "4.3.1",
     "components/jquery": "^3.4",
     "components/jqueryui": "^1.12",
+    "phpmailer/phpmailer": "~6.1",
     "ext-openssl": "*",
     "ext-pdo": "*"
   },
   "scripts": {
     "post-install-cmd": [
+      "cp -R vendor/autoload.php src/resources/assets/autload.php",
+      "rm -rf src/resources/assets/composer",
+      "cp -R vendor/composer/autload_real.php src/resources/assets/composer",
       "rm -rf src/resources/assets/bootstrap",
       "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap",
       "rm -rf src/resources/assets/jquery",
@@ -27,7 +31,9 @@
       "rm -rf src/resources/assets/jqueryui",
       "mkdir src/resources/assets/jqueryui",
       "cp -R vendor/components/jqueryui/*.js src/resources/assets/jqueryui",
-      "cp vendor/components/jqueryui/themes/base/jquery-ui.css src/resources/assets/jqueryui/jquery-ui.css"
+      "cp vendor/components/jqueryui/themes/base/jquery-ui.css src/resources/assets/jqueryui/jquery-ui.css",
+      "rm -rf src/resources/assets/phpmailer",
+      "cp -R vendor/phpmailer/phpmailer/src src/resources/assets/phpmailer"
     ]
   }
 }
