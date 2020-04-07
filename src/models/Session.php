@@ -24,11 +24,6 @@ class Session
         return self::$instance;
     }
 
-    public static function newInstance()
-    {
-        return new self();
-    }
-
     /**
      * Searches the sessions table for an entry with session_id as primary key
      * @param $session_id * session id to search for

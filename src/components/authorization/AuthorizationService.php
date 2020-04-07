@@ -32,7 +32,6 @@ class AuthorizationService
     public function setSession($user_id = null)
     {
         // Start a new session and get the user data
-        session_start();
         $session_data = $this->generateCurrentSessionData($user_id);
 
         // Set the server session
@@ -142,7 +141,7 @@ class AuthorizationService
     }
 
     /**
-     * Generates an array that contains the current user's connectin information
+     * Generates an array that contains the current user's connection information
      * Can be called as logged in session  array (user_id not null)
      * or not logged in session array (user_id null)
      * @param string|null $user_id * optional
