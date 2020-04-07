@@ -1,94 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <title>Event Overview</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/views/event-overview/event-overview.js"></script>
+    <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/assets/jqueryui/jquery-ui.js"></script>
+    <script type="text/javascript" src="/views/event-detail/event-detail.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/resources/assets/font-awesome/css/all.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/css/datepicker.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="container">
-    <h1>Event Details</h1><br>
-    <form method="post">
-        <div class="form-group">
-            <label for="event-detail-title">Title</label>
-            <input id="event-detail-title" type="text" name="title"
-                   value="<?php if (isset($event)) echo $event->title; ?>" readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-title">Creator</label>
-            <input id="event-detail-title" type="text" name="title"
-                   value="<?php if (isset($event)) echo $event->creator; ?>" readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-title">Creation Date</label>
-            <input id="event-detail-title" type="text" name="title"
-                   value="<?php if (isset($event)) echo date("Y-m-d H:i:s", strtotime($event->creation_date)); ?>"
-                   readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-description">Description</label>
-            <textarea id="event-detail-description" name="description"
-                   readonly class="form-control"><?php if (isset($event)) echo $event->description; ?></textarea><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-location">Location</label>
-            <input id="event-detail-location" type="text" name="location"
-                   value="<?php if (isset($event)) echo $event->location; ?>" readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-date">Date</label>
-            <input id="event-detail-date" type="text" name="date"
-                   value="<?php if (isset($event)) echo $event->date; ?>" readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-time">Time</label>
-            <input id="event-detail-time" type="text" name="time"
-                   value="<?php if (isset($event)) echo date("H:i", strtotime($event->time)); ?>"
-                   readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-visibility">Visibility</label>
-            <input id="event-detail-visibility" type="text" name="visibility"
-                   value="<?php if (isset($event)) echo $event->visibility; ?>" readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-maximum-attendees">Maximum Attendees</label>
-            <input id="event-detail-maximum-attendees" type="number" name="maximum_attendees"
-                   value="<?php if (isset($event)) echo $event->maximum_attendees; ?>"
-                   readonly class="form-control"><br/>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-maximum-attendees">Current Attendees</label>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php
-                    if (isset($attendees)) {
-                       for ($i = 0; $i < count($attendees); $i++) { ?>
-                           <tr>
-                               <th scope="row"><?php echo $i + 1; ?></th>
-                               <td><?php echo $attendees[$i]->username; ?></td>
-                               <td><?php echo $attendees[$i]->status; ?></td>
-                           </tr>
-                       <?php }
-                    }
-                ?>
-                </tbody>
-            </table>
-        </div>
-        <div class="form-group">
-            <label for="event-detail-price">Price</label>
-            <input id="event-detail-price" type="number" name="price"
-                   value="<?php if (isset($event)) echo $event->price; ?>" readonly class="form-control"><br/>
-        </div>
-    </form>
-    <a href="#" class="btn btn-primary">Contact Creator</a>
-    <a href="#" class="btn btn-primary">Book Event</a>
+    <div class="container">
+        <h1>Event Details</h1><br>
+
+        <?php if (isset($isError) && $isError): ?>
+            <div class="alert alert-danger" role="alert">
+                <p class="text-danger"><?=$_SESSION["EVENT_DETAIL_ERROR"]?></p>
+            </div>
+        <?php endif ?>
+
+        <?php if(isset($isSuccess) && $isSuccess): ?>
+            <div class="alert alert-success" role="alert">
+                <p class="text-success"><?=$_SESSION["EVENT_DETAIL_SUCCESS"]?></p>
+            </div>
+        <?php endif ?>
+
+        <?php if (isset($event) && isset($isCreator) && isset($edit) && $isCreator && !$edit): ?>
+            <a href="/event-detail?event_id=<?=$event->event_id . '&edit'?>"
+               class="btn btn-primary mb-3">Edit</a>
+        <?php endif; ?>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="event-detail-title">Title</label>
+                <input id="event-detail-title" type="text" name="title" required
+                        value="<?php if (isset($event)) echo $event->title; ?>"
+                       <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-title">Creator</label>
+                <input id="event-detail-title" type="text" name="creator"
+                       value="<?php if (isset($event)) echo $event->creator; ?>" readonly class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-title">Creation Date</label>
+                <input id="event-detail-title" type="text" name="creation_date"
+                       value="<?php if (isset($event)) echo date("Y-m-d H:i:s", strtotime($event->creation_date)); ?>"
+                       readonly class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-description">Description</label>
+                <textarea id="event-detail-description" name="description" required <?=(isset($edit) && !$edit) ? 'readonly' : ''?>
+                       class="form-control"><?php if (isset($event)) echo $event->description; ?></textarea><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-location">Location</label>
+                <input id="event-detail-location" type="text" name="location"
+                       value="<?php if (isset($event)) echo $event->location; ?>"
+                       <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-date">Date</label>
+                <input id="event-detail-date" name="date" placeholder="yyyy-mm-dd" required
+                       value="<?php if (isset($event)) echo $event->date; ?>"
+                       <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control datepicker"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-time">Time</label>
+                <input id="event-detail-time" type="text" name="time"
+                       value="<?php if (isset($event)) echo date("H:i", strtotime($event->time)); ?>"
+                       <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-visibility">Visibility</label>
+                <input id="event-detail-visibility" type="text" name="visibility"
+                       value="<?php if (isset($event)) echo $event->visibility; ?>" readonly class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-maximum-attendees">Maximum Attendees</label>
+                <input id="event-detail-maximum-attendees" type="number" name="maximum_attendees"
+                       value="<?php if (isset($event)) echo $event->maximum_attendees; ?>"
+                       <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-maximum-attendees">Current Attendees</label><br/>
+                <?php if (isset($edit) && $edit): ?>
+                    <a href="#" title="Add" class="btn btn-primary mb-3"><i class="fa fa-plus"></i></a>
+                <?php endif; ?>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Status</th>
+                        <?php if (isset($edit) && $edit): ?>
+                            <th scope="col">Actions</th>
+                        <?php endif; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php
+                        if (isset($attendees)) {
+                           for ($i = 0; $i < count($attendees); $i++) { ?>
+                               <tr>
+                                   <th scope="row"><?php echo $i + 1; ?></th>
+                                   <td><?php echo $attendees[$i]->username; ?></td>
+                                   <td><?php echo $attendees[$i]->status; ?></td>
+                                   <?php if (isset($edit) && $edit): ?>
+                                       <td>
+                                           <a href="/event-detail?event_id=<?php if (isset($event)) echo $event->event_id . '&edit=' . $edit . '&delete_attendee=' . $attendees[$i]->user_id; ?>"
+                                              title="Delete" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                                       </td>
+                                   <?php endif; ?>
+                               </tr>
+                           <?php }
+                        }
+                    ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <label for="event-detail-price">Price</label>
+                <input id="event-detail-price" type="number" name="price"
+                       value="<?php if (isset($event)) echo $event->price; ?>"
+                       <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
+            </div>
+
+            <?php if (isset($event) && isset($isCreator) && isset($edit) && $isCreator && $edit): ?>
+                <div class="form-group ml-4">
+                    <input id="event-detail-notify" type="checkbox" name="notify" class="form-check-input">
+                    <label for="event-detail-notify">Notify attendees</label>
+                </div>
+                <button type="submit" class="btn btn-primary mb-3">Update Event</button>
+            <?php endif; ?>
+        </form>
+
+        <?php if (isset($edit) && !$edit): ?>
+            <a href="#" class="btn btn-primary mb-3">Contact Creator</a>
+            <a href="#" class="btn btn-primary mb-3">Book Event</a>
+        <?php endif; ?>
+    </div>
 </body>
