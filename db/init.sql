@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS bookings (
 CREATE TABLE IF NOT EXISTS sessions (
     session_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users (user_id),
-    login_time TIME,
+    login_time INTEGER,
     ip_address VARCHAR(16),
     user_agent TEXT
 );

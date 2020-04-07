@@ -13,7 +13,8 @@ class EventDetailController extends Controller
 {
     public function render($params)
     {
-        session_start();
+        $this->session->checkSession();
+
         if (isset($_GET['event_id'])) {
             $event = Event::getInstance();
             $eventById = $event->getEventById(trim(htmlspecialchars($_GET['event_id'])));
