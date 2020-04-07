@@ -1,7 +1,6 @@
 <?php
 
 // Initialize autoloader
-use components\core;
 require_once 'components/core/Autoloader.php';
 
 // Initialize Router

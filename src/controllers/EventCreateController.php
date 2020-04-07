@@ -115,7 +115,7 @@ class EventCreateController extends Controller
      */
     private function createEvent($data)
     {
-        $user = User::newInstance();
+        $user = User::getInstance();
 
         if (isset($_SESSION["USER_ID"])) {
             $data["creator_id"] = $user->getUserById($_SESSION["USER_ID"]);
