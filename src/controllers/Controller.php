@@ -2,16 +2,20 @@
 
 namespace controllers;
 
+use components\authorization\AuthorizationService;
 use stdClass;
 
 abstract class Controller
 {
     public $viewName;
     protected $view;
+    protected $session;
 
     public function __construct()
     {
         $this->view = new stdClass();
+        $this->session = new AuthorizationService();
+        $this->session->resumeSession();
     }
 
     abstract public function render($params);

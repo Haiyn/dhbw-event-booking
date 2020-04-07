@@ -17,4 +17,5 @@ EMAIL_FROM      = "DHBW Event Booking <noreply@dhbw-event-booking.com>"
 
 [Security]
 AUTH_SALT       = "0~y802M]fWH>J]=C7>OlniyMU]>yxCt#-j(r@K37D)B{18yh9 x#@+6Y[@U4Tc,{"
+LOGIN_TIMEOUT   = "1800"
 
