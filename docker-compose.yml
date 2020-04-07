@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: "dev"
 
   web:
-    container_name: webserver
+    container_name: web-server
     image: event-booking:2020
     ports:
     - 8080:80
@@ -29,6 +29,16 @@ services:
       source: "./src"
       target: "/var/www/html"
     - webserver:/data
+
+  smtp:
+    container_name: smtp-server
+    image: namshi/smtp:latest
+    ports:
+      - 25:25
+    networks:
+      development:
+    environment:
+      MAILNAME: "dhbw-event.com"
 
 volumes:
   database:

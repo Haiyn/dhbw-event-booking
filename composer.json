@@ -20,9 +20,6 @@
   },
   "scripts": {
     "post-install-cmd": [
-      "cp -R vendor/autoload.php src/resources/assets/autload.php",
-      "rm -rf src/resources/assets/composer",
-      "cp -R vendor/composer/autload_real.php src/resources/assets/composer",
       "rm -rf src/resources/assets/bootstrap",
       "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap",
       "rm -rf src/resources/assets/jquery",

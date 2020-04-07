@@ -24,7 +24,6 @@ abstract class InternalComponent
      */
     protected function setError($errorMessage)
     {
-        session_start();
         $_SESSION["INTERNAL_ERROR"] = $errorMessage;
         $this->redirect("/internal-error");
     }

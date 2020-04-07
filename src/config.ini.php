@@ -19,22 +19,23 @@ EMAIL_ENABLED           = "true"
 ; EMAIL_ENABLED must be true
 PHPMAILER_ENABLED       = "true"
 
-EMAIL_FROM_ADDRESS      = "noreply@dhbw-event-booking.com"
+EMAIL_FROM_ADDRESS      = "noreply@dhbw-event.com"
 EMAIL_FROM_NAME         = "DHBW Event Booking"
 
 ; Use SMTP
 EMAIL_IS_SMTP           = "true"
-EMAIL_SMTP_HOST         = "smtp.gmail.com"
+EMAIL_SMTP_HOST         = "0.0.0.0"
+EMAIL_SMTP_PORT         = "25"
 
 ; Authorization for SMTP settings
 ; EMAIL_IS_SMTP must be true
-EMAIL_IS_AUTH           = "true"
+EMAIL_IS_AUTH           = "false"
 EMAIL_SMTP_USERNAME     = ""
 EMAIL_SMTP_PASSWORD     = ""
 
 ; Encrypt SMTP
 ; EMAIL_IS_SMTP must be true
-EMAIL_IS_ENCRYPTED      = "true"
+EMAIL_IS_ENCRYPTED      = "false"
 
 
 

@@ -38,13 +38,13 @@ class EmailService extends InternalComponent
     public function sendEmail($to, $subject, $message)
     {
         // Wrap all the data in an array
-        $sender = Utility::getIniFile()['EMAIL_FROM'];
+        $sender = Utility::getIniFile()['EMAIL_FROM_ADDRESS'];
         $header[] = "From: " . $sender;
         $header[] = "ReplyTo: " . $sender;
         $header[] = 'MIME-Version: 1.0';
         $header[] = 'Content-type: text/html; charset=iso-8859-1';
 
-        $mail_data[] = [
+        $mail_data = [
             "to" => $to,
             "subject" => $subject,
             "message" => $this->wrapMessage($to, $message),
@@ -76,21 +76,24 @@ class EmailService extends InternalComponent
         $ini = Utility::getIniFile(true)['Email'];
 
         $mail = new PHPMailer(true);
+        $mail->SMTPDebug = 2;
         try {
             // Set SMPT settings if ini setting true
-            if($ini['EMAIL_IS_SMTP']) {
+            if(filter_var($ini['EMAIL_IS_SMTP'], FILTER_VALIDATE_BOOLEAN)) {
                 $mail->isSMTP();
+                SMTP::DEBUG_CONNECTION;
                 $mail->Host = $ini['EMAIL_SMTP_HOST'];
+                $mail->Port = $ini['EMAIL_SMTP_PORT'];
 
                 // Set SMTP Auth settings if ini setting true
-                if ($ini['EMAIL_IS_AUTH']) {
+                if (filter_var($ini['EMAIL_IS_AUTH'], FILTER_VALIDATE_BOOLEAN)) {
                     $mail->SMTPAuth = true;
                     $mail->Username = $ini['EMAIL_USERNAME'];
                     $mail->Password = $ini['EMAIL_PASSWORD'];
                 }
 
                 // Set encryption settings if ini setting true
-                if ($ini['EMAIL_IS_ENCRYPTED']) {
+                if (filter_var($ini['EMAIL_IS_ENCRYPTED'], FILTER_VALIDATE_BOOLEAN)) {
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption
                     $mail->Port = 465;
                 }
