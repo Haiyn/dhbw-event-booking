@@ -6,20 +6,27 @@ use controllers\NotFoundController;
 
 class Router
 {
-
-    /*
+    /**
      * Transforms the URL into a Controller name
+     * @param $viewName
+     * @return string * controller name
      */
     private function transformViewNameToControllerName($viewName)
     {
         // If the url has '-' in it, convert it to CamelCase
         // e.g.: event-overview --> EventOverview
         $parts = explode("-", $viewName);
-        foreach($parts as &$part)
+        foreach ($parts as &$part) {
             $part = ucfirst(strtolower($part));
+        }
         return implode("", $parts);
     }
 
+    /**
+     * Transforms a path to a view name
+     * @param $path * URI path
+     * @return string * view name
+     */
     private function transformPathToViewName($path)
     {
         // Cut the argument after the host to size
@@ -32,8 +39,9 @@ class Router
         return $path[0];
     }
 
-    /*
+    /**
      * Routes from the URL to the correct Controller
+     * @param $params * URI parameters
      */
     public function route($params)
     {
@@ -42,20 +50,17 @@ class Router
         $controllerName = $this->transformViewNameToControllerName($viewName);
 
         // This sets which Controller will be called if no path is given
-        if (empty($controllerName))
+        if (empty($controllerName)) {
             $controllerName = "EventOverview";
+        }
 
         $controllerClassName = $controllerName . "Controller";
 
         // See if the called controller exists in the controllers folder
-        if (file_exists("controllers/{$controllerClassName}.php"))
-        {
-            $className = "\\controllers\\"."$controllerClassName";
-            $controller = new $className;
-
-        }
-        else
-        {
+        if (file_exists("controllers/{$controllerClassName}.php")) {
+            $className = "\\controllers\\" . "$controllerClassName";
+            $controller = new $className();
+        } else {
             // If not, use the NotFoundController
             $controller = new NotFoundController();
             $viewName = "not-found";
