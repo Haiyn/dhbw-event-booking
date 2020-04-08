@@ -24,8 +24,8 @@ EMAIL_FROM_NAME         = "DHBW Event Booking"
 
 ; Use SMTP
 EMAIL_IS_SMTP           = "true"
-EMAIL_SMTP_HOST         = "0.0.0.0"
-EMAIL_SMTP_PORT         = "25"
+EMAIL_SMTP_HOST         = "127.0.0.1"
+EMAIL_SMTP_PORT         = "2525"
 
 ; Authorization for SMTP settings
 ; EMAIL_IS_SMTP must be true

@@ -34,9 +34,11 @@ services:
     container_name: smtp-server
     image: namshi/smtp:latest
     ports:
-      - 25:25
+    - "2525:25"
     networks:
       development:
+    volumes:
+    - /usr/bin/telnet:/usr/bin/telnet
     environment:
       MAILNAME: "dhbw-event.com"
 
