@@ -133,8 +133,9 @@ class RegisterController extends Controller
         }
     }
 
-    /*
+    /**
      * Generates a confirmation link for the registered user and sends it depending on ini settings
+     * @param $email
      */
     private function generateEmailConfirmation($email)
     {
@@ -148,17 +149,14 @@ class RegisterController extends Controller
         }
 
         // Check if Email Sending is enabled
-        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN))
-        {
+        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             // Send a verification email to the email address
             $emailService = EmailService::getInstance();
             $url = Utility::getIniFile()['URL'];
             $emailService->sendEmail($email,
                 "Confirm your email address",
                 "Follow <a href='{$url}/confirm?hash={$hash}'>this link</a> to confirm your email address.");
-        }
-        else
-        {
+        } else {
             // Display the verification link in the browser for testing
             $this->setSuccess("You have been successfully registered to the website! 
                     Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");

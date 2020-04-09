@@ -76,12 +76,10 @@ class EmailService extends InternalComponent
         $ini = Utility::getIniFile(true)['Email'];
 
         $mail = new PHPMailer(true);
-        $mail->SMTPDebug = 2;
         try {
             // Set SMPT settings if ini setting true
             if(filter_var($ini['EMAIL_IS_SMTP'], FILTER_VALIDATE_BOOLEAN)) {
                 $mail->isSMTP();
-                SMTP::DEBUG_CONNECTION;
                 $mail->Host = $ini['EMAIL_SMTP_HOST'];
                 $mail->Port = $ini['EMAIL_SMTP_PORT'];
 
@@ -90,12 +88,6 @@ class EmailService extends InternalComponent
                     $mail->SMTPAuth = true;
                     $mail->Username = $ini['EMAIL_USERNAME'];
                     $mail->Password = $ini['EMAIL_PASSWORD'];
-                }
-
-                // Set encryption settings if ini setting true
-                if (filter_var($ini['EMAIL_IS_ENCRYPTED'], FILTER_VALIDATE_BOOLEAN)) {
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;         // Enable TLS encryption
-                    $mail->Port = 465;
                 }
             }
 
@@ -136,9 +128,9 @@ class EmailService extends InternalComponent
 
         // This would be better in a template phtml file
         // but since the email contents are very basic, this is not really necessary
-        $header = "<p>Dear {$name},</p><br/><br/><p>";
-        $footer = "</p><br/><br/><p>Your DHBW Event Booking Team</p>
-            <p style='font-size: 0.6rem'>This E-Mail was automatically generated. Please don't reply to it!</p>";
+        $header = "<p>Dear {$name},</p><br/><p>";
+        $footer = "</p><br/><p>Your DHBW Event Booking Team</p>
+            <p style='font-size: 0.8rem'>This E-Mail was automatically generated. Please don't reply to it!</p>";
 
         return $header . $message . $footer;
     }
