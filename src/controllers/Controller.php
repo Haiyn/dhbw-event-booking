@@ -2,15 +2,20 @@
 
 namespace controllers;
 
+use components\authorization\AuthorizationService;
 use stdClass;
 
 abstract class Controller
 {
     public $viewName;
     protected $view;
+    protected $session;
 
-    function __construct() {
+    public function __construct()
+    {
         $this->view = new stdClass();
+        $this->session = new AuthorizationService();
+        $this->session->resumeSession();
     }
 
     abstract public function render($params);
@@ -18,7 +23,7 @@ abstract class Controller
     /*
      * Redirects to the given url. Makes use of the router.
      */
-    protected final function redirect($url)
+    final protected function redirect($url)
     {
         header("Location: $url");
         header("Connection: close");
@@ -28,10 +33,10 @@ abstract class Controller
     /*
      * Opens the phtml file in /views/[viewname]/[viewname].phtml
      */
-    public final function showView()
+    final public function showView()
     {
         extract((array)$this->view);
-        require dirname(__DIR__)."/views/{$this->viewName}/{$this->viewName}.phtml";
+        require dirname(__DIR__) . "/views/{$this->viewName}/{$this->viewName}.phtml";
     }
 
     /*
@@ -40,21 +45,33 @@ abstract class Controller
      *
      * e.g. in register, the _setError method creates $_SESSION['REGISTER_ERROR'] and reroutes to /register?error
      */
-    protected function setError($errorMessage)
+    protected function setError($errorMessage, $params = [])
     {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_ERROR"] = $errorMessage;
-        $this->redirect("/{$this->viewName}?error");
+        $redirect = "/{$this->viewName}?error";
+        foreach ($params as $key => $value) {
+            $redirect = $redirect . "&" . $key . (!empty($value) ? "=" . $value : "");
+        }
+        $this->redirect($redirect);
     }
 
-    protected function setWarning($warningMessage) {
+    protected function setWarning($warningMessage, $params = [])
+    {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_WARNING"] = $warningMessage;
-        $this->redirect("/{$this->viewName}?warning");
+        $redirect = "/{$this->viewName}?warning";
+        foreach ($params as $key => $value) {
+            $redirect = $redirect . "&" . $key . (!empty($value) ? "=" . $value : "");
+        }
+        $this->redirect($redirect);
     }
 
-    protected function setSuccess($successMessage) {
+    protected function setSuccess($successMessage, $params = [])
+    {
         $_SESSION[str_replace("-", "_", strtoupper($this->viewName)) . "_SUCCESS"] = $successMessage;
-        $this->redirect("/{$this->viewName}?success");
+        $redirect = "/{$this->viewName}?success";
+        foreach ($params as $key => $value) {
+            $redirect = $redirect . "&" . $key . (!empty($value) ? "=" . $value : "");
+        }
+        $this->redirect($redirect);
     }
-
-
 }
