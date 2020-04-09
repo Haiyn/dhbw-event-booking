@@ -1,25 +1,37 @@
-<!DOCTYPE html>
+<!--<!DOCTYPE html>
 <html>
 <head>
-    <title><?php if (isset($pageTitle)) echo($pageTitle) ?></title>
+    <title><?php /*if (isset($pageTitle)) echo($pageTitle) */?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
     <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+</head>-->
+
+<head>
+    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/head.phtml" ?>
 </head>
-
 <body>
-
+<?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-4">
             <p>profile</p>
             <div class="card" style="width: 18rem;">
                 <div class="card-header">
-                    <img class="card-img-top" src="" alt="User icon">
-                    <h4>username</h4>
+                    <img class="card-img-top" src="/resources/icons/user.ico" alt="User icon">
+                    <h4 class="text-center">username</h4>
                 </div>
                 <div class="card-body">
+                    <p>first name</p>
+                    <p>last name</p>
+                    <p>email</p>
+                    <p>first name</p>
+                    <p>last name</p>
+                    <p>email</p>
+                    <p>first name</p>
+                    <p>last name</p>
+                    <p>email</p>
                     <p>first name</p>
                     <p>last name</p>
                     <p>email</p>
@@ -53,9 +65,13 @@
         add user first name
         add user last name
         add user contact (email)
+        add button for contact
+        add option to edit info
         -->
     </div>
 
 </div>
+
+<?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
 </body>
-</html>
+<!--</html>-->
