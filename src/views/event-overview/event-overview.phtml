@@ -1,12 +1,8 @@
 <head>
-    <title>Event Overview</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8">
-    <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="/views/event-overview/event-overview.js"></script>
-    <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/head.phtml" ?>
 </head>
 <body>
+    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
     <div class="container">
         <h1>Event Overview</h1><br>
         <a id="event-overview-create-button" href="/event-create" class="btn btn-primary mb-5">Create Event</a>
@@ -55,4 +51,5 @@
             }
         ?>
     </div>
+    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
 </body>

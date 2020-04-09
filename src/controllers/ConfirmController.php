@@ -8,7 +8,6 @@ class ConfirmController extends Controller
 {
     public function render($parameters)
     {
-        session_start();
         if (isset($_GET['hash'])) {
             // Update the verified field in the database
             $user = User::getInstance();
