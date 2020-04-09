@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?php if( isset($pageTitle)) echo($pageTitle)?></title>
+    <title><?php if (isset($pageTitle)) echo($pageTitle) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -11,8 +11,49 @@
 <body>
 
 <div class="container-fluid">
-    <div>
-        <p>test</p>
+    <div class="row">
+        <div class="col-sm-4">
+            <p>profile</p>
+            <div class="card" style="width: 18rem;">
+                <div class="card-header">
+                    <img class="card-img-top" src="" alt="User icon">
+                    <h4>username</h4>
+                </div>
+                <div class="card-body">
+                    <p>first name</p>
+                    <p>last name</p>
+                    <p>email</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-sm-8">
+            <p>events</p>
+            <div class="card">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link created" href="#">Created</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link visited" href="#">Visited</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <p>Events the user has created</p>
+                </div>
+            </div>
+        </div>
+
+        <!--TODO
+        add user icon
+        add username under icon in center
+        add user first name
+        add user last name
+        add user contact (email)
+        -->
     </div>
 
 </div>
