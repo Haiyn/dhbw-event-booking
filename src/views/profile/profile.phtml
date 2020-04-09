@@ -1,13 +1,3 @@
-<!--<!DOCTYPE html>
-<html>
-<head>
-    <title><?php /*if (isset($pageTitle)) echo($pageTitle) */?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8">
-    <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
-    <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-</head>-->
-
 <head>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/head.phtml" ?>
 </head>
@@ -16,34 +6,36 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-4">
-            <p>profile</p>
             <div class="card" style="width: 18rem;">
-                <div class="card-header">
-                    <img class="card-img-top" src="/resources/icons/user.ico" alt="User icon">
-                    <h4 class="text-center">username</h4>
+                <div class="card-header text-center">
+                    <img class="rounded-circle" src="/resources/icons/user.ico" alt="User icon" height="150px">
+                    <!--TODO insert field so username can be displayed-->
+                    <h4>username</h4>
+                    <div class="button-container">
+
+                        <?php if (isset($_SESSION["USER_ID"])) { ?>
+                            <button class="btn btn-outline-primary" type="button"><a href="/edit-profile">Edit
+                                    profile</a></button>
+                        <?php } else { ?>
+                            <button class="btn btn-outline-primary" type="button"><a href="#">Message</a></button>
+                        <?php } ?>
+                    </div>
                 </div>
+
+                <!--TODO insert field so data can be displayed-->
                 <div class="card-body">
-                    <p>first name</p>
-                    <p>last name</p>
-                    <p>email</p>
-                    <p>first name</p>
-                    <p>last name</p>
-                    <p>email</p>
-                    <p>first name</p>
-                    <p>last name</p>
-                    <p>email</p>
                     <p>first name</p>
                     <p>last name</p>
                     <p>email</p>
                 </div>
             </div>
-
         </div>
 
         <div class="col-sm-8">
-            <p>events</p>
             <div class="card">
                 <div class="card-header">
+
+                    <!--TODO insert javascript to toggle between links + insert fields so events can be displayed-->
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
                             <a class="nav-link created" href="#">Created</a>
@@ -58,20 +50,8 @@
                 </div>
             </div>
         </div>
-
-        <!--TODO
-        add user icon
-        add username under icon in center
-        add user first name
-        add user last name
-        add user contact (email)
-        add button for contact
-        add option to edit info
-        -->
     </div>
-
 </div>
 
 <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
 </body>
-<!--</html>-->
