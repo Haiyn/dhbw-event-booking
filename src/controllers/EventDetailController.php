@@ -268,4 +268,67 @@ class EventDetailController extends Controller
             to view the event."
         );
     }
+
+    /**
+     * Validate the data when the user tries to attend to the event
+     * @param $event * This event
+     * @param $attendees * Current attendees of this event
+     * @param $attendee_id * Id of the attendee
+     */
+    private function validateAttendData($event, $attendees, $attendee_id)
+    {
+        // Check if current user is the same as the user to be added
+        if ($attendee_id != $_SESSION['USER_ID']) {
+            $this->setError(
+                "You cannot add others to the event!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if event is invite only
+        if ($event->visibility != Visibility::$PUBLIC) {
+            $this->setError(
+                "Cannot attend to this event, because it is invite only!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if event is full
+        if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
+            $this->setError(
+                "Cannot attend to this event, because it is full!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if user is already attending to this event
+        foreach ($attendees as $attendee) {
+            if ($attendee->user_id == $attendee_id) {
+                $this->setError(
+                    "Cannot attend to this event, because you are already attending to it!",
+                    ["event_id" => $_GET['event_id']]
+                );
+            }
+        }
+    }
+
+    /**
+     * Validate the data when the user tries to attend to the event
+     * @param $attendees * Current attendees of this event
+     * @param $attendee_id * Id of the attendee
+     */
+    private function validateUnAttendData($attendees, $attendee_id)
+    {
+        // Check if user is already attending to this event
+        $attending = false;
+        foreach ($attendees as $attendee) {
+            if ($attendee->user_id == $attendee_id) {
+                $attending = true;
+                break;
+            }
+        }
+        if (!$attending) {
+            $this->setError(
+                "Cannot be removed from the event, because you are not attending to it!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+    }
 }
