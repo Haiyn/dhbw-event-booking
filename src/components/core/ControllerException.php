@@ -12,6 +12,10 @@ class ControllerException extends \Exception
         parent::__construct($message);
     }
 
+    /**
+     * Return array of params. Needed to pass arguments to redirect url if needed
+     * @return array * Array of params
+     */
     public function getParams()
     {
         return $this->params;
