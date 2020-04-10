@@ -6,6 +6,7 @@ use components\core\Utility;
 use components\email\EmailService;
 use models\Booking;
 use models\enums\Status;
+use models\enums\Visibility;
 use models\Event;
 use models\User;
 
@@ -22,6 +23,12 @@ class EventDetailController extends Controller
 
             $booking = Booking::getInstance();
             $attendees = $booking->getBookingsByEventId($eventById->event_id);
+
+            foreach ($attendees as $attendee) {
+                if ($attendee->user_id == $_SESSION['USER_ID']) {
+                    $this->view->status = $attendee->status;
+                }
+            }
 
             $this->view->attendees = $attendees;
             $this->view->event = $eventById;
@@ -46,6 +53,24 @@ class EventDetailController extends Controller
                 $this->notifyAttendeesUpdated($attendees, $event_data);
 
                 $this->setSuccess("Event successfully updated.", ["event_id" => $_GET['event_id']]);
+            }
+
+            if (isset($_GET['book_event'])) {
+                $this->attendEvent($eventById, $attendees, $_SESSION['USER_ID']);
+
+                $this->setSuccess(
+                    "You have been successfully added to this event.",
+                    ["event_id" => $_GET['event_id']]
+                );
+            }
+
+            if (isset($_GET['unbook_event'])) {
+                $this->unattendEvent($eventById, $attendees, $_SESSION['USER_ID']);
+
+                $this->setSuccess(
+                    "You have been successfully removed from this event.",
+                    ["event_id" => $_GET['event_id']]
+                );
             }
         }
 
@@ -219,7 +244,14 @@ class EventDetailController extends Controller
                     if (isset($_GET['delete_attendee'])) {
                         $booking = Booking::getInstance();
                         $booking->deleteBookingByEventIdAndUserId($_GET['event_id'], $_GET['delete_attendee']);
-                        $this->notifyAttendeeRemoved($event, $_GET['delete_attendee']);
+                        $initFile = Utility::getIniFile();
+                        $this->notifyAttendee(
+                            $_GET['delete_attendee'],
+                            "You have been removed from an event",
+                            "You have been removed from the event with the title '{$event->title}'.<br/>
+                            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
+                            to view the event."
+                        );
                     }
                 }
             }
@@ -228,10 +260,11 @@ class EventDetailController extends Controller
 
     /**
      * Notify attendee that he has been removed from the event
-     * @param $event * This event
      * @param $attendee_id * Id of attendee to be notified
+     * @param $subject * Subject of the email
+     * @param $message * Message of the email
      */
-    private function notifyAttendeeRemoved($event, $attendee_id)
+    private function notifyAttendee($attendee_id, $subject, $message)
     {
         // Check if Email Sending is enabled
         $initFile = Utility::getIniFile();
@@ -240,13 +273,7 @@ class EventDetailController extends Controller
         if (filter_var($initFile['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             // Send the notification email to the email address
             $emailService = EmailService::getInstance();
-            $emailService->sendEmail(
-                $attendee->email,
-                "You have been removed from an event",
-                "You have been removed from the event with the title '{$event->title}'.<br/>
-                Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
-                to view the event."
-            );
+            $emailService->sendEmail($attendee->email, $subject, $message);
         } else {
             $this->setError(
                 "An internal error occurred, notifications could not be sent!",
@@ -286,6 +313,114 @@ class EventDetailController extends Controller
                     ["event_id" => $_GET['event_id']]
                 );
             }
+        }
+    }
+
+    /**
+     * Create a booking and add the attendee to the event
+     * @param $event * This event
+     * @param $attendees * Current attendees of this event
+     * @param $attendee_id * Id of attendee to be added
+     */
+    private function attendEvent($event, $attendees, $attendee_id)
+    {
+        $this->validateAttendData($event, $attendees, $attendee_id);
+
+        $booking = Booking::getInstance();
+        $booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
+            "status" => Status::$ACCEPTED]);
+        $initFile = Utility::getIniFile();
+        $this->notifyAttendee(
+            $attendee_id,
+            "You have been added to an event",
+            "You have been added to the event with the title '{$event->title}'.<br/>
+            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
+            to view the event."
+        );
+    }
+
+    /**
+     * Delete a booking and remove the attendee from the event
+     * @param $event * This event
+     * @param $attendees * Current attendees of this event
+     * @param $attendee_id * Id of attendee to be removed
+     */
+    private function unattendEvent($event, $attendees, $attendee_id)
+    {
+        $this->validateUnattendData($attendees, $attendee_id);
+
+        $booking = Booking::getInstance();
+        $booking->deleteBookingByEventIdAndUserId($event->event_id, $attendee_id);
+        $initFile = Utility::getIniFile();
+        $this->notifyAttendee(
+            $attendee_id,
+            "You have been removed from an event",
+            "You have been removed from the event with the title '{$event->title}'.<br/>
+            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
+            to view the event."
+        );
+    }
+
+    /**
+     * Validate the data when the user tries to attend to the event
+     * @param $event * This event
+     * @param $attendees * Current attendees of this event
+     * @param $attendee_id * Id of the attendee
+     */
+    private function validateAttendData($event, $attendees, $attendee_id)
+    {
+        // Check if current user is the same as the user to be added
+        if ($attendee_id != $_SESSION['USER_ID']) {
+            $this->setError(
+                "You cannot add others to the event!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if event is invite only
+        if ($event->visibility != Visibility::$PUBLIC) {
+            $this->setError(
+                "Cannot attend to this event, because it is invite only!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if event is full
+        if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
+            $this->setError(
+                "Cannot attend to this event, because it is full!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if user is already attending to this event
+        foreach ($attendees as $attendee) {
+            if ($attendee->user_id == $attendee_id) {
+                $this->setError(
+                    "Cannot attend to this event, because you are already attending to it!",
+                    ["event_id" => $_GET['event_id']]
+                );
+            }
+        }
+    }
+
+    /**
+     * Validate the data when the user tries to attend to the event
+     * @param $attendees * Current attendees of this event
+     * @param $attendee_id * Id of the attendee
+     */
+    private function validateUnAttendData($attendees, $attendee_id)
+    {
+        // Check if user is already attending to this event
+        $attending = false;
+        foreach ($attendees as $attendee) {
+            if ($attendee->user_id == $attendee_id) {
+                $attending = true;
+                break;
+            }
+        }
+        if (!$attending) {
+            $this->setError(
+                "Cannot be removed from the event, because you are not attending to it!",
+                ["event_id" => $_GET['event_id']]
+            );
         }
     }
 }
