@@ -11,30 +11,27 @@ This project contains a website created with HTML, JavaScript and PHP. It is hos
 
 ## Development Setup
 
-### Dependencies
+Please follow the following steps to get the project up and running.
 
-The projects dependencies are managed with composer. The composer.json file defines the used dependencies. If a dependency is referenced in the source folder (e.g. CSS or JavaScript files), the needed files of the composer dependency package needs to be copied from ```/vendor/<package>``` to ```/public/assets/<package>```.
+### 1. Dependencies
 
-To achieve this, every package is remove and copied to the src folder upon running ```composer install```. This is done via a script in ```composer.json```:
-```
-"scripts": {
-  "post-install-cmd": [
-    "rm -rf src/resources/assets/<package>",
-    "cp -R vendor/<package> src/resouces/assets/<package>"
-  ]
-}
-```
+![Composer Version][composer-image] needed
 
-Thus, when running the command
+The projects dependencies are managed with composer. The composer.json file defines the used dependencies. All needed dependency files are copied from `/vendor` to
+`/src/resources/assets` in order for them to be available in the webserver container.
+
+To automatically make all dependencies available on the webserver, run
 
 ```
-composer install
+composer update && composer install
 ```
-all dependencies will be available to reference in ```src/resouces/assets/```.
 
-### Docker
 
-A Dockerfile and docker-compose is available for running the apache server and PostgreSQL database in a docker container. In order to set this up, the following two steps are needed:
+### 2. Docker
+
+![Docker Version][docker-image] needed
+
+A Dockerfile and docker-compose is available for running the apache server, SMTP server and PostgreSQL database in a docker container. In order to set this up, the following two steps are needed:
 1. Building the image
 ```
 docker build -t event-booking:2020 .
@@ -44,6 +41,13 @@ docker build -t event-booking:2020 .
 ```
 docker-compose up -d
 ```
+
+### 3. Configuration
+
+The configuration for the website can be found in /src/config.ini.php. **The configuration file is working with the existing project as is.**
+However, if you'd like to make adjustments to any of the settings, it is the place to go.
+
+For example, the email (and PHPMailer) function can be turned on and off there.
 
 ## PHPStorm
 
@@ -70,7 +74,7 @@ Debugging via xdebug, all required packages are installed in the Dockerfile.
 
 Installation:
 1. Create "PHP Remote Debug" configuration
-2. Install browser extension https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_content=2019.3&utm_medium=link&utm_source=product
+2. Install [browser extension](https://www.jetbrains.com/help/phpstorm/2019.3/browser-debugging-extensions.html?utm_campaign=PS&utm_content=2019.3&utm_medium=link&utm_source=product)
 3. Run new created debug configuration
 4. Open installed browser extension and enable debug
 
@@ -83,7 +87,7 @@ Installation:
     * Event Create
     * Event Overview
     * Event Detail View
-    
+
 * 0.2
     * t.b.a.
 * 0.3

@@ -2,9 +2,10 @@
 
 namespace components\core;
 
+use components\InternalComponent;
 use controllers\NotFoundController;
 
-class Router
+class Router extends InternalComponent
 {
     /**
      * Transforms the URL into a Controller name
