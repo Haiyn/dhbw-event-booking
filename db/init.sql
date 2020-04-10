@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     event_id UUID  NOT NULL REFERENCES events (event_id),
     user_id UUID  NOT NULL REFERENCES users (user_id),
     status status NOT NULL,
-    accepted_date TIMESTAMP NOT NULL DEFAULT NOW()
+    accepted_date TIMESTAMP DEFAULT NOW()
 );
 CREATE TABLE IF NOT EXISTS sessions (
     session_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
