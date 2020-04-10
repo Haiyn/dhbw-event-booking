@@ -23,6 +23,12 @@
             </div>
         <?php endif ?>
 
+        <?php if(isset($isWarning) && $isWarning): ?>
+            <div class="alert alert-warning" role="alert">
+                <p class="text-warning"><?=$_SESSION["EVENT_DETAIL_WARNING"]?></p>
+            </div>
+        <?php endif ?>
+
         <?php if(isset($isSuccess) && $isSuccess): ?>
             <div class="alert alert-success" role="alert">
                 <p class="text-success"><?=$_SESSION["EVENT_DETAIL_SUCCESS"]?></p>

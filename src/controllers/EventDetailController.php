@@ -2,11 +2,12 @@
 
 namespace controllers;
 
+use components\core\ControllerException;
 use components\core\Utility;
 use components\email\EmailService;
+use components\validators\EventValidator;
 use models\Booking;
 use models\enums\Status;
-use models\enums\Visibility;
 use models\Event;
 use models\User;
 
@@ -84,116 +85,8 @@ class EventDetailController extends Controller
         }
 
         $this->view->isSuccess = isset($_GET["success"]);
+        $this->view->isWarning = isset($_GET["warning"]);
         $this->view->isError = isset($_GET["error"]);
-    }
-
-    /**
-     * Validate the data of the event, throws an error if something is wrong
-     * @param $new_data * New data of the event
-     * @param $old_data * Old data of the event
-     */
-    private function validateData($new_data, $old_data)
-    {
-        // Double check if all required fields have been set
-        if (empty($new_data["title"]) || empty($new_data["description"]) || empty($new_data["date"])) {
-            $this->setError(
-                "Please fill out all required fields.",
-                ["event_id" => $_GET['event_id'], "edit" => ""]
-            );
-        }
-
-        // Check if maxlength is exceeded
-        if ($new_data['title'] !== $old_data->title && strlen($new_data["title"]) > 32) {
-            $this->setError(
-                "Length of title cannot exceed max length of 32.",
-                ["event_id" => $_GET['event_id'], "edit" => ""]
-            );
-        }
-        if ($new_data['description'] !== $old_data->description && strlen($new_data["description"]) > 256) {
-            $this->setError(
-                "Length of description cannot exceed max length of 256.",
-                ["event_id" => $_GET['event_id'], "edit" => ""]
-            );
-        }
-        if ($new_data['location'] !== $old_data->location && strlen($new_data["location"]) > 32) {
-            $this->setError(
-                "Length of location cannot exceed max length of 32.",
-                ["event_id" => $_GET['event_id'], "edit" => ""]
-            );
-        }
-
-        if ($new_data['time'] !== $old_data->time) {
-            // Check if time is valid
-            if (!empty($new_data['time']) && !preg_match("/^([0-1][0-9]|[2][0-3]):([0-5][0-9])$/", $new_data['time'])) {
-                $this->setError("Please enter a valid time.", ["event_id" => $_GET['event_id'], "edit" => ""]);
-            }
-
-            // Check if date/ time is in the past
-            if ($new_data['date'] !== $old_data->date) {
-                if (strtotime($new_data["date"]) < strtotime(date("Y-m-d"))) {
-                    $this->setError(
-                        "Please change the date to one not in the past.",
-                        ["event_id" => $_GET['event_id'], "edit" => ""]
-                    );
-                } elseif (
-                    strtotime($new_data["date"]) === strtotime(date("Y-m-d")) && !empty($new_data["time"]) &&
-                    strtotime($new_data["time"]) < strtotime(date("H:i:s"))
-                ) {
-                    $this->setError(
-                        "Please change the time to one not in the past.",
-                        ["event_id" => $_GET['event_id'], "edit" => ""]
-                    );
-                }
-            }
-        }
-
-        if ($new_data['maximum_attendees'] !== $old_data->maximum_attendees) {
-            // Check if maximum attendees is an valid int
-            if (
-                (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') &&
-                filter_var($new_data['maximum_attendees'], FILTER_VALIDATE_INT)
-            ) {
-                // Check if maximum attendees is bigger than 0
-                if ((int) $new_data['maximum_attendees'] < 1) {
-                    $this->setError(
-                        "Please enter a number of maximum attendees that is at least 1!",
-                        ["event_id" => $_GET['event_id'], "edit" => ""]
-                    );
-                }
-            } elseif (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') {
-                $this->setError(
-                    "Please enter a valid number of maximum attendees!",
-                    ["event_id" => $_GET['event_id'], "edit" => ""]
-                );
-            }
-
-            if (!empty($new_data['maximum_attendees']) || $new_data['maximum_attendees'] === '0') {
-                // Check if new number of maximum attendees is lower than the current amount of maximum attendees
-                $booking = Booking::getInstance();
-                $bookings = $booking->getBookingsByEventId($old_data->event_id);
-                if (sizeof($bookings) > $new_data['maximum_attendees']) {
-                    $this->setError(
-                        "New number of maximum attendees cannot be lower than the current number of attendees!",
-                        ["event_id" => $_GET['event_id'], "edit" => ""]
-                    );
-                }
-            }
-        }
-
-        if ($new_data['price'] !== $old_data->price) {
-            // Check if price is a valid float
-            if (!empty($new_data['price']) && !filter_var($new_data['price'], FILTER_VALIDATE_FLOAT)) {
-                $this->setError("Please enter a valid price!", "&event_id={$_GET['event_id']}&edit");
-            }
-
-            // Check if price is 0 or bigger
-            if (!empty($new_data['price']) && (int) $new_data['price'] < 0) {
-                $this->setError(
-                    "Please enter a price that is at least 0!",
-                    ["event_id" => $_GET['event_id'], "edit" => ""]
-                );
-            }
-        }
     }
 
     /**
@@ -209,7 +102,12 @@ class EventDetailController extends Controller
             $data["creator_id"] = $user->getUserById($_SESSION["USER_ID"]);
         }
 
-        $this->validateData($new_data, $old_data);
+        $event_validator = EventValidator::getInstance();
+        try {
+            $event_validator->validateEventEditData($new_data, $old_data);
+        } catch (ControllerException $exception) {
+            $this->setError($exception->getMessage(), $exception->getParams());
+        }
 
         $event = Event::getInstance();
         $event->updateEvent($new_data);
@@ -275,8 +173,8 @@ class EventDetailController extends Controller
             $emailService = EmailService::getInstance();
             $emailService->sendEmail($attendee->email, $subject, $message);
         } else {
-            $this->setError(
-                "An internal error occurred, notifications could not be sent!",
+            $this->setWarning(
+                "Attendee successfully removed. But emails are disabled. Attendee was not notified of the change.",
                 ["event_id" => $_GET['event_id']]
             );
         }
@@ -308,8 +206,8 @@ class EventDetailController extends Controller
                     }
                 }
             } else {
-                $this->setError(
-                    "An internal error occurred, notifications could not be sent!",
+                $this->setWarning(
+                    "Event successfully updated. But emails are disabled. Users were not notified of the change.",
                     ["event_id" => $_GET['event_id']]
                 );
             }
@@ -324,7 +222,12 @@ class EventDetailController extends Controller
      */
     private function attendEvent($event, $attendees, $attendee_id)
     {
-        $this->validateAttendData($event, $attendees, $attendee_id);
+        $event_validator = EventValidator::getInstance();
+        try {
+            $event_validator->validateAttendData($event, $attendees, $attendee_id);
+        } catch (ControllerException $exception) {
+            $this->setError($exception->getMessage(), $exception->getParams());
+        }
 
         $booking = Booking::getInstance();
         $booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
@@ -347,7 +250,12 @@ class EventDetailController extends Controller
      */
     private function unattendEvent($event, $attendees, $attendee_id)
     {
-        $this->validateUnattendData($attendees, $attendee_id);
+        $event_validator = EventValidator::getInstance();
+        try {
+            $event_validator->validateUnattendData($attendees, $attendee_id);
+        } catch (ControllerException $exception) {
+            $this->setError($exception->getMessage(), $exception->getParams());
+        }
 
         $booking = Booking::getInstance();
         $booking->deleteBookingByEventIdAndUserId($event->event_id, $attendee_id);
@@ -359,68 +267,5 @@ class EventDetailController extends Controller
             Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
             to view the event."
         );
-    }
-
-    /**
-     * Validate the data when the user tries to attend to the event
-     * @param $event * This event
-     * @param $attendees * Current attendees of this event
-     * @param $attendee_id * Id of the attendee
-     */
-    private function validateAttendData($event, $attendees, $attendee_id)
-    {
-        // Check if current user is the same as the user to be added
-        if ($attendee_id != $_SESSION['USER_ID']) {
-            $this->setError(
-                "You cannot add others to the event!",
-                ["event_id" => $_GET['event_id']]
-            );
-        }
-        // Check if event is invite only
-        if ($event->visibility != Visibility::$PUBLIC) {
-            $this->setError(
-                "Cannot attend to this event, because it is invite only!",
-                ["event_id" => $_GET['event_id']]
-            );
-        }
-        // Check if event is full
-        if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
-            $this->setError(
-                "Cannot attend to this event, because it is full!",
-                ["event_id" => $_GET['event_id']]
-            );
-        }
-        // Check if user is already attending to this event
-        foreach ($attendees as $attendee) {
-            if ($attendee->user_id == $attendee_id) {
-                $this->setError(
-                    "Cannot attend to this event, because you are already attending to it!",
-                    ["event_id" => $_GET['event_id']]
-                );
-            }
-        }
-    }
-
-    /**
-     * Validate the data when the user tries to attend to the event
-     * @param $attendees * Current attendees of this event
-     * @param $attendee_id * Id of the attendee
-     */
-    private function validateUnAttendData($attendees, $attendee_id)
-    {
-        // Check if user is already attending to this event
-        $attending = false;
-        foreach ($attendees as $attendee) {
-            if ($attendee->user_id == $attendee_id) {
-                $attending = true;
-                break;
-            }
-        }
-        if (!$attending) {
-            $this->setError(
-                "Cannot be removed from the event, because you are not attending to it!",
-                ["event_id" => $_GET['event_id']]
-            );
-        }
     }
 }
