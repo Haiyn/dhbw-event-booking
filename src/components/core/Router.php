@@ -53,6 +53,7 @@ class Router extends InternalComponent
         // This sets which Controller will be called if no path is given
         if (empty($controllerName)) {
             $controllerName = "EventOverview";
+            $viewName = "event-overview";
         }
 
         $controllerClassName = $controllerName . "Controller";

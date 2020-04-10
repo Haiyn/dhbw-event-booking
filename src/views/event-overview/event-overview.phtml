@@ -12,8 +12,7 @@
                 foreach ($events as $value) {
                     if ($counter === 0) { ?>
                         <div class="row">
-                    <?php }
-                    if ($counter === 2) {
+                    <?php } if ($counter === 2) {
                         $counter = 0; ?>
                         </div>
                         <div class="row">
@@ -21,28 +20,28 @@
                     <div class="col">
                         <div class="card m-2" style="width: 100%;">
                             <div class="card-body">
-                                <h5 class="card-title"><?php echo $value->title ?></h5>
-                                <p class="card-text"><?php echo $value->description ?></p>
+                                <h5 class="card-title"><?=$value->title?></h5>
+                                <p class="card-text"><?=$value->description?></p>
                                 <ul class="list-group list-group-flush mb-3">
                                     <?php if (!empty($value->location)): ?>
-                                        <li class="list-group-item">Location: <?php echo $value->location; ?></li>
+                                        <li class="list-group-item">Location: <?=$value->location?></li>
                                     <?php else: ?>
                                         <li class="list-group-item">Location: not specified</li>
                                     <?php endif; ?>
-                                    <li class="list-group-item">Date: <?php echo $value->date; ?></li>
+                                    <li class="list-group-item">Date: <?=$value->date?></li>
                                     <?php if (!empty($value->time)): ?>
-                                        <li class="list-group-item">Time: <?php echo $value->time; ?></li>
+                                        <li class="list-group-item">Time: <?=$value->time?></li>
                                     <?php else: ?>
                                         <li class="list-group-item">Time: not specified</li>
                                     <?php endif; ?>
                                     <?php if (!empty($value->price)): ?>
-                                        <li class="list-group-item">Price: <?php echo $value->price; ?></li>
+                                        <li class="list-group-item">Price: <?=$value->price?></li>
                                     <?php else: ?>
                                         <li class="list-group-item">Price: free</li>
                                     <?php endif; ?>
                                 </ul>
-                                <a href="/event-detail?event_id=<?php echo $value->event_id; ?>" class="btn btn-primary">Details</a>
-                                <a href="#" class="btn btn-primary">Book Event</a>
+                                <a href="/event-detail?event_id=<?=$value->event_id?>" class="btn btn-primary">Details</a>
+                                <a href="/event-detail?event_id=<?=$value->event_id?>&book_event" class="btn btn-primary">Book Event</a>
                             </div>
                         </div>
                     </div>
