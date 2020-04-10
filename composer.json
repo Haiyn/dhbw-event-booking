@@ -36,7 +36,6 @@
       "mkdir src/resources/assets/font-awesome/webfonts",
       "cp -R vendor/components/font-awesome/webfonts/**.* src/resources/assets/font-awesome/webfonts",
       "cp vendor/components/jqueryui/themes/base/jquery-ui.css src/resources/assets/jqueryui/jquery-ui.css",
-      "cp vendor/components/jqueryui/themes/base/jquery-ui.css src/resources/assets/jqueryui/jquery-ui.css",
       "rm -rf src/resources/assets/phpmailer",
       "cp -R vendor/phpmailer/phpmailer/src src/resources/assets/phpmailer"
     ]

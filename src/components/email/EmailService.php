@@ -8,7 +8,6 @@ use Exception;
 use models\User;
 
 use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
 
 class EmailService extends InternalComponent
 {
@@ -61,6 +60,10 @@ class EmailService extends InternalComponent
 
     }
 
+    /**
+     * Uses PHPs native mail() function to send a mail WITHOUT SMTP
+     * @param $mail_data * the data to send
+     */
     private function sendNativeMail($mail_data)
     {
         // Call PHPs mail function with the wrapped message and header array imploded into single string
@@ -70,6 +73,10 @@ class EmailService extends InternalComponent
         }
     }
 
+    /**
+     * Uses PHPMailer to send a mail WITH (optional) SMTP
+     * @param $mail_data
+     */
     private function sendPhpmailerMail($mail_data)
     {
         // Get the email settings from the ini

@@ -55,4 +55,20 @@ class Utility extends InternalComponent
             return false;
         }
     }
+
+
+    /**
+     * Gets the application URL (default: http://localhost:8080)
+     * @return string * URL
+     */
+    public static function getApplicationURL()
+    {
+        // Set http or https
+        $url = isset($_SERVER['HTTPS']) && !filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN)
+            ? 'https'
+            : 'http';
+        // Add the host and port to the protocol
+        $url .= '://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
+        return $url;
+    }
 }

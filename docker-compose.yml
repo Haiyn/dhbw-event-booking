@@ -37,8 +37,6 @@ services:
     - "2525:25"
     networks:
       development:
-    volumes:
-    - /usr/bin/telnet:/usr/bin/telnet
     environment:
       MAILNAME: "dhbw-event.com"
 

@@ -1,6 +1,4 @@
 ; <?php die() ?>
-[Application]
-URL             = "http://localhost:8080"
 
 [Database]
 DB_TYPE         = "pgsql"
