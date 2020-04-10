@@ -147,7 +147,7 @@ class EventDetailController extends Controller
                             $_GET['delete_attendee'],
                             "You have been removed from an event",
                             "You have been removed from the event with the title '{$event->title}'.<br/>
-                            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
+                            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'> link</a>
                             to view the event."
                         );
                     }
@@ -200,7 +200,7 @@ class EventDetailController extends Controller
                             $attendee->email,
                             "An event you are attending has been updated",
                             "The event with title '{$event_data['title']}' has been updated by the creator.<br/>
-                            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event_data['event_id']}'>
+                            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event_data['event_id']}'>
                             link</a> to view the event."
                         );
                     }
@@ -237,7 +237,7 @@ class EventDetailController extends Controller
             $attendee_id,
             "You have been added to an event",
             "You have been added to the event with the title '{$event->title}'.<br/>
-            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
+            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'> link</a>
             to view the event."
         );
     }
@@ -264,7 +264,7 @@ class EventDetailController extends Controller
             $attendee_id,
             "You have been removed from an event",
             "You have been removed from the event with the title '{$event->title}'.<br/>
-            Use this <a href='{$initFile['URL']}/event-detail?event_id={$event->event_id}'> link</a>
+            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'> link</a>
             to view the event."
         );
     }
