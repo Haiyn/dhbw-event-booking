@@ -23,6 +23,12 @@
             </div>
         <?php endif ?>
 
+        <?php if(isset($isWarning) && $isWarning): ?>
+            <div class="alert alert-warning" role="alert">
+                <p class="text-warning"><?=$_SESSION["EVENT_DETAIL_WARNING"]?></p>
+            </div>
+        <?php endif ?>
+
         <?php if(isset($isSuccess) && $isSuccess): ?>
             <div class="alert alert-success" role="alert">
                 <p class="text-success"><?=$_SESSION["EVENT_DETAIL_SUCCESS"]?></p>
@@ -38,52 +44,52 @@
             <div class="form-group">
                 <label for="event-detail-title">Title</label>
                 <input id="event-detail-title" type="text" name="title" required
-                        value="<?php if (isset($event)) echo $event->title; ?>"
+                        value="<?=isset($event) ? $event->title : '' ?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-title">Creator</label>
                 <input id="event-detail-title" type="text" name="creator"
-                       value="<?php if (isset($event)) echo $event->creator; ?>" readonly class="form-control"><br/>
+                       value="<?=isset($event) ? $event->creator : '' ?>" readonly class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-title">Creation Date</label>
                 <input id="event-detail-title" type="text" name="creation_date"
-                       value="<?php if (isset($event)) echo date("Y-m-d H:i:s", strtotime($event->creation_date)); ?>"
+                       value="<?=isset($event) ? date("Y-m-d H:i:s", strtotime($event->creation_date)) : '' ?>"
                        readonly class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-description">Description</label>
                 <textarea id="event-detail-description" name="description" required <?=(isset($edit) && !$edit) ? 'readonly' : ''?>
-                       class="form-control"><?php if (isset($event)) echo $event->description; ?></textarea><br/>
+                       class="form-control"><?=isset($event) ? $event->description : ''?></textarea><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-location">Location</label>
                 <input id="event-detail-location" type="text" name="location"
-                       value="<?php if (isset($event)) echo $event->location; ?>"
+                       value="<?=isset($event) ? $event->location : ''?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-date">Date</label>
                 <input id="event-detail-date" name="date" placeholder="yyyy-mm-dd" required
-                       value="<?php if (isset($event)) echo $event->date; ?>"
+                       value="<?=isset($event) ? $event->date : ''?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control datepicker"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-time">Time</label>
                 <input id="event-detail-time" type="text" name="time"
-                       value="<?php if (isset($event)) echo date("H:i", strtotime($event->time)); ?>"
+                       value="<?=isset($event) ? date("H:i", strtotime($event->time)) : ''?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-visibility">Visibility</label>
                 <input id="event-detail-visibility" type="text" name="visibility"
-                       value="<?php if (isset($event)) echo $event->visibility; ?>" readonly class="form-control"><br/>
+                       value="<?=isset($event) ? $event->visibility : ''?>" readonly class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-maximum-attendees">Maximum Attendees</label>
                 <input id="event-detail-maximum-attendees" type="number" name="maximum_attendees"
-                       value="<?php if (isset($event)) echo $event->maximum_attendees; ?>"
+                       value="<?=isset($event) ? $event->maximum_attendees : ''?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
             </div>
             <div class="form-group">
@@ -104,15 +110,15 @@
                     </thead>
                     <tbody>
                     <?php
-                        if (isset($attendees)) {
+                        if (isset($event) && isset($attendees)) {
                            for ($i = 0; $i < count($attendees); $i++) { ?>
                                <tr>
                                    <th scope="row"><?php echo $i + 1; ?></th>
-                                   <td><?php echo $attendees[$i]->username; ?></td>
-                                   <td><?php echo $attendees[$i]->status; ?></td>
+                                   <td><?=$attendees[$i]->username?></td>
+                                   <td><?=$attendees[$i]->status?></td>
                                    <?php if (isset($edit) && $edit): ?>
                                        <td>
-                                           <a href="/event-detail?event_id=<?php if (isset($event)) echo $event->event_id . '&edit=' . $edit . '&delete_attendee=' . $attendees[$i]->user_id; ?>"
+                                           <a href="/event-detail?event_id=<?=$event->event_id . '&edit=' . $edit . '&delete_attendee=' . $attendees[$i]->user_id?>"
                                               title="Delete" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                        </td>
                                    <?php endif; ?>
@@ -139,9 +145,15 @@
             <?php endif; ?>
         </form>
 
-        <?php if (isset($edit) && !$edit): ?>
+        <?php if (isset($event) && isset($edit) && !$edit): ?>
             <a href="#" class="btn btn-primary mb-3">Contact Creator</a>
-            <a href="#" class="btn btn-primary mb-3">Book Event</a>
+            <?php if (isset($status) && $status == \models\enums\Status::$ACCEPTED): ?>
+                <a href="/event-detail?event_id=<?=$event->event_id . '&unbook_event=' . $_SESSION['USER_ID']?>"
+                   class="btn btn-primary mb-3">Unbook Event</a>
+            <?php else: ?>
+                <a href="/event-detail?event_id=<?=$event->event_id . '&book_event=' . $_SESSION['USER_ID']?>"
+                   class="btn btn-primary mb-3">Book Event</a>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </body>
