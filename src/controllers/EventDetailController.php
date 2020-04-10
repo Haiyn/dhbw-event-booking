@@ -379,14 +379,14 @@ class EventDetailController extends Controller
         // Check if event is invite only
         if ($event->visibility != Visibility::$PUBLIC) {
             $this->setError(
-                "Cannot attend to this event, because it is invite only!",
+                "You cannot attend this event because it is invite only!",
                 ["event_id" => $_GET['event_id']]
             );
         }
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
             $this->setError(
-                "Cannot attend to this event, because it is full!",
+                "You cannot attend this event because it is full!",
                 ["event_id" => $_GET['event_id']]
             );
         }
@@ -394,7 +394,7 @@ class EventDetailController extends Controller
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $attendee_id) {
                 $this->setError(
-                    "Cannot attend to this event, because you are already attending to it!",
+                    "You cannot attend this event because you are already attending it!",
                     ["event_id" => $_GET['event_id']]
                 );
             }
@@ -418,7 +418,7 @@ class EventDetailController extends Controller
         }
         if (!$attending) {
             $this->setError(
-                "Cannot be removed from the event, because you are not attending to it!",
+                "You cannot be removed from the event because you are not attending it!",
                 ["event_id" => $_GET['event_id']]
             );
         }
