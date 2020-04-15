@@ -6,18 +6,11 @@
     <div class="container">
         <h1>Event Overview</h1><br>
         <a id="event-overview-create-button" href="/event-create" class="btn btn-primary mb-5">Create Event</a>
+        <div class="row">
         <?php
-            if (isset($events)) {
-                $counter = 0;
-                foreach ($events as $value) {
-                    if ($counter === 0) { ?>
-                        <div class="row">
-                    <?php } if ($counter === 2) {
-                        $counter = 0; ?>
-                        </div>
-                        <div class="row">
-                    <?php } ?>
-                    <div class="col">
+            if (isset($events)):
+                foreach ($events as $value) { ?>
+                    <div class="col-6">
                         <div class="card m-2" style="width: 100%;">
                             <div class="card-body">
                                 <h5 class="card-title"><?=$value->title?></h5>
@@ -28,7 +21,7 @@
                                     <?php else: ?>
                                         <li class="list-group-item">Location: not specified</li>
                                     <?php endif; ?>
-                                    <li class="list-group-item">Date: <?=$value->date?></li>
+                                        <li class="list-group-item">Date: <?=$value->date?></li>
                                     <?php if (!empty($value->time)): ?>
                                         <li class="list-group-item">Time: <?=$value->time?></li>
                                     <?php else: ?>
@@ -45,10 +38,10 @@
                             </div>
                         </div>
                     </div>
-                <?php $counter++;
-                }
-            }
+                <?php }
+            endif;
         ?>
+        </div>
     </div>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
 </body>
