@@ -2,8 +2,10 @@
 
 namespace controllers;
 
+use components\core\ControllerException;
 use components\core\Utility;
 use components\email\EmailService;
+use components\validators\UserValidation;
 use models\User;
 
 class RegisterController extends Controller
@@ -45,7 +47,13 @@ class RegisterController extends Controller
                 $user_data[$key] = trim($value);
             }
 
-            $this->validateData($user_data);
+            // Validate the data with the User Validator
+            $userValidator = UserValidation::getInstance();
+            try {
+                $userValidator->validateRegisterData($user_data);
+            } catch (ControllerException $exception) {
+                $this->setError($exception->getMessage());
+            }
 
             $this->registerUser($user_data);
 
@@ -59,49 +67,6 @@ class RegisterController extends Controller
         $this->view->pageTitle = "Register";
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
-    }
-
-    /**
-     * Checks if all the form data is in a valid format.
-     * Redirects with an error if something is wrong with the data.
-     * @param $data * data array to validate
-     */
-    private function validateData($data)
-    {
-        // If the sanitized required values are empty
-        if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
-            $this->setError("Please enter something valid for the required fields!");
-        }
-
-        // Check if the username contains white spaces
-        if (preg_match('/\s/', $data['username'])) {
-            $this->setError("Your username cannot contain whitespaces!");
-        }
-
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->setError("Please enter a valid E-Mail address!");
-        }
-
-        if (!empty($data['age']) && !filter_var($data['age'], FILTER_VALIDATE_INT)) {
-            $this->setError("Please enter a valid age!");
-        }
-
-        // Check if maxlength is exceeded
-        if (strlen($data["username"]) > 32) {
-            $this->setError("Length of username cannot exceed max length of 32.");
-        }
-        if (strlen($data["email"]) > 32) {
-            $this->setError("Length of email cannot exceed max length of 32.");
-        }
-        if (strlen($data["password"]) > 32) {
-            $this->setError("Length of password cannot exceed max length of 32.");
-        }
-        if (strlen($data["first_name"]) > 32) {
-            $this->setError("Length of first_name cannot exceed max length of 32.");
-        }
-        if (strlen($data["last_name"]) > 32) {
-            $this->setError("Length of last_name cannot exceed max length of 32.");
-        }
     }
 
     /**
