@@ -20,6 +20,10 @@ class EventDetailController extends Controller
         if (isset($_GET['event_id'])) {
             $event = Event::getInstance();
             $eventById = $event->getEventById(trim(htmlspecialchars($_GET['event_id'])));
+            // Check if event with id exists, if not, redirect to event overview
+            if (empty($eventById)) {
+                $this->redirect("event-overview");
+            }
             $this->validateEventCreator($eventById);
 
             // At this point the current user is the event creator
