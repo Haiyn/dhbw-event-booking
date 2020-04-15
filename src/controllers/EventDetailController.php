@@ -157,16 +157,15 @@ class EventDetailController extends Controller
                     if (isset($_GET['delete_attendee'])) {
                         $booking = Booking::getInstance();
                         $booking->deleteBookingByEventIdAndUserId($_GET['event_id'], $_GET['delete_attendee']);
-                        if (
-                            !$this->notifyAttendee(
-                                $_GET['delete_attendee'],
-                                "You have been removed from an event",
-                                "You have been removed from the event with the title '{$event->title}'.<br/>
-                                Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id=
-                                {$event->event_id}'>link</a>
-                                to view the event."
-                            )
-                        ) {
+                        $successful = $this->notifyAttendee(
+                            $_GET['delete_attendee'],
+                            "You have been removed from an event",
+                            "You have been removed from the event with the title '{$event->title}'.<br/>
+                            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id=
+                            {$event->event_id}'>link</a>
+                            to view the event."
+                        );
+                        if (!$successful) {
                             $this->setWarning(
                                 "Attendees successfully deleted. Emails are disabled. Attendee was not
                                 notified of the change.",
@@ -180,7 +179,8 @@ class EventDetailController extends Controller
     }
 
     /**
-     * Notify attendee that he has been removed from the event
+     * Notify attendee that he has been removed from the event. Used when a attendee
+     * has been removed from the list or the event has been canceled.
      * @param $attendee_id * Id of attendee to be notified
      * @param $subject * Subject of the email
      * @param $message * Message of the email
@@ -203,7 +203,9 @@ class EventDetailController extends Controller
     }
 
     /**
-     * Notify all attendees of this event that it has been updated
+     * Notify all attendees of this event that it has been updated. Used when
+     * any of the event data has been updated (excluding the attendees list)
+     * and the creator clicks on update event.
      * @param $attendees * Attendees of the event
      * @param $event_data * Data of the event
      */
@@ -254,15 +256,14 @@ class EventDetailController extends Controller
         $booking = Booking::getInstance();
         $booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
             "status" => Status::$ACCEPTED]);
-        if (
-            !$this->notifyAttendee(
-                $attendee_id,
-                "You have been added to an event",
-                "You have been added to the event with the title '{$event->title}'.<br/>
-                Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'>
-                link</a> to view the event."
-            )
-        ) {
+        $successful = $this->notifyAttendee(
+            $attendee_id,
+            "You have been added to an event",
+            "You have been added to the event with the title '{$event->title}'.<br/>
+            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'>
+            link</a> to view the event."
+        );
+        if (!$successful) {
             $this->setWarning(
                 "Attendee successfully added. Emails are disabled. Attendee was not
                                 notified of the change.",
@@ -288,15 +289,14 @@ class EventDetailController extends Controller
 
         $booking = Booking::getInstance();
         $booking->deleteBookingByEventIdAndUserId($event->event_id, $attendee_id);
-        if (
-            !$this->notifyAttendee(
-                $attendee_id,
-                "You have been removed from an event",
-                "You have been removed from the event with the title '{$event->title}'.<br/>
-                Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'>
-                link</a> to view the event."
-            )
-        ) {
+        $successful = $this->notifyAttendee(
+            $attendee_id,
+            "You have been removed from an event",
+            "You have been removed from the event with the title '{$event->title}'.<br/>
+            Use this <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'>
+            link</a> to view the event."
+        );
+        if (!$successful) {
             $this->setWarning(
                 "Attendee successfully removed. Emails are disabled. Attendee was not
                 notified of the change.",
@@ -317,33 +317,31 @@ class EventDetailController extends Controller
         $booking = Booking::getInstance();
         if (!$booking->deleteBookingsByEventId($event->event_id)) {
             // Something went wrong while deleting existing bookings
-            header("Location: /internal-error");
-            exit(1);
+            $this->setError("An error occurred while deleting all attendees of this event.", []);
         }
         // Delete the event
         $e = Event::getInstance();
         if (!$e->deleteEventById($event->event_id)) {
             // Something went wrong while deleting the existing event
-            header("Location: /internal-error");
-            exit(1);
+            $this->setError("An error occurred while deleting the event.", []);
         }
-        $successful = true;
         // Notify all attendees
         foreach ($attendees as $attendee) {
-            $this->notifyAttendee(
+            $successful = $this->notifyAttendee(
                 $attendee->user_id,
                 "An event has been canceled",
                 "The event with the title '{$event->title}' has been canceled by the creator,<br/>
                 so you have been removed from the event.<br/>
                 Reason/ Message:<br/>
                 {$reason}"
-            ) ? : $successful = false;
-        }
-        if (!$successful) {
-            $this->setWarning(
-                "Event successfully deleted. Emails are disabled. Attendees were not notified.",
-                ["event_id" => $_GET['event_id']]
             );
+            if (!$successful) {
+                $this->setWarning(
+                    "Event successfully deleted. Emails are disabled. Attendees were not notified.",
+                    ["event_id" => $_GET['event_id']]
+                );
+                break;
+            }
         }
     }
 }
