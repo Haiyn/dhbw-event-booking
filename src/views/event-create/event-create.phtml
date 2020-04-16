@@ -4,12 +4,13 @@
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/head.phtml" ?>
     <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/assets/jqueryui/jquery-ui.js"></script>
+    <script type="text/javascript" src="/views/event-create/event-create.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
     <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/css/datepicker.css" rel="stylesheet"/>
 </head>
 <body>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
-    <div class="container">
+    <div class="container min-vh-80">
         <h1><?php if( isset($pageTitle)) echo($pageTitle)?></h1><br>
         <p>Please enter following values to create an event.</p>
 
