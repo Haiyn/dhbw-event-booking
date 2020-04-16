@@ -51,6 +51,22 @@ class Booking
     }
 
     /**
+     * Update the status of a booking
+     * @param $event_id * If of the event
+     * @param $user_id * Id of user to be updated
+     * @param $status * New status of the booking
+     */
+    public function updateBookingStatus($event_id, $user_id, $status)
+    {
+        self::$database->execute(
+            "UPDATE bookings
+            SET status = :status
+            WHERE event_id = :event_id AND user_id = :user_id;",
+            [":event_id" => $event_id, ":user_id" => $user_id, ":status" => $status]
+        );
+    }
+
+    /**
      * Delete a booking by event and user id
      * @param $event_id * Id of the event
      * @param $user_id * Id of the user

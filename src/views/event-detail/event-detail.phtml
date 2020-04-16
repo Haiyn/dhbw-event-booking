@@ -92,7 +92,8 @@
             <div class="form-group">
                 <label for="event-detail-maximum-attendees">Current Attendees</label><br/>
                 <?php if (isset($edit) && $edit): ?>
-                    <a href="#" title="Add" class="btn btn-primary mb-3"><i class="fa fa-plus"></i></a>
+                    <button type="button" title="Add" class="btn btn-primary mb-3" data-toggle="modal" data-target="#event-detail-add-attendee-modal">
+                        <i class="fa fa-plus"></i></button>
                 <?php endif; ?>
                 <table class="table table-striped">
                     <thead>
@@ -147,17 +148,20 @@
             <?php if (isset($status) && $status == \models\enums\Status::$ACCEPTED): ?>
                 <a href="/event-detail?event_id=<?=$event->event_id . '&unbook_event=' . $_SESSION['USER_ID']?>"
                    class="btn btn-primary mb-3">Unbook Event</a>
+            <?php elseif (isset($status) && $status == \models\enums\Status::$INVITED): ?>
+                <a href="/event-detail?event_id=<?=$event->event_id . '&book_event=' . $_SESSION['USER_ID']?>"
+                   class="btn btn-primary mb-3">Accept Invitation</a>
             <?php else: ?>
                 <a href="/event-detail?event_id=<?=$event->event_id . '&book_event=' . $_SESSION['USER_ID']?>"
                    class="btn btn-primary mb-3">Book Event</a>
             <?php endif; ?>
         <?php endif; if (isset($event) && isset($isCreator) && isset($edit) && !$edit && $isCreator): ?>
-        <button id="event-detail-cancel" class="btn btn-danger mb-3" data-toggle="modal" data-target="#event-detail-modal">
+        <button id="event-detail-cancel" class="btn btn-danger mb-3" data-toggle="modal" data-target="#event-detail-cancel-modal">
             Cancel Event</button>
         <?php endif; ?>
     </div>
 
-    <div id="event-detail-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div id="event-detail-cancel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -173,6 +177,30 @@
                                 You can put a message for all attendees in the bottom text field. </p>
                             <label for="event-detail-modal-reason">Message/ Reason</label>
                             <textarea id="event-detail-modal-reason" name="reason" class="form-control"></textarea><br/>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="event-detail-add-attendee-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Invite Attendee</h5><br>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <form id="event-detail-modal-form" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="invite_user">
+                            <label for="event-detail-modal-reason">Username/E-Mail</label>
+                            <input id="event-detail-modal-reason" name="invite_user_name" type="text" class="form-control"><br/>
+                            <p class="text-info">The invited user will get a notification email with a link to this
+                                event, to accept it.</p>
                         </div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Confirm</button>

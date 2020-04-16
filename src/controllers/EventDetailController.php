@@ -80,6 +80,15 @@ class EventDetailController extends Controller
                 );
             }
 
+            if (isset($_POST['invite_user']) && isset($_POST['invite_user_name'])) {
+                $this->inviteUserToEvent($eventById, $_POST['invite_user_name'], $attendees);
+
+                $this->setSuccess(
+                    "User successfully invited to the event.",
+                    ["event_id" => $_GET['event_id']]
+                );
+            }
+
             if (isset($_POST['cancel_event']) && isset($_POST['reason'])) {
                 $this->cancelEvent($eventById, $attendees, $_POST['reason']);
 
@@ -246,16 +255,23 @@ class EventDetailController extends Controller
      */
     private function attendEvent($event, $attendees, $attendee_id)
     {
+        // Validate the data
         $event_validator = EventValidator::getInstance();
+        $status = null;
         try {
-            $event_validator->validateAttendData($event, $attendees, $attendee_id);
+            $status = $event_validator->validateAttendData($event, $attendees, $attendee_id);
         } catch (ControllerException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
-
+        // Add the attendee, based on the current status
         $booking = Booking::getInstance();
-        $booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
-            "status" => Status::$ACCEPTED]);
+        if ($status == Status::$INVITED) {
+            $booking->updateBookingStatus($event->event_id, $attendee_id, Status::$ACCEPTED);
+        } else {
+            $booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
+                "status" => Status::$ACCEPTED]);
+        }
+        // Notify attendee
         $successful = $this->notifyAttendee(
             $attendee_id,
             "You have been added to an event",
@@ -267,6 +283,46 @@ class EventDetailController extends Controller
             $this->setWarning(
                 "Attendee successfully added. Emails are disabled. Attendee was not
                                 notified of the change.",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+    }
+
+    /**
+     * Invite a user to the event (can only be done by the creator)
+     * @param $event * This event
+     * @param $user * User to be invited, is either username or email
+     * @param $attendees * Attendees of this event
+     */
+    private function inviteUserToEvent($event, $user, $attendees)
+    {
+        // Get the user
+        $u = User::getInstance();
+        $found_user = $u->getUserByEmail($user);
+        $found_user = empty($found_user) ? $u->getUserByUsername($user) : $found_user;
+
+        // Validate the user
+        $event_validator = EventValidator::getInstance();
+        try {
+            $event_validator->validateInviteUserData($event, $found_user, $attendees);
+        } catch (ControllerException $exception) {
+            $this->setError($exception->getMessage(), $exception->getParams());
+        }
+
+        // Add the user to the attendees list
+        $booking = Booking::getInstance();
+        $booking->addBooking(["event_id" => $event->event_id, "user_id" => $found_user->user_id,
+            "status" => Status::$INVITED]);
+        $successful = $this->notifyAttendee(
+            $found_user->user_id,
+            "You have been invited to an event",
+            "You have been invited to the event with the title '{$event->title}'. Use this
+            <a href='" . Utility::getApplicationURL() . "/event-detail?event_id={$event->event_id}'>
+            link</a> to view the event."
+        );
+        if (!$successful) {
+            $this->setWarning(
+                "Attendee successfully invited. Emails are disabled. Attendee was not notified.",
                 ["event_id" => $_GET['event_id']]
             );
         }
