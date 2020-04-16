@@ -64,6 +64,19 @@ class Booking
     }
 
     /**
+     * Delete all bookings from the event, used when the event is being canceled
+     * @param $event_id * Id of the event
+     * @return bool * successful/not successful
+     */
+    public function deleteBookingsByEventId($event_id)
+    {
+        return self::$database->execute(
+            "DELETE FROM bookings WHERE event_id = :event_id",
+            [":event_id" => $event_id]
+        );
+    }
+
+    /**
      * Maps the data to the database
      * @param $data * Data of the event
      * @return array * Modified data
