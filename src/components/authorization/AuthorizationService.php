@@ -3,9 +3,10 @@
 namespace components\authorization;
 
 use components\core\Utility;
+use components\InternalComponent;
 use models\Session;
 
-class AuthorizationService
+class AuthorizationService extends InternalComponent
 {
     private static $instance;
 
@@ -43,8 +44,7 @@ class AuthorizationService
         if (!$session->saveSession($session_data))
         {
             // Insert/Update was unsuccessful
-            header("Location: /internal-error");
-            exit(1);
+            $this->setError("Could not update session in database.");
         }
     }
 
@@ -60,8 +60,7 @@ class AuthorizationService
         if (!$session->deleteSessionById(session_id()))
         {
             // Something went wrong while deleting the existing session
-            header("Location: /internal-error");
-            exit(1);
+            $this->setError("Could not find existing session in database.");
         }
 
         // Delete the session from the server

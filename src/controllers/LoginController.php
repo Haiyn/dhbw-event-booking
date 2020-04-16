@@ -2,9 +2,9 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
+use components\core\ValidatorException;
 use components\core\Utility;
-use components\validators\UserValidation;
+use components\validators\UserValidator;
 use models\User;
 
 class LoginController extends Controller
@@ -45,10 +45,10 @@ class LoginController extends Controller
             $user_data['passwordHash'] = md5(Utility::getIniFile()['AUTH_SALT'] . $user_data['password']);
 
             // Validate all data
-            $userValidator = UserValidation::getInstance();
+            $userValidator = UserValidator::getInstance();
             try {
                 $userValidator->validateLoginData($user_data);
-            } catch (ControllerException $exception) {
+            } catch (ValidatorException $exception) {
                 $this->setError($exception->getMessage());
             }
 

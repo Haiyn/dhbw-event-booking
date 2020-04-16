@@ -2,7 +2,7 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 
 class Session
 {
@@ -13,7 +13,7 @@ class Session
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()

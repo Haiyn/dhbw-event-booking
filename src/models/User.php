@@ -2,7 +2,7 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 use components\core\Utility;
 
 class User
@@ -13,7 +13,7 @@ class User
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()

@@ -7,7 +7,7 @@ use components\InternalComponent;
 use PDO;
 use PDOException;
 
-class Database extends InternalComponent
+class DatabaseService extends InternalComponent
 {
 
     private static $instance;

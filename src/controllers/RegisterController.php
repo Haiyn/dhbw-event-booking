@@ -2,10 +2,10 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
+use components\core\ValidatorException;
 use components\core\Utility;
 use components\email\EmailService;
-use components\validators\UserValidation;
+use components\validators\UserValidator;
 use models\User;
 
 class RegisterController extends Controller
@@ -48,10 +48,10 @@ class RegisterController extends Controller
             }
 
             // Validate the data with the User Validator
-            $userValidator = UserValidation::getInstance();
+            $userValidator = UserValidator::getInstance();
             try {
                 $userValidator->validateRegisterData($user_data);
-            } catch (ControllerException $exception) {
+            } catch (ValidatorException $exception) {
                 $this->setError($exception->getMessage());
             }
 

@@ -2,7 +2,7 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 
 class Booking
 {
@@ -12,7 +12,7 @@ class Booking
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()

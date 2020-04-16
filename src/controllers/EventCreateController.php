@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
+use components\core\ValidatorException;
 use components\validators\EventValidator;
 use models\Event;
 use models\User;
@@ -56,7 +56,7 @@ class EventCreateController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateEventCreateData($data);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 

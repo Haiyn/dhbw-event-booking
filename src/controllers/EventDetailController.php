@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
+use components\core\ValidatorException;
 use components\core\Utility;
 use components\email\EmailService;
 use components\validators\EventValidator;
@@ -120,7 +120,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateEventEditData($new_data, $old_data);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 
@@ -249,7 +249,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateAttendData($event, $attendees, $attendee_id);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 
@@ -283,7 +283,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateUnattendData($attendees, $attendee_id);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 

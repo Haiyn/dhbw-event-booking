@@ -2,7 +2,7 @@
 
 namespace components\core;
 
-class ControllerException extends \Exception
+class ValidatorException extends \Exception
 {
     private $params;
 
