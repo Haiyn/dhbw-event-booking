@@ -207,6 +207,7 @@ class EventValidator
      * @param $event * This event
      * @param $attendees * Current attendees of this event
      * @param $attendee_id * Id of the attendee
+     * @return string|null *  Return the status if invited, else null
      * @throws ControllerException
      */
     public function validateAttendData($event, $attendees, $attendee_id)
@@ -273,7 +274,7 @@ class EventValidator
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $user->user_id) {
                 throw new ControllerException(
-                    "User is already attending in the event.",
+                    "User is already attending to this event.",
                     ["event_id" => $_GET['event_id']]
                 );
             }
