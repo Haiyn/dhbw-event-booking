@@ -54,7 +54,7 @@ class LoginController extends Controller
 
             // Everything successful, refresh the session and set a logged in session, then redirect
             $this->session->setSession($user_data['foundUser']->user_id);
-            $this->redirect("event-overview");
+            $this->redirect("home");
         }
     }
 }

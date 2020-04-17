@@ -165,7 +165,10 @@ class EventDetailController extends Controller
                     // Delete attendee if delete_attendee is set
                     if (isset($_GET['delete_attendee'])) {
                         $booking = Booking::getInstance();
-                        $booking->deleteBookingByEventIdAndUserId($_GET['event_id'], $_GET['delete_attendee']);
+                        if (!$booking->deleteBookingByEventIdAndUserId($_GET['event_id'], $_GET['delete_attendee'])) {
+                            // Something went wrong while deleting the bookings
+                            $this->setError("An error occurred while deleting the attendees from the event.", []);
+                        }
                         $successful = $this->notifyAttendee(
                             $_GET['delete_attendee'],
                             "You have been removed from an event",
@@ -176,8 +179,13 @@ class EventDetailController extends Controller
                         );
                         if (!$successful) {
                             $this->setWarning(
-                                "Attendees successfully deleted. Emails are disabled. Attendee was not
+                                "Attendee successfully deleted. Emails are disabled. Attendee was not
                                 notified of the change.",
+                                ["event_id" => $_GET['event_id']]
+                            );
+                        } else {
+                            $this->setSuccess(
+                                "Attendee successfully deleted.",
                                 ["event_id" => $_GET['event_id']]
                             );
                         }
@@ -266,10 +274,18 @@ class EventDetailController extends Controller
         // Add the attendee, based on the current status
         $booking = Booking::getInstance();
         if ($status == Status::$INVITED) {
-            $booking->updateBookingStatus($event->event_id, $attendee_id, Status::$ACCEPTED);
+            if (!$booking->updateBookingStatus($event->event_id, $attendee_id, Status::$ACCEPTED)) {
+                // Something went wrong while updating the booking
+                $this->setError("An error occurred while attending to the event.", []);
+            }
         } else {
-            $booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
-                "status" => Status::$ACCEPTED]);
+            if (
+                !$booking->addBooking(["event_id" => $event->event_id, "user_id" => $attendee_id,
+                "status" => Status::$ACCEPTED])
+            ) {
+                // Something went wrong while adding the booking
+                $this->setError("An error occurred while attending to the event.", []);
+            }
         }
         // Notify attendee
         $successful = $this->notifyAttendee(
@@ -311,8 +327,13 @@ class EventDetailController extends Controller
 
         // Add the user to the attendees list
         $booking = Booking::getInstance();
-        $booking->addBooking(["event_id" => $event->event_id, "user_id" => $found_user->user_id,
-            "status" => Status::$INVITED]);
+        if (
+            !$booking->addBooking(["event_id" => $event->event_id, "user_id" => $found_user->user_id,
+            "status" => Status::$INVITED])
+        ) {
+            // Something went wrong while adding the booking
+            $this->setError("An error occurred while adding the attendee to the event.", []);
+        }
         $successful = $this->notifyAttendee(
             $found_user->user_id,
             "You have been invited to an event",
@@ -323,7 +344,7 @@ class EventDetailController extends Controller
         if (!$successful) {
             $this->setWarning(
                 "Attendee successfully invited. Emails are disabled. Attendee was not notified.",
-                ["event_id" => $_GET['event_id']]
+                ["event_id" => $_GET['event_id'], "edit" => ""]
             );
         }
     }
@@ -344,7 +365,10 @@ class EventDetailController extends Controller
         }
 
         $booking = Booking::getInstance();
-        $booking->deleteBookingByEventIdAndUserId($event->event_id, $attendee_id);
+        if (!$booking->deleteBookingByEventIdAndUserId($event->event_id, $attendee_id)) {
+            // Something went wrong while deleting the bookings
+            $this->setError("An error occurred while deleting the attendees from the event.", []);
+        }
         $successful = $this->notifyAttendee(
             $attendee_id,
             "You have been removed from an event",

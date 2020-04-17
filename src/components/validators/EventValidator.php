@@ -219,12 +219,20 @@ class EventValidator
                 ["event_id" => $_GET['event_id']]
             );
         }
-        // Check if event is invite only
+        // Check if event is invite only or the user is not invited
         if ($event->visibility != Visibility::$PUBLIC) {
-            throw new ControllerException(
-                "Cannot attend to this event, because it is invite only!",
-                ["event_id" => $_GET['event_id']]
-            );
+            $found_attendee = null;
+            foreach ($attendees as $attendee) {
+                if ($attendee->user_id == $attendee_id) {
+                    $found_attendee = $attendee;
+                }
+            }
+            if (empty($found_attendee) || $found_attendee->status != Status::$INVITED) {
+                throw new ControllerException(
+                    "Cannot attend to this event, because it is invite only!",
+                    ["event_id" => $_GET['event_id']]
+                );
+            }
         }
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
@@ -266,7 +274,7 @@ class EventValidator
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
             throw new ControllerException(
-                "Cannot attend to this event, because it is full!",
+                "Cannot invite another user to this event, because it is full!",
                 ["event_id" => $_GET['event_id']]
             );
         }
