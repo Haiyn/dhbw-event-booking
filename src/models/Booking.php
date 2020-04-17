@@ -40,10 +40,11 @@ class Booking
     /**
      * Add the booking to the database
      * @param $data * Data of the booking
+     * @return bool * Successful/ Not successful
      */
     public function addBooking($data)
     {
-        self::$database->execute(
+        return self::$database->execute(
             "INSERT INTO bookings VALUES (
             DEFAULT, :event_id, :user_id, :status, DEFAULT);",
             $this->mapBookingDataToBookingTableData($data)
@@ -51,13 +52,31 @@ class Booking
     }
 
     /**
+     * Update the status of a booking
+     * @param $event_id * If of the event
+     * @param $user_id * Id of user to be updated
+     * @param $status * New status of the booking
+     * @return bool * Successful/ Not successful
+     */
+    public function updateBookingStatus($event_id, $user_id, $status)
+    {
+        return self::$database->execute(
+            "UPDATE bookings
+            SET status = :status
+            WHERE event_id = :event_id AND user_id = :user_id;",
+            [":event_id" => $event_id, ":user_id" => $user_id, ":status" => $status]
+        );
+    }
+
+    /**
      * Delete a booking by event and user id
      * @param $event_id * Id of the event
      * @param $user_id * Id of the user
+     * @return bool * Successful/ Not successful
      */
     public function deleteBookingByEventIdAndUserId($event_id, $user_id)
     {
-        self::$database->execute(
+        return self::$database->execute(
             "DELETE FROM bookings WHERE event_id = :event_id AND user_id = :user_id;",
             [":event_id" => $event_id, ":user_id" => $user_id]
         );

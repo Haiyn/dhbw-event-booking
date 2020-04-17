@@ -4,6 +4,7 @@ namespace components\validators;
 
 use components\core\ControllerException;
 use models\Booking;
+use models\enums\Status;
 use models\enums\Visibility;
 
 class EventValidator
@@ -206,6 +207,7 @@ class EventValidator
      * @param $event * This event
      * @param $attendees * Current attendees of this event
      * @param $attendee_id * Id of the attendee
+     * @return string|null *  Return the status if invited, else null
      * @throws ControllerException
      */
     public function validateAttendData($event, $attendees, $attendee_id)
@@ -224,12 +226,20 @@ class EventValidator
                 ["event_id" => $_GET['event_id']]
             );
         }
-        // Check if event is invite only
+          // Check if event is invite only or the user is not invited
         if ($event->visibility != Visibility::$PUBLIC) {
-            throw new ControllerException(
-                "Cannot attend to this event, because it is invite only!",
-                ["event_id" => $_GET['event_id']]
-            );
+            $found_attendee = null;
+            foreach ($attendees as $attendee) {
+                if ($attendee->user_id == $attendee_id) {
+                    $found_attendee = $attendee;
+                }
+            }
+            if (empty($found_attendee) || $found_attendee->status != Status::$INVITED) {
+                throw new ControllerException(
+                    "Cannot attend to this event, because it is invite only!",
+                    ["event_id" => $_GET['event_id']]
+                );
+            }
         }
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
@@ -240,9 +250,46 @@ class EventValidator
         }
         // Check if user is already attending to this event
         foreach ($attendees as $attendee) {
-            if ($attendee->user_id == $attendee_id) {
+            if ($attendee->user_id == $attendee_id && $attendee->status == Status::$ACCEPTED) {
                 throw new ControllerException(
                     "Cannot attend to this event, because you are already attending to it!",
+                    ["event_id" => $_GET['event_id']]
+                );
+            } elseif ($attendee->user_id == $attendee_id && $attendee->status == Status::$INVITED) {
+                return Status::$INVITED;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Validate the data when a user is being invited to the event
+     * @param $event * This event
+     * @param $user * User to be invited
+     * @param $attendees * Attendees of this event
+     * @throws ControllerException
+     */
+    public function validateInviteUserData($event, $user, $attendees)
+    {
+        // Check if user exists
+        if (empty($user)) {
+            throw new ControllerException(
+                "User not found.",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if event is full
+        if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
+            throw new ControllerException(
+                "Cannot invite another user to this event, because it is full!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+        // Check if user hasn't already booked the event
+        foreach ($attendees as $attendee) {
+            if ($attendee->user_id == $user->user_id) {
+                throw new ControllerException(
+                    "User is already attending to this event.",
                     ["event_id" => $_GET['event_id']]
                 );
             }
