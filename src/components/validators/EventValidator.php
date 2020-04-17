@@ -219,7 +219,14 @@ class EventValidator
                 ["event_id" => $_GET['event_id']]
             );
         }
-        // Check if event is invite only or the user is not invited
+        // Check if user to be added is event creator
+        if ($attendee_id == $event->creator_id) {
+            throw new ControllerException(
+                "You cannot attend to this event, because you are the creator!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
+          // Check if event is invite only or the user is not invited
         if ($event->visibility != Visibility::$PUBLIC) {
             $found_attendee = null;
             foreach ($attendees as $attendee) {
