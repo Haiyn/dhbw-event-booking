@@ -37,6 +37,18 @@ class Booking
         );
     }
 
+
+
+    public function getBookingsByUserId($user_id)
+    {
+        return self::$database->fetch(
+            "SELECT users.username, users.email, bookings.user_id FROM bookings
+            INNER JOIN users ON bookings.user_id = users.user_id WHERE user_id = :user_id",
+            [":event_id" => $event_id]
+        );
+    }
+
+
     /**
      * Delete a booking by event and user id
      * @param $event_id * Id of the event

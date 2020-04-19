@@ -3,68 +3,102 @@
 
 namespace controllers;
 
+use models\Booking;
 use models\User;
 use models\Event;
 
-class ProfileController extends Controller {
+class ProfileController extends Controller
+{
 
     public function render($params)
     {
-//        $this->session->checkSession();
+        $this->session->checkSession();
 
-        /*$this->displayUserInfo();
-        $this->displayOwnerEvents();
-        $this->displayBookedEvents();*/
+        if (isset($_POST["user_id"])) {
+            $user = User::getInstance();
+            $userId = $user->getUserById(htmlspecialchars($_POST["user_id"]));
+
+            $this->displayUserInfo($userId);
+            $this->displayCreatorEvents($userId);
+            $this->displayBookedEvents($userId);
+        }
 
         $this->view->pageTitle = "Profile";
     }
 
 
-    private function displayUserInfo($data){
+    private function displayUserInfo($userId)
+    {
 
-        if (isset($_SESSION["USER_ID"])){
+        if (isset($userId)) {
             $user = User::getInstance();
 
-            $thisUserId = $_SESSION["USER_ID"];
-            $thisUser = $user->getUserById($thisUserId);
+            $thisUser = $user->getUserById($userId);
             $username = $thisUser->username;
             $firstName = $thisUser->first_name;
             $lastName = $thisUser->last_name;
             $email = $thisUser->email;
+
+            $this->view->username = $username;
+            $this->view->firstName = $firstName;
+            $this->view->lastName = $lastName;
+            $this->view->email = $email;
         }
-//        return
     }
 
 
     /**
      * Checks if user id from session is equal to the id of the creator of an event
      * While they are equal, return all events created by current user
-     * */
-    private function displayOwnerEvents($event){
-        if (isset($_SESSION["USER_ID"])){
-
+     * @param $userId
+     */
+    private function displayCreatorEvents($userId)
+    {
+        if (isset($userId)) {
             $user = User::getInstance();
-            $thisUserId = $_SESSION["USER_ID"];
-            $thisUser = $user->getUserById($thisUserId);
+            $thisUser = $user->getUserById($userId);
 
-            $creator = $user->getUserById($event->creator_id);
-
-            while ($thisUser === $creator){
+            if (isset($_GET["event_id"])) {
                 $event = Event::getInstance();
-                $events = $event->getEvents();
+                $eventId = $event->getEventById(htmlspecialchars($_GET['event_id']));
+
+                if (isset($eventId->creator_id)) {
+                    $creator = $user->getUserById($eventId->creator_id);
+
+                    while ($thisUser === $creator) {
+                        $events = $event->getEvents();
+                        $this->view->events = $events;
+                    }
+                }
             }
-            return $events;
         }
     }
 
+
     /**
      * Displays all events that have been booked by current user
-     * */
-    private function displayBookedEvents(){
+     * @param $userId
+     */
+    private function displayBookedEvents($userId)
+    {
+        if (isset($userId)) {
+            $user = User::getInstance();
+            $thisUser = $user->getUserById($userId);
+
+
+            $booking = Booking::getInstance();
+            $attendee = $booking->getBookingsByUserId($userId->user_id);
+
+
+            while ($thisUser === $attendee) {
+                $events = $booking->getEvents();
+                $this->view->events = $events;
+            }
+        }
 
     }
-
-
+//NEUE DATENBANK ABRFRAGE
+//        povezat sa userom na booking.php
 
 
 }

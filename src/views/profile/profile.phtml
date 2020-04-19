@@ -9,8 +9,8 @@
             <div class="card" style="width: 18rem;">
                 <div class="card-header text-center">
                     <img class="rounded-circle" src="/resources/icons/user.ico" alt="User icon" height="150px">
-                    <!--TODO insert field so username can be displayed-->
-                    <h4>username</h4>
+                    <input type="text" id="username" name="username" value="<?php if (isset($user)) echo $user->username?>">
+
                     <div class="button-container">
 
                         <?php if (isset($_SESSION["USER_ID"])) { ?>
@@ -22,11 +22,10 @@
                     </div>
                 </div>
 
-                <!--TODO insert field so data can be displayed-->
                 <div class="card-body">
-                    <p>first name</p>
-                    <p>last name</p>
-                    <p>email</p>
+                    <input type="text" id="first_name" name="first_name" value="<?php if (isset($user)) echo $user->first_name ?>">
+                    <input type="text" id="last_name" name="last_name" value="<?php if (isset($user)) echo $user->last_name ?>">
+                    <input type="email" id="email" name="email" value="<?php if (isset($user)) echo $user->email?>">
                 </div>
             </div>
         </div>
@@ -35,7 +34,7 @@
             <div class="card">
                 <div class="card-header">
 
-                    <!--TODO insert javascript to toggle between links + insert fields so events can be displayed-->
+                    <!--TODO insert javascript to toggle between links-->
                     <ul class="nav nav-tabs card-header-tabs">
                         <li class="nav-item">
                             <a class="nav-link created" href="#">Created</a>
@@ -45,8 +44,9 @@
                         </li>
                     </ul>
                 </div>
+                    <!--TODO display all events where user is creator/ where user is attendee-->
                 <div class="card-body">
-                    <p>Events the user has created</p>
+                    <input type="text" id="events" name="events" value="<?php if (isset($user)) echo $user->events ?>">
                 </div>
             </div>
         </div>

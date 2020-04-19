@@ -102,6 +102,24 @@ class User
     }
 
     /**
+     * Update user data of the database
+     * @param $data * Data of the user
+     */
+    public function updateUser($data)
+    {
+        // Map data
+        $data = $this->mapRegisterDataToUserTableData($data);
+        self::$database->execute(
+            "UPDATE users
+            SET username = :username, email = :email, firstname = :first_name, lastname = :last_name, password = :password
+            WHERE user_id = :user_id;",
+            $data
+        );
+    }
+
+
+
+    /**
      * Maps the data from user_data to a users database object
      * user_id and creation_date are generated in database
      * @param $user_data * data to map
