@@ -5,6 +5,11 @@ namespace controllers;
 use components\authorization\AuthorizationService;
 use stdClass;
 
+/**
+ * Abstract Class Controller
+ * Parent class for all controllers. Offers needed variables, construct, render and user feedback functions.
+ * @package controllers
+ */
 abstract class Controller
 {
     public $viewName;

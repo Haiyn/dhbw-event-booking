@@ -5,6 +5,11 @@ namespace models;
 use components\database\DatabaseService;
 use components\core\Utility;
 
+/**
+ * Class User
+ * Database model for the users table. Includes all needed queries.
+ * @package models
+ */
 class User
 {
     private static $instance;

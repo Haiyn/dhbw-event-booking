@@ -7,6 +7,11 @@ use components\core\Utility;
 use components\validators\UserValidator;
 use models\User;
 
+/**
+ * Class LoginController
+ * Controls the login form for users.
+ * @package controllers
+ */
 class LoginController extends Controller
 {
     public function render($parameters)

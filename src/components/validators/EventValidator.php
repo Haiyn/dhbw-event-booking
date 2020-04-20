@@ -7,6 +7,11 @@ use models\Booking;
 use models\enums\Status;
 use models\enums\Visibility;
 
+/**
+ * Class EventValidator
+ * Validates all user input for event functions. Throws ValidatorError if validation fails
+ * @package components\validators
+ */
 class EventValidator
 {
     private static $instance;

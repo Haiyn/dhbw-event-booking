@@ -7,6 +7,11 @@ use components\validators\EventValidator;
 use models\Event;
 use models\User;
 
+/**
+ * Class EventCreateController
+ * Manages the creation of new events.
+ * @package controllers
+ */
 class EventCreateController extends Controller
 {
     public function render($params)

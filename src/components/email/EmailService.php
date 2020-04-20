@@ -9,6 +9,11 @@ use models\User;
 
 use PHPMailer\PHPMailer\PHPMailer;
 
+/**
+ * Class EmailService
+ * Sends Emails depending on ini settings.
+ * @package components\email
+ */
 class EmailService extends InternalComponent
 {
     private static $instance;

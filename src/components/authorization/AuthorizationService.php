@@ -6,6 +6,11 @@ use components\core\Utility;
 use components\InternalComponent;
 use models\Session;
 
+/**
+ * Class AuthorizationService
+ * Manages everything that has to do with session. Sessions are created, validated and destroyed here.
+ * @package components\authorization
+ */
 class AuthorizationService extends InternalComponent
 {
     private static $instance;

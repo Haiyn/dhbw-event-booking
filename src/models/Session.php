@@ -4,6 +4,11 @@ namespace models;
 
 use components\database\DatabaseService;
 
+/**
+ * Class Session
+ * Database model for the sessions table. Includes all needed queries.
+ * @package models
+ */
 class Session
 {
 

@@ -6,6 +6,11 @@ use models\Booking;
 use models\enums\Visibility;
 use models\Event;
 
+/**
+ * Class EventOverviewController
+ * Controls the event overview and shows only public and invite only (if invited) events to the user.
+ * @package controllers
+ */
 class EventOverviewController extends Controller
 {
     public function render($params)

@@ -11,6 +11,11 @@ use models\enums\Status;
 use models\Event;
 use models\User;
 
+/**
+ * Class EventDetailController
+ * Controls eveything in the event detail view: displaying and editing event data
+ * @package controllers
+ */
 class EventDetailController extends Controller
 {
     public function render($params)

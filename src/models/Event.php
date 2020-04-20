@@ -4,6 +4,11 @@ namespace models;
 
 use components\database\DatabaseService;
 
+/**
+ * Class Event
+ * Database model for the events table. Includes all needed queries.
+ * @package models
+ */
 class Event
 {
     private static $instance;
