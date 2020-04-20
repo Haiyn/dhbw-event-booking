@@ -11,32 +11,32 @@
         <div class="row">
         <?php
             if (isset($events)):
-                foreach ($events as $value) { ?>
+                foreach ($events as $event) { ?>
                     <div class="col-6">
                         <div class="card m-2" style="width: 100%;">
                             <div class="card-body">
-                                <h5 class="card-title"><?=$value->title?></h5>
-                                <p class="card-text"><?=$value->description?></p>
+                                <h5 class="card-title"><?=$event->title?></h5>
+                                <p class="card-text"><?=$event->description?></p>
                                 <ul class="list-group list-group-flush mb-3">
-                                    <?php if (!empty($value->location)): ?>
-                                        <li class="list-group-item">Location: <?=$value->location?></li>
+                                    <?php if (!empty($event->location)): ?>
+                                        <li class="list-group-item">Location: <?=$event->location?></li>
                                     <?php else: ?>
                                         <li class="list-group-item">Location: not specified</li>
                                     <?php endif; ?>
-                                        <li class="list-group-item">Date: <?=$value->date?></li>
-                                    <?php if (!empty($value->time)): ?>
-                                        <li class="list-group-item">Time: <?=$value->time?></li>
+                                        <li class="list-group-item">Date: <?=$event->date?></li>
+                                    <?php if (!empty($event->time)): ?>
+                                        <li class="list-group-item">Time: <?=$event->time?></li>
                                     <?php else: ?>
                                         <li class="list-group-item">Time: not specified</li>
                                     <?php endif; ?>
-                                    <?php if (!empty($value->price)): ?>
-                                        <li class="list-group-item">Price: <?=$value->price?></li>
+                                    <?php if (!empty($event->price)): ?>
+                                        <li class="list-group-item">Price: <?=$event->price?></li>
                                     <?php else: ?>
                                         <li class="list-group-item">Price: free</li>
                                     <?php endif; ?>
                                 </ul>
-                                <a href="/event-detail?event_id=<?=$value->event_id?>" class="btn btn-primary">Details</a>
-                                <a href="/event-detail?event_id=<?=$value->event_id?>&book_event" class="btn btn-primary">Book Event</a>
+                                <a href="/event-detail?event_id=<?=$event->event_id?>" class="btn btn-primary">Details</a>
+                                <a href="/event-detail?event_id=<?=$event->event_id?>&book_event" class="btn btn-primary">Book Event</a>
                             </div>
                         </div>
                     </div>
