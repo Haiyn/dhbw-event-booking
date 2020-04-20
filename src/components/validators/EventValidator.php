@@ -221,7 +221,7 @@ class EventValidator
         }
         // Check if user to be added is event creator
         if ($attendee_id == $event->creator_id) {
-            throw new ControllerException(
+            throw new ValidatorException(
                 "You cannot attend to this event, because you are the creator!",
                 ["event_id" => $_GET['event_id']]
             );
@@ -267,20 +267,20 @@ class EventValidator
      * @param $event * This event
      * @param $user * User to be invited
      * @param $attendees * Attendees of this event
-     * @throws ControllerException
+     * @throws ValidatorException
      */
     public function validateInviteUserData($event, $user, $attendees)
     {
         // Check if user exists
         if (empty($user)) {
-            throw new ControllerException(
+            throw new ValidatorException(
                 "User not found.",
                 ["event_id" => $_GET['event_id']]
             );
         }
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
-            throw new ControllerException(
+            throw new ValidatorException(
                 "Cannot invite another user to this event, because it is full!",
                 ["event_id" => $_GET['event_id']]
             );
@@ -288,7 +288,7 @@ class EventValidator
         // Check if user hasn't already booked the event
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $user->user_id) {
-                throw new ControllerException(
+                throw new ValidatorException(
                     "User is already attending to this event.",
                     ["event_id" => $_GET['event_id']]
                 );
