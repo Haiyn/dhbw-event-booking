@@ -7,7 +7,12 @@ use components\InternalComponent;
 use PDO;
 use PDOException;
 
-class Database extends InternalComponent
+/**
+ * Class DatabaseService
+ * Manages all database access as well as parameterized fetch and execute queries
+ * @package components\database
+ */
+class DatabaseService extends InternalComponent
 {
 
     private static $instance;

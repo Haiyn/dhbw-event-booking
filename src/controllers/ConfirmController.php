@@ -4,6 +4,11 @@ namespace controllers;
 
 use models\User;
 
+/**
+ * Class ConfirmController
+ * Handles confirming of email addresses via the verifaction hash of a user.
+ * @package controllers
+ */
 class ConfirmController extends Controller
 {
     public function render($parameters)

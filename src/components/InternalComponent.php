@@ -2,8 +2,11 @@
 
 namespace components;
 
-use stdClass;
-
+/**
+ * Abstract Class InternalComponent
+ * Parent class for all internal component classes. Offers internal error redirecting.
+ * @package components
+ */
 abstract class InternalComponent
 {
     /*

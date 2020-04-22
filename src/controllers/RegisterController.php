@@ -2,12 +2,17 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
 use components\core\Utility;
+use components\core\ValidatorException;
 use components\email\EmailService;
-use components\validators\UserValidation;
+use components\validators\UserValidator;
 use models\User;
 
+/**
+ * Class RegisterController
+ * Controls registering of users with email verification.
+ * @package controllers
+ */
 class RegisterController extends Controller
 {
     public function render($parameters)
@@ -18,21 +23,18 @@ class RegisterController extends Controller
 
             // if the sanitized value is still a valid email, generate the link
             // otherwise show an error message
-            if (filter_var($email, FILTER_VALIDATE_EMAIL))
-            {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->generateEmailConfirmation($email);
 
                 $this->setSuccess("The E-Mail confirmation link has been successfully sent to 
                     <strong>{$email}</strong>");
-            }
-            else {
+            } else {
                 $this->setError("Sorry, we cannot a send a verification link to this email!");
             }
         }
 
         // The register button was pressed
-        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email']))
-        {
+        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
             // Sanitize the data by removing any harmful code and markup
             $user_data = [
                 'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
@@ -48,10 +50,10 @@ class RegisterController extends Controller
             }
 
             // Validate the data with the User Validator
-            $userValidator = UserValidation::getInstance();
+            $userValidator = UserValidator::getInstance();
             try {
                 $userValidator->validateRegisterData($user_data);
-            } catch (ControllerException $exception) {
+            } catch (ValidatorException $exception) {
                 $this->setError($exception->getMessage());
             }
 
@@ -107,20 +109,21 @@ class RegisterController extends Controller
 
         // If the hash is empty, the user does not exist
         // prevents abusing /verify to verify an account with another email
-        if (empty($hash))
-        {
+        if (empty($hash)) {
             $this->setError("Sorry, there is no user associated with the email <strong>{$email}</strong>!");
         }
 
         // Check if Email Sending is enabled
-        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
+        if (filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             // Send a verification email to the email address
             $emailService = EmailService::getInstance();
-            $emailService->sendEmail($email,
+            $url = Utility::getApplicationURL();
+            $emailService->sendEmail(
+                $email,
                 "Confirm your email address",
-                "Follow <a href='".
-                Utility::getApplicationURL() .
-                "/confirm?hash={$hash}'>this link</a> to confirm your email address.");
+                "Follow <a href='" . Utility::getApplicationURL() . "/confirm?hash={$hash}'>this link</a> 
+                to confirm your email address."
+            );
         } else {
             // Display the verification link in the browser for testing
             $this->setSuccess("You have been successfully registered to the website! 

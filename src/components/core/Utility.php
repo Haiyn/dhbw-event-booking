@@ -4,6 +4,11 @@ namespace components\core;
 
 use components\InternalComponent;
 
+/**
+ * Class Utility
+ * Various methods needed throughout different functions in the application.
+ * @package components\core
+ */
 class Utility extends InternalComponent
 {
     /**

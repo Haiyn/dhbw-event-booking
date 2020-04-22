@@ -2,6 +2,11 @@
 
 namespace controllers;
 
+/**
+ * Class InternalErrorController
+ * Controls displaying of detailed or generic internal error messages. Only redirected to by internal components.
+ * @package controllers
+ */
 class InternalErrorController extends Controller
 {
     public function render($parameters)

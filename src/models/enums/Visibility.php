@@ -5,6 +5,11 @@ namespace models\enums;
 use ReflectionClass;
 use ReflectionException;
 
+/**
+ * Class Visibility
+ * Enumerator for visibility settings of events.
+ * @package models\enums
+ */
 class Visibility
 {
     public static $INVITE_ONLY = "invite-only";

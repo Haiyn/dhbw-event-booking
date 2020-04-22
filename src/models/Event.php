@@ -2,8 +2,13 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 
+/**
+ * Class Event
+ * Database model for the events table. Includes all needed queries.
+ * @package models
+ */
 class Event
 {
     private static $instance;
@@ -12,7 +17,7 @@ class Event
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()
