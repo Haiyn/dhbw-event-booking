@@ -111,7 +111,7 @@ class User
         $data = $this->mapRegisterDataToUserTableData($data);
         self::$database->execute(
             "UPDATE users
-            SET username = :username, email = :email, firstname = :first_name, lastname = :last_name, password = :password
+            SET username = :username, email = :email, first_name = :first_name, last_name = :last_name, password = :password
             WHERE user_id = :user_id;",
             $data
         );

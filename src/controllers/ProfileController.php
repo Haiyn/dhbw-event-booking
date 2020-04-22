@@ -6,6 +6,7 @@ namespace controllers;
 use models\Booking;
 use models\User;
 use models\Event;
+use function Composer\Autoload\includeFile;
 
 class ProfileController extends Controller
 {
@@ -14,91 +15,79 @@ class ProfileController extends Controller
     {
         $this->session->checkSession();
 
-        if (isset($_POST["user_id"])) {
-            $user = User::getInstance();
-            $userId = $user->getUserById(htmlspecialchars($_POST["user_id"]));
 
-            $this->displayUserInfo($userId);
-            $this->displayCreatorEvents($userId);
-            $this->displayBookedEvents($userId);
-        }
+        $this->displayUserInfo();
+        $this->displayCreatorEvents();
+        //$this->displayBookedEvents();
+
 
         $this->view->pageTitle = "Profile";
+
     }
 
-
-    private function displayUserInfo($userId)
+    /**
+     * Displays personal information of currently logged in user
+     */
+    private function displayUserInfo()
     {
 
-        if (isset($userId)) {
-            $user = User::getInstance();
+        $user = User::getInstance();
+        $userById = $user->getUserById($_SESSION['USER_ID']);
 
-            $thisUser = $user->getUserById($userId);
-            $username = $thisUser->username;
-            $firstName = $thisUser->first_name;
-            $lastName = $thisUser->last_name;
-            $email = $thisUser->email;
+        $username = $userById->username;
+        $firstName = $userById->first_name;
+        $lastName = $userById->last_name;
+        $email = $userById->email;
 
-            $this->view->username = $username;
-            $this->view->firstName = $firstName;
-            $this->view->lastName = $lastName;
-            $this->view->email = $email;
-        }
+        $this->view->username = $username;
+        $this->view->firstName = $firstName;
+        $this->view->lastName = $lastName;
+        $this->view->email = $email;
+
     }
 
 
     /**
      * Checks if user id from session is equal to the id of the creator of an event
      * While they are equal, return all events created by current user
-     * @param $userId
      */
-    private function displayCreatorEvents($userId)
+    private function displayCreatorEvents()
     {
-        if (isset($userId)) {
-            $user = User::getInstance();
-            $thisUser = $user->getUserById($userId);
 
-            if (isset($_GET["event_id"])) {
-                $event = Event::getInstance();
-                $eventId = $event->getEventById(htmlspecialchars($_GET['event_id']));
+        $event = Event::getInstance();
+        $events = $event->getEvents();
 
-                if (isset($eventId->creator_id)) {
-                    $creator = $user->getUserById($eventId->creator_id);
-
-                    while ($thisUser === $creator) {
-                        $events = $event->getEvents();
-                        $this->view->events = $events;
-                    }
-                }
+        $creator_events = [];
+        foreach ($events as $event) {
+            if ($event->creator_id == $_SESSION['USER_ID']) {
+                array_push($creator_events, $event);
+                continue;
             }
         }
+
+        $this->view->events = $creator_events;
+
     }
 
 
     /**
      * Displays all events that have been booked by current user
-     * @param $userId
      */
-    private function displayBookedEvents($userId)
+    private function displayBookedEvents()
     {
-        if (isset($userId)) {
-            $user = User::getInstance();
-            $thisUser = $user->getUserById($userId);
 
+        $booking = Booking::getInstance();
+        $attended = $booking->getBookingsByUserId($_SESSION['USER_ID']);
 
-            $booking = Booking::getInstance();
-            $attendee = $booking->getBookingsByUserId($userId->user_id);
-
-
-            while ($thisUser === $attendee) {
-                $events = $booking->getEvents();
-                $this->view->events = $events;
+        $booked_events = [];
+        foreach ($attended as $a) {
+            if ($a->user_id == $_SESSION['USER_ID']) {
+                array_push($booked_events, $a);
+                continue;
             }
         }
 
+        $this->view->booked = $booked_events;
+
     }
-//NEUE DATENBANK ABRFRAGE
-//        povezat sa userom na booking.php
-
-
 }

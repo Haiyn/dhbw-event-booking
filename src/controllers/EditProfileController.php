@@ -10,12 +10,10 @@ class EditProfileController extends Controller
     public function render($params)
     {
         $this->session->checkSession();
+        $user = User::getInstance();
+        $userId = $user->getUserById($_SESSION['USER_ID']);
 
-        if (isset($_POST['user_id'])) {
-            $user = User::getInstance();
-            $userId = $user->getUserById(htmlspecialchars($_POST['user_id']));
 
-//TODO also input repeat password??
             if (isset($_POST["username"]) || isset($_POST["first_name"]) || isset($_POST["last_name"]) || isset($_POST["email"]) || isset($_POST["password"]) || isset($_POST["password_repeat"])) {
                 $new_data = [
                     'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
@@ -30,11 +28,10 @@ class EditProfileController extends Controller
                     $new_data[$key] = trim($value);
                 }
 
-
-                $this->updateInfo();
+                $this->updatePersonalInfo($new_data, $userId);
+                //$this->updateInfo($new_data, $userId);
                 $this->setSuccess("Profile successfully updated");
             }
-        }
 
         $this->view->pageTitle = "Edit Profile";
         $this->view->isSuccess = isset($_GET["success"]);
@@ -53,9 +50,9 @@ class EditProfileController extends Controller
 
         //TODO check three input groups for empty separately??
         // If the sanitized required values are empty
-        if (empty($new_data['username']) || empty($new_data['first_name']) || empty($new_data['last_name']) || empty($new_data['email']) || empty($new_data['password']) || empty($new_data['password_repeat'])) {
+        /*if (empty($new_data['username']) || empty($new_data['first_name']) || empty($new_data['last_name']) || empty($new_data['email']) || empty($new_data['password']) || empty($new_data['password_repeat'])) {
             $this->setError("Fields cannot be empty!");
-        }
+        }*/
 
         // Check if the username contains white spaces
         if ($new_data['username'] !== $old_data->username && preg_match('/\s/', $new_data['username'])) {
@@ -90,16 +87,17 @@ class EditProfileController extends Controller
      * @param $new_data
      * @param $old_data
      */
-    private function updatePersonalInfo($new_data, $old_data)
+    private function updatePersonalInfo($new_data)
     {
         $user = User::getInstance();
+        $user_data["user_id"] = $user->getUserById($_SESSION["USER_ID"]);
 
-        if (isset($_SESSION["USER_ID"])) {
-            $user_data["user_id"] = $user->getUserById($_SESSION["USER_ID"]);
+        if (isset($_POST['updatePersonal'])) {
+            $this->checkData($new_data, $old_data);
+            $user->updateUser($new_data);
         }
 
-        $this->checkData($new_data, $old_data);
-        $user->updateUser($new_data);
+
 
     }
 
@@ -183,11 +181,13 @@ class EditProfileController extends Controller
 
     /**
      * Updates user info depending on button clicked
+     * @param $new_data
+     * @param $old_data
      */
-    private function updateInfo()
+    private function updateInfo($new_data, $old_data)
     {
         if (isset($_POST["updatePersonal"])) {
-            $this->updatePersonalInfo();
+            $this->updatePersonalInfo($new_data, $old_data);
         } elseif (isset($_POST["updateEmail"])) {
             $this->updateEmail();
         } elseif (isset($_POST["updatePassword"])) {
