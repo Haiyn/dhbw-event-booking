@@ -1,33 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/resources/assets/jqueryui/jquery-ui.js"></script>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
+    <script type="text/javascript" src="/views/event-overview/event-overview.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/css/datepicker.css" rel="stylesheet"/>
 </head>
 <body>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
     <div class="container min-vh-80">
-        <h1>Event Overview</h1><br>
+        <h1>Event Overview</h1><br/>
         <a id="event-overview-create-button" href="/event-create" class="btn btn-primary mb-5">Create Event</a>
-        <div class="row">
+        <input id="event-overview-search" type="text" placeholder="Search.." class="form-control mb-3">
+        <div class="row mb-5">
+            <div class="col-6">
+                <label for="event-overview-search-date-from">Date form</label>
+                <input id="event-overview-search-date-from" name="date" placeholder="yyyy-mm-dd" required class="form-control datepicker-from">
+            </div>
+            <div class="col-6">
+                <label for="event-overview-search-date-to">to</label>
+                <input id="event-overview-search-date-to" name="date" placeholder="yyyy-mm-dd" required class="form-control datepicker-to">
+            </div>
+        </div>
+
+        <div id="event-overview-cards" class="row">
         <?php
             if (isset($events)):
                 foreach ($events as $event) { ?>
-                    <div class="col-6">
+                    <div class="col-6 event-overview-filter">
                         <div class="card m-2" style="width: 100%;">
                             <div class="card-body">
-                                <h5 class="card-title"><?=$event->title?></h5>
-                                <p class="card-text"><?=$event->description?></p>
+                                <h5 id="event-overview-card-title" class="card-title"><?=$event->title?></h5>
+                                <p id="event-overview-card-description" class="card-text"><?=$event->description?></p>
                                 <ul class="list-group list-group-flush mb-3">
                                     <?php if (!empty($event->location)): ?>
-                                        <li class="list-group-item">Location: <?=$event->location?></li>
+                                        <li id="event-overview-card-location" class="list-group-item">Location: <?=$event->location?></li>
                                     <?php else: ?>
-                                        <li class="list-group-item">Location: not specified</li>
+                                        <li id="event-overview-card-location" class="list-group-item">Location: not specified</li>
                                     <?php endif; ?>
-                                        <li class="list-group-item">Date: <?=$event->date?></li>
+                                        <li id="event-overview-card-date" class="list-group-item">Date: <?=$event->date?></li>
                                     <?php if (!empty($event->time)): ?>
-                                        <li class="list-group-item">Time: <?=$event->time?></li>
+                                        <li id="event-overview-card-time" class="list-group-item">Time: <?=$event->time?></li>
                                     <?php else: ?>
-                                        <li class="list-group-item">Time: not specified</li>
+                                        <li id="event-overview-card-time" class="list-group-item">Time: not specified</li>
                                     <?php endif; ?>
                                     <?php if (!empty($event->price)): ?>
                                         <li class="list-group-item">Price: <?=$event->price?></li>
