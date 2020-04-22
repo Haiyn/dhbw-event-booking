@@ -2,9 +2,14 @@
 
 namespace models;
 
-use components\database\Database;
 use components\core\Utility;
+use components\database\DatabaseService;
 
+/**
+ * Class User
+ * Database model for the users table. Includes all needed queries.
+ * @package models
+ */
 class User
 {
     private static $instance;
@@ -13,7 +18,7 @@ class User
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()
