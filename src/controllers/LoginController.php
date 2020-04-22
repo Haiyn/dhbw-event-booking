@@ -2,7 +2,9 @@
 
 namespace controllers;
 
+use components\core\ControllerException;
 use components\core\Utility;
+use components\validators\UserValidation;
 use models\User;
 
 class LoginController extends Controller
@@ -32,37 +34,27 @@ class LoginController extends Controller
     private function loginUser($user_data)
     {
         if (isset($_POST['login'])) {
-
-            $user = User::getInstance();
-
-            $password_hash = md5(Utility::getIniFile()['AUTH_SALT'] . $user_data['password']);
-
             // Get the user, check for username first, then for email if username is not found
-            $foundUser = $user->getUserByUsername($user_data['emailOrId']);
-            if (empty($foundUser)) {
-                $validEmail = $user->getUserByEmail($user_data['emailOrId']);
+            $user = User::getInstance();
+            $user_data['foundUser'] = $user->getUserByUsername($user_data['emailOrId']);
+            if (empty($user_data['foundUser'])) {
+                $user_data['foundUser'] = $user->getUserByEmail($user_data['emailOrId']);
             }
 
-            if (!empty($foundUser)) {
-                $validPassword = $foundUser->password;
-                if ($password_hash == $validPassword) {
-                    // Check if the user has verified their email
-                    if (!$foundUser->verified) {
-                        // If not, redirect to the register verify handler
-                        $this->setError("Please confirm your email address. Follow
-                        <a href='/register?verify={$foundUser->email}'> to confirm</a>.");
-                    } else {
-                        // Refresh the session and set a logged in session, then redirect
-                        $this->session->setSession($foundUser->user_id);
-                        $this->redirect("event-overview");
-                    }
-                } else {
-                    $this->setError("Invalid password");
-                }
-            } else {
-                // No user with the given username or email was found
-                $this->setError("Invalid Username or Password");
+            // Encrypt the input password with the config salt
+            $user_data['passwordHash'] = md5(Utility::getIniFile()['AUTH_SALT'] . $user_data['password']);
+
+            // Validate all data
+            $userValidator = UserValidation::getInstance();
+            try {
+                $userValidator->validateLoginData($user_data);
+            } catch (ControllerException $exception) {
+                $this->setError($exception->getMessage());
             }
+
+            // Everything successful, refresh the session and set a logged in session, then redirect
+            $this->session->setSession($user_data['foundUser']->user_id);
+            $this->redirect("home");
         }
     }
 }

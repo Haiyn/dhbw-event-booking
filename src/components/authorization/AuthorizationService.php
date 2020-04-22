@@ -24,21 +24,17 @@ class AuthorizationService
 
     /**
      * This function generates a new session on the server and database
-     * Depending on the passed parameter, it can be used to generate a logged in session (user_id not null)
-     * or a generic, not logged in session (user_id is null)
-     * Used by login and logout
-     * @param string|null $user_id * optional
+     * Used by login
+     * @param string $user_id * optional
      */
-    public function setSession($user_id = null)
+    public function setSession($user_id)
     {
         // Start a new session and get the user data
         $session_data = $this->generateCurrentSessionData($user_id);
 
         // Set the server session
-        if (!empty($user_id)) {
-            $_SESSION['USER_ID'] = $session_data['user_id'];
-            $_SESSION['LOGIN_TIME'] = $session_data['login_time'];
-        }
+        $_SESSION['USER_ID'] = $session_data['user_id'];
+        $_SESSION['LOGIN_TIME'] = $session_data['login_time'];
         $_SESSION['IP_ADDRESS'] = $session_data['ip_address'];
         $_SESSION['USER_AGENT'] = $session_data['user_agent'];
 
@@ -73,7 +69,7 @@ class AuthorizationService
         session_destroy();
 
         // Create a new "not logged in" session, it is needed for error message displaying
-        $this->setSession();
+        $this->resumeSession();
 
         // Redirect to the login page
         header("Location: /login");

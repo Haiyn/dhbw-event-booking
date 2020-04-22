@@ -10,8 +10,8 @@
 </head>
 <body>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
-    <div class="container">
-        <h1>Create Event</h1><br>
+    <div class="container min-vh-80">
+        <h1><?php if( isset($pageTitle)) echo($pageTitle)?></h1><br>
         <p>Please enter following values to create an event.</p>
 
         <?php if (isset($isError) && $isError): ?>

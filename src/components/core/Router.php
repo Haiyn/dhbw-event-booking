@@ -2,9 +2,10 @@
 
 namespace components\core;
 
+use components\InternalComponent;
 use controllers\NotFoundController;
 
-class Router
+class Router extends InternalComponent
 {
     /**
      * Transforms the URL into a Controller name
@@ -51,7 +52,8 @@ class Router
 
         // This sets which Controller will be called if no path is given
         if (empty($controllerName)) {
-            $controllerName = "EventOverview";
+            $controllerName = "Home";
+            $viewName = "home";
         }
 
         $controllerClassName = $controllerName . "Controller";

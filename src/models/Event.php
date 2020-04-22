@@ -93,6 +93,19 @@ class Event
     }
 
     /**
+     * Delete an event by the id
+     * @param $event_id * Id of the event
+     * @return bool * successful/not successful
+     */
+    public function deleteEventById($event_id)
+    {
+        return self::$database->execute(
+            "DELETE FROM events WHERE event_id = :event_id",
+            [":event_id" => $event_id]
+        );
+    }
+
+    /**
      * Maps the data to the database
      * @param $data * Data of the event
      * @return array * Modified data

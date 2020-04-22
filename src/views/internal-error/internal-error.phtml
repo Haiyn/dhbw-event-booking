@@ -1,8 +1,36 @@
-<div class="container">
-    <h1>500 Internal Server Error</h1>
-    <p>
-        An error occured. No additional information was given.<br/>
-        Please contact the local site administrator with information on how to replicate this.<br/><br/>
-        <a href="/">Back to home</a>
-    </p>
-</div>
+<html>
+    <head>
+        <title>500 Internal Error</title>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/head.phtml" ?>
+    </head>
+    <body>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+        <div class="container">
+            <div class="container">
+                <div style="margin-top: 10%" class="col-xs-1" align="center">
+                    <h3>Congratulations!</h3>
+                    <h4>You've encountered the Internal Error Unicorn!</h4>
+                    <img src="/resources/images/internal-error.png" alt="Internal Error Unicorn">
+                    <p class="small">(Watch out for the horn.)</p>
+                </div>
+                <div style="margin-top: 10%">
+                    <p>
+                        A fatal error occured:
+                        <?php
+                        if (isset($isMessage) && $isMessage) {
+                            echo $_SESSION['INTERNAL_ERROR'];
+                        } else {
+                            echo "No additional information was given.";
+                        }
+                        $_SESSION['INTERNAL_ERROR'] = null;
+                        ?>
+                        <br/>
+                        Please contact the local site administrator with information on how to replicate this.<br/><br/>
+                        <a href="/">Back to home</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+    </body>
+</html>
