@@ -5,6 +5,11 @@ namespace models\enums;
 use ReflectionClass;
 use ReflectionException;
 
+/**
+ * Class Status
+ * Enumerator class for invite status of a booking.
+ * @package models\enums
+ */
 class Status
 {
     public static $INVITED = "invited";

@@ -2,20 +2,28 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
 use components\core\Utility;
-use components\validators\UserValidation;
+use components\core\ValidatorException;
+use components\validators\UserValidator;
 use models\User;
 
+/**
+ * Class LoginController
+ * Controls the login form for users.
+ * @package controllers
+ */
 class LoginController extends Controller
 {
     public function render($parameters)
     {
         if (isset($_POST["emailOrId"]) && isset($_POST["password"])) {
-
             // Sanitize the data by removing any harmful code and markup
             $user_data = [
-                "emailOrId" => filter_var(htmlspecialchars($_POST["emailOrId"]), FILTER_SANITIZE_STRING, FILTER_SANITIZE_EMAIL),
+                "emailOrId" => filter_var(
+                    htmlspecialchars($_POST["emailOrId"]),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_SANITIZE_EMAIL
+                ),
                 "password" => htmlspecialchars($_POST["password"])
             ];
 
@@ -45,10 +53,10 @@ class LoginController extends Controller
             $user_data['passwordHash'] = md5(Utility::getIniFile()['AUTH_SALT'] . $user_data['password']);
 
             // Validate all data
-            $userValidator = UserValidation::getInstance();
+            $userValidator = UserValidator::getInstance();
             try {
                 $userValidator->validateLoginData($user_data);
-            } catch (ControllerException $exception) {
+            } catch (ValidatorException $exception) {
                 $this->setError($exception->getMessage());
             }
 
@@ -58,4 +66,3 @@ class LoginController extends Controller
         }
     }
 }
-

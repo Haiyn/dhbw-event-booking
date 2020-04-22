@@ -2,8 +2,13 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 
+/**
+ * Class Booking
+ * Database model for the bookings table. Includes all needed queries.
+ * @package models
+ */
 class Booking
 {
     private static $instance;
@@ -12,7 +17,7 @@ class Booking
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()

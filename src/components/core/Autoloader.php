@@ -3,8 +3,14 @@
 namespace components\core;
 
 use components\InternalComponent;
+
 require_once 'components/InternalComponent.php';
 
+/**
+ * Class Autoloader
+ * Automatically loads classes from files so only a use is needed.
+ * @package components\core
+ */
 class Autoloader extends InternalComponent
 {
 
