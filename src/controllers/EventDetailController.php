@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use components\core\ValidatorException;
 use components\core\Utility;
+use components\core\ValidatorException;
 use components\email\EmailService;
 use components\validators\EventValidator;
 use models\Booking;
@@ -13,7 +13,7 @@ use models\User;
 
 /**
  * Class EventDetailController
- * Controls eveything in the event detail view: displaying and editing event data
+ * Controls everything in the event detail view: displaying and editing event data
  * @package controllers
  */
 class EventDetailController extends Controller
@@ -326,7 +326,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateInviteUserData($event, $found_user, $attendees);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 

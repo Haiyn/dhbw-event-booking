@@ -5,7 +5,6 @@ namespace controllers;
 use components\core\ValidatorException;
 use components\validators\EventValidator;
 use models\Event;
-use models\User;
 
 /**
  * Class EventCreateController

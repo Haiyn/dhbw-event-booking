@@ -75,16 +75,17 @@ class UserValidator
      * @param $user_data * data array to validate
      * @throws ValidatorException * if data invalid
      */
-    public function validateLoginData($user_data) {
+    public function validateLoginData($user_data)
+    {
         if (empty($user_data['foundUser'])) {
             throw new ValidatorException("Invalid Username or Email!");
         }
 
-        if($user_data['passwordHash'] != $user_data['foundUser']->password) {
+        if ($user_data['passwordHash'] != $user_data['foundUser']->password) {
             throw new ValidatorException("Invalid password!");
         }
 
-        if(!$user_data['foundUser']->verified) {
+        if (!$user_data['foundUser']->verified) {
             throw new ValidatorException("Please confirm your email address. Follow
                         <a href='/register?verify={$user_data['foundUser']->email}'> to confirm</a>.");
         }

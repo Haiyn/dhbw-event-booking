@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use components\core\ValidatorException;
 use components\core\Utility;
+use components\core\ValidatorException;
 use components\validators\UserValidator;
 use models\User;
 
@@ -17,10 +17,13 @@ class LoginController extends Controller
     public function render($parameters)
     {
         if (isset($_POST["emailOrId"]) && isset($_POST["password"])) {
-
             // Sanitize the data by removing any harmful code and markup
             $user_data = [
-                "emailOrId" => filter_var(htmlspecialchars($_POST["emailOrId"]), FILTER_SANITIZE_STRING, FILTER_SANITIZE_EMAIL),
+                "emailOrId" => filter_var(
+                    htmlspecialchars($_POST["emailOrId"]),
+                    FILTER_SANITIZE_STRING,
+                    FILTER_SANITIZE_EMAIL
+                ),
                 "password" => htmlspecialchars($_POST["password"])
             ];
 
@@ -63,4 +66,3 @@ class LoginController extends Controller
         }
     }
 }
-

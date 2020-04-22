@@ -3,6 +3,7 @@
 namespace components\core;
 
 use components\InternalComponent;
+
 require_once 'components/InternalComponent.php';
 
 /**

@@ -6,7 +6,6 @@ use components\core\Utility;
 use components\InternalComponent;
 use Exception;
 use models\User;
-
 use PHPMailer\PHPMailer\PHPMailer;
 
 /**
@@ -58,11 +57,9 @@ class EmailService extends InternalComponent
         // Get ini setting for which mail method to use
         if (filter_var(Utility::getIniFile()['PHPMAILER_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             $this->sendPhpmailerMail($mail_data);
-        }
-        else {
+        } else {
             $this->sendNativeMail($mail_data);
         }
-
     }
 
     /**
@@ -90,7 +87,7 @@ class EmailService extends InternalComponent
         $mail = new PHPMailer(true);
         try {
             // Set SMPT settings if ini setting true
-            if(filter_var($ini['EMAIL_IS_SMTP'], FILTER_VALIDATE_BOOLEAN)) {
+            if (filter_var($ini['EMAIL_IS_SMTP'], FILTER_VALIDATE_BOOLEAN)) {
                 $mail->isSMTP();
                 $mail->Host = $ini['EMAIL_SMTP_HOST'];
                 $mail->Port = $ini['EMAIL_SMTP_PORT'];
@@ -122,7 +119,7 @@ class EmailService extends InternalComponent
     }
 
     /**
-     * Wraps the passed message with the spcecified header and footer
+     * Wraps the passed message with the specified header and footer
      * @param $to * email recipient
      * @param $message * email body
      * @return string * wrapped email body

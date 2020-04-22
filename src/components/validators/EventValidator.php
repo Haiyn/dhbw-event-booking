@@ -240,7 +240,7 @@ class EventValidator
                 }
             }
             if (empty($found_attendee) || $found_attendee->status != Status::$INVITED) {
-                throw new ValdiatorException(
+                throw new ValidatorException(
                     "Cannot attend to this event, because it is invite only!",
                     ["event_id" => $_GET['event_id']]
                 );

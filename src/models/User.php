@@ -2,8 +2,8 @@
 
 namespace models;
 
-use components\database\DatabaseService;
 use components\core\Utility;
+use components\database\DatabaseService;
 
 /**
  * Class User

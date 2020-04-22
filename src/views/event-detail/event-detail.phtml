@@ -13,7 +13,7 @@
     <div class="container min-vh-80">
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
         <h1><?php if( isset($pageTitle)) echo($pageTitle)?></h1><br>
-
+        <!-- Warnings and errors -->
         <?php if (isset($isError) && $isError): ?>
             <div class="alert alert-danger" role="alert">
                 <p class="text-danger"><?=$_SESSION["EVENT_DETAIL_ERROR"]?></p>
@@ -36,7 +36,7 @@
             <a href="/event-detail?event_id=<?=$event->event_id . '&edit'?>"
                class="btn btn-primary mb-3">Edit</a>
         <?php endif; ?>
-
+        <!-- Form -->
         <form method="post">
             <div class="form-group">
                 <label for="event-detail-title">Title</label>
@@ -89,6 +89,7 @@
                        value="<?=isset($event) ? $event->maximum_attendees : ''?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
             </div>
+            <!-- Attendees list -->
             <div class="form-group">
                 <label for="event-detail-maximum-attendees">Current Attendees</label><br/>
                 <?php if (isset($edit) && $edit): ?>
@@ -142,7 +143,7 @@
                 <button type="submit" class="btn btn-primary mb-3">Update Event</button>
             <?php endif; ?>
         </form>
-
+        <!-- Buttons at the bottom -->
         <?php if (isset($event) && isset($edit) && !$edit): ?>
             <a href="#" class="btn btn-primary mb-3">Contact Creator</a>
             <?php if (isset($status) && $status == \models\enums\Status::$ACCEPTED): ?>
@@ -160,7 +161,7 @@
             Cancel Event</button>
         <?php endif; ?>
     </div>
-
+    <!-- Cancel event modal -->
     <div id="event-detail-cancel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -185,7 +186,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Invite attendee modal -->
     <div id="event-detail-add-attendee-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

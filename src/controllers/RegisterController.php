@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use components\core\ValidatorException;
 use components\core\Utility;
+use components\core\ValidatorException;
 use components\email\EmailService;
 use components\validators\UserValidator;
 use models\User;
@@ -23,21 +23,18 @@ class RegisterController extends Controller
 
             // if the sanitized value is still a valid email, generate the link
             // otherwise show an error message
-            if (filter_var($email, FILTER_VALIDATE_EMAIL))
-            {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->generateEmailConfirmation($email);
 
                 $this->setSuccess("The E-Mail confirmation link has been successfully sent to 
                     <strong>{$email}</strong>");
-            }
-            else {
+            } else {
                 $this->setError("Sorry, we cannot a send a verification link to this email!");
             }
         }
 
         // The register button was pressed
-        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email']))
-        {
+        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
             // Sanitize the data by removing any harmful code and markup
             $user_data = [
                 'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
@@ -111,19 +108,21 @@ class RegisterController extends Controller
 
         $hash = $user->getUserByEmail($email)->verification_hash;
 
-        if (empty($hash))
-        {
+        if (empty($hash)) {
             $this->setError("Sorry, the user to the email <strong>{$email}</strong> does not exist!");
         }
 
         // Check if Email Sending is enabled
-        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
+        if (filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             // Send a verification email to the email address
             $emailService = EmailService::getInstance();
             $url = Utility::getApplicationURL();
-            $emailService->sendEmail($email,
+            $emailService->sendEmail(
+                $email,
                 "Confirm your email address",
-                "Follow <a href='". Utility::getApplicationURL() . "/confirm?hash={$hash}'>this link</a> to confirm your email address.");
+                "Follow <a href='" . Utility::getApplicationURL() . "/confirm?hash={$hash}'>this link</a> 
+                to confirm your email address."
+            );
         } else {
             // Display the verification link in the browser for testing
             $this->setSuccess("You have been successfully registered to the website! 
