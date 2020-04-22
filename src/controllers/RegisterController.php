@@ -3,9 +3,16 @@
 namespace controllers;
 
 use components\core\Utility;
+use components\core\ValidatorException;
 use components\email\EmailService;
+use components\validators\UserValidator;
 use models\User;
 
+/**
+ * Class RegisterController
+ * Controls registering of users with email verification.
+ * @package controllers
+ */
 class RegisterController extends Controller
 {
     public function render($parameters)
@@ -16,21 +23,18 @@ class RegisterController extends Controller
 
             // if the sanitized value is still a valid email, generate the link
             // otherwise show an error message
-            if (filter_var($email, FILTER_VALIDATE_EMAIL))
-            {
+            if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->generateEmailConfirmation($email);
 
                 $this->setSuccess("The E-Mail confirmation link has been successfully sent to 
                     <strong>{$email}</strong>");
-            }
-            else {
+            } else {
                 $this->setError("Sorry, we cannot a send a verification link to this email!");
             }
         }
 
         // The register button was pressed
-        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email']))
-        {
+        if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['email'])) {
             // Sanitize the data by removing any harmful code and markup
             $user_data = [
                 'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
@@ -45,7 +49,13 @@ class RegisterController extends Controller
                 $user_data[$key] = trim($value);
             }
 
-            $this->validateData($user_data);
+            // Validate the data with the User Validator
+            $userValidator = UserValidator::getInstance();
+            try {
+                $userValidator->validateRegisterData($user_data);
+            } catch (ValidatorException $exception) {
+                $this->setError($exception->getMessage());
+            }
 
             $this->registerUser($user_data);
 
@@ -59,49 +69,6 @@ class RegisterController extends Controller
         $this->view->pageTitle = "Register";
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
-    }
-
-    /**
-     * Checks if all the form data is in a valid format.
-     * Redirects with an error if something is wrong with the data.
-     * @param $data * data array to validate
-     */
-    private function validateData($data)
-    {
-        // If the sanitized required values are empty
-        if (empty($data['username']) || empty($data['email']) || empty($data['password'])) {
-            $this->setError("Please enter something valid for the required fields!");
-        }
-
-        // Check if the username contains white spaces
-        if (preg_match('/\s/', $data['username'])) {
-            $this->setError("Your username cannot contain whitespaces!");
-        }
-
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->setError("Please enter a valid E-Mail address!");
-        }
-
-        if (!empty($data['age']) && !filter_var($data['age'], FILTER_VALIDATE_INT)) {
-            $this->setError("Please enter a valid age!");
-        }
-
-        // Check if maxlength is exceeded
-        if (strlen($data["username"]) > 32) {
-            $this->setError("Length of username cannot exceed max length of 32.");
-        }
-        if (strlen($data["email"]) > 32) {
-            $this->setError("Length of email cannot exceed max length of 32.");
-        }
-        if (strlen($data["password"]) > 32) {
-            $this->setError("Length of password cannot exceed max length of 32.");
-        }
-        if (strlen($data["first_name"]) > 32) {
-            $this->setError("Length of first_name cannot exceed max length of 32.");
-        }
-        if (strlen($data["last_name"]) > 32) {
-            $this->setError("Length of last_name cannot exceed max length of 32.");
-        }
     }
 
     /**
@@ -131,8 +98,9 @@ class RegisterController extends Controller
         }
     }
 
-    /*
+    /**
      * Generates a confirmation link for the registered user and sends it depending on ini settings
+     * @param $email
      */
     private function generateEmailConfirmation($email)
     {
@@ -140,23 +108,22 @@ class RegisterController extends Controller
 
         $hash = $user->getUserByEmail($email)->verification_hash;
 
-        if (empty($hash))
-        {
+        if (empty($hash)) {
             $this->setError("Sorry, the user to the email <strong>{$email}</strong> does not exist!");
         }
 
         // Check if Email Sending is enabled
-        if(filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN))
-        {
+        if (filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             // Send a verification email to the email address
             $emailService = EmailService::getInstance();
-            $url = Utility::getIniFile()['URL'];
-            $emailService->sendEmail($email,
+            $url = Utility::getApplicationURL();
+            $emailService->sendEmail(
+                $email,
                 "Confirm your email address",
-                "Follow <a href='{$url}/confirm?hash={$hash}'>this link</a> to confirm your email address.");
-        }
-        else
-        {
+                "Follow <a href='" . Utility::getApplicationURL() . "/confirm?hash={$hash}'>this link</a> 
+                to confirm your email address."
+            );
+        } else {
             // Display the verification link in the browser for testing
             $this->setSuccess("You have been successfully registered to the website! 
                     Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");

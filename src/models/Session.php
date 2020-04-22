@@ -2,8 +2,13 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 
+/**
+ * Class Session
+ * Database model for the sessions table. Includes all needed queries.
+ * @package models
+ */
 class Session
 {
 
@@ -13,7 +18,7 @@ class Session
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()
@@ -35,7 +40,9 @@ class Session
             "SELECT * from sessions WHERE session_id = :session_id",
             [":session_id" => $session_id]
         );
-        if (empty($session)) return [];
+        if (empty($session)) {
+            return [];
+        }
         return $session[0];
     }
 
@@ -50,14 +57,16 @@ class Session
             "SELECT * from sessions WHERE user_id = :user_id",
             [":user_id" => $user_id]
         );
-        if (empty($session)) return [];
+        if (empty($session)) {
+            return [];
+        }
         return $session[0];
     }
 
     /**
      * Saves the passed data to the sessions table
      * If the session already exists, the existing entry is updated to prevent duplicates
-     * @param $session_data * all needed data to updatean existing/insert a new session
+     * @param $session_data * all needed data to update an existing/insert a new session
      * @return mixed * successful/not successful
      */
     public function saveSession($session_data)
@@ -66,9 +75,7 @@ class Session
         if (empty($this->getSessionBySessionId($session_data['session_id']))) {
             // No session with this ID exists yet, insert it
             $query = "INSERT INTO sessions VALUES (:session_id, :user_id, :login_time, :ip_address, :user_agent)";
-        }
-        else
-        {
+        } else {
             // Session ID already exists in database, update the existing entry
             $query = "UPDATE sessions
                 SET user_id = :user_id, login_time = :login_time, ip_address = :ip_address, user_agent = :user_agent

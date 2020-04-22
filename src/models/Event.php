@@ -2,8 +2,13 @@
 
 namespace models;
 
-use components\database\Database;
+use components\database\DatabaseService;
 
+/**
+ * Class Event
+ * Database model for the events table. Includes all needed queries.
+ * @package models
+ */
 class Event
 {
     private static $instance;
@@ -12,7 +17,7 @@ class Event
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()
@@ -90,6 +95,19 @@ class Event
             return [];
         }
         return $events[0];
+    }
+
+    /**
+     * Delete an event by the id
+     * @param $event_id * Id of the event
+     * @return bool * successful/not successful
+     */
+    public function deleteEventById($event_id)
+    {
+        return self::$database->execute(
+            "DELETE FROM events WHERE event_id = :event_id",
+            [":event_id" => $event_id]
+        );
     }
 
     /**

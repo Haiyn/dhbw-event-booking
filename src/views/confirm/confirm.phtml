@@ -1,13 +1,9 @@
 <html lang="en">
     <head>
-        <title><?php if( isset($pageTitle)) echo($pageTitle)?></title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta charset="utf-8">
-        <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
-        <link href="/resources/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
     </head>
     <body>
-        <div class="container">
+        <div class="container min-vh-80">
             <h1>Email Confirmation</h1>
             <?php if(isset($isError) && $isError): ?>
                 <div class="alert alert-danger" role="alert">
@@ -29,6 +25,6 @@
                 </a>
             </div>
         </div>
-
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
     </body>
 </html>
