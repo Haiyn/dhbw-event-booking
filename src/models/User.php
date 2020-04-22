@@ -93,7 +93,7 @@ class User
      * Sets the verified field of the user to true when the email was verified and generates a new verification hash
      * Prevents reusing of the old hash when switching to a new email
      * @param $hash * verification hash of the user
-     * @return bool * false on user to hash not found, true on update successful
+     * @return bool * false on user for hash not found, true on update successful
      */
     public function confirmUser($hash)
     {
@@ -107,14 +107,14 @@ class User
             return false;
         }
 
-        // If user exists for hash, update it
+        // If user exists for hash, update it with new hash so old one cant be reused
         return self::$database->execute(
             "UPDATE users 
                     SET verified = true, verification_hash = :new_hash
                     WHERE verification_hash = :hash",
             [
                 ":hash" => $hash,
-                ":new_hash" => bin2hex(openssl_random_pseudo_bytes(16))
+                ":new_hash" => Utility::generateSSLHash(16)
             ]
         );
     }
@@ -146,7 +146,7 @@ class User
             ":first_name" => $user_data['first_name'],
             ":last_name" => $user_data['last_name'],
             ":age" => $user_data['age'],
-            ":verification_hash" => bin2hex(openssl_random_pseudo_bytes(16)),
+            ":verification_hash" => Utility::generateSSLHash(16),
             ":verified" => "false"
         ];
     }
