@@ -21,6 +21,28 @@
   },
   "scripts": {
     "post-install-cmd": [
+
+    ],
+    "windows-setup": [
+      "rm -rf src\\resources\\assets\\bootstrap",
+      "cp -R vendor\\twbs\\bootstrap\\dist src\\resources\\assets\\bootstrap",
+      "rm -rf src\\resources\\assets\\jquery",
+      "mkdir src\\resources\\assets\\jquery",
+      "cp -R vendor\\components\\jquery\\*.js src\\resources\\assets\\jquery",
+      "rm -rf src\\resources\\assets\\jqueryui",
+      "mkdir src\\resources\\assets\\jqueryui",
+      "cp -R vendor\\components\\jqueryui\\*.js src\\resources\\assets\\jqueryui",
+      "rm -rf src\\resources\\assets\\font-awesome",
+      "mkdir src\\resources\\assets\\font-awesome",
+      "mkdir src\\resources\\assets\\font-awesome\\css",
+      "cp -R vendor\\components\\font-awesome\\css\\all**.css src\\resources\\assets\\font-awesome\\css",
+      "mkdir src\\resources\\assets\\font-awesome\\webfonts",
+      "cp -R vendor\\components\\font-awesome\\webfonts\\**.* src\\resources\\assets\\font-awesome\\webfonts",
+      "cp vendor\\components\\jqueryui\\themes\\base\\jquery-ui.css src\\resources\\assets\\jqueryui\\jquery-ui.css",
+      "rm -rf src\\resources\\assets\\phpmailer",
+      "cp -R vendor\\phpmailer\\phpmailer\\src src\\resources\\assets\\phpmailer"
+    ],
+    "linux-setup": [
       "rm -rf src/resources/assets/bootstrap",
       "cp -R vendor/twbs/bootstrap/dist src/resources/assets/bootstrap",
       "rm -rf src/resources/assets/jquery",

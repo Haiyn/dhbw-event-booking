@@ -23,8 +23,12 @@ The projects dependencies are managed with composer. The composer.json file defi
 To automatically make all dependencies available on the webserver, run
 
 ```
-composer update && composer install
+composer install && composer run-script [your os]-setup
 ```
+
+Replace `[your-os]` with either `linux` for POSIX conform OS or `windows` for POSIX non-confirm OS. 
+
+Alternatively, you can add `@[your-os]-setup` in the `post-install-cmd` script in the composer.json to run the script automatically when running `composer install`.
 
 
 ### 2. Docker
