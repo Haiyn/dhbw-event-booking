@@ -26,7 +26,7 @@ To automatically make all dependencies available on the webserver, run
 composer install && composer run-script [your os]-setup
 ```
 
-Replace `[your-os]` with either `linux` for POSIX conform OS or `windows` for POSIX non-confirm OS. 
+Replace `[your-os]` with either `linux` for POSIX conform OS or `windows` for POSIX non-conform OS. 
 
 Alternatively, you can add `@[your-os]-setup` in the `post-install-cmd` script in the composer.json to run the script automatically when running `composer install`.
 
