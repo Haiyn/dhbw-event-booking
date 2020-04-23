@@ -105,11 +105,12 @@ class RegisterController extends Controller
     private function generateEmailConfirmation($email)
     {
         $user = User::getInstance();
-
         $hash = $user->getUserByEmail($email)->verification_hash;
 
+        // If the hash is empty, the user does not exist
+        // prevents abusing /verify to verify an account with another email
         if (empty($hash)) {
-            $this->setError("Sorry, the user to the email <strong>{$email}</strong> does not exist!");
+            $this->setError("Sorry, there is no user associated with the email <strong>{$email}</strong>!");
         }
 
         // Check if Email Sending is enabled

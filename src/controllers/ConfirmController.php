@@ -14,11 +14,18 @@ class ConfirmController extends Controller
     public function render($parameters)
     {
         if (isset($_GET['hash'])) {
-            // Update the verified field in the database
-            $user = User::getInstance();
-            $user->confirmUser(htmlspecialchars($_GET['hash']));
 
-            $this->setSuccess("Your email was successfully confirmed!");
+            $hash = htmlspecialchars($_GET['hash']);
+            $user = User::getInstance();
+
+            // Confirm the user in the database
+            if ($user->confirmUser($hash)) {
+                $this->setSuccess("Your email was successfully confirmed!");
+            } else {
+                $this->setError("Sorry, we couldn't confirm your email!");
+            }
+
+
         } else {
             if (!isset($_GET['success']) && !isset($_GET['error'])) {
                 $this->setError("Sorry, something went wrong!");
