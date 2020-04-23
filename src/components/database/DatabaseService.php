@@ -59,7 +59,7 @@ class DatabaseService extends InternalComponent
             );
         } catch (PDOException $exception) {
             // Connection to the database failed, redirect to error page to not expose stack trace
-            $this->setError("PDO Exception while connecting to database.");
+            $this->setError("Database connection failed unexpectedly.");
         }
     }
 
@@ -71,12 +71,17 @@ class DatabaseService extends InternalComponent
      */
     public function fetch($query, $data)
     {
-        $result = self::$connection->prepare($query);
-        foreach ($data as $key => &$value) {
-            $result->bindParam($key, $value);
+        try {
+            $result = self::$connection->prepare($query);
+            foreach ($data as $key => &$value) {
+                $result->bindParam($key, $value);
+            }
+            $result->execute();
+            return $result->fetchAll();
+        } catch (\Exception $exception) {
+            $this->setError("Database fetch failed unexpectedly.");
         }
-        $result->execute();
-        return $result->fetchAll();
+
     }
 
     /**
@@ -87,10 +92,15 @@ class DatabaseService extends InternalComponent
      */
     public function execute($query, $data)
     {
-        $result = self::$connection->prepare($query);
-        foreach ($data as $key => &$value) {
-            $result->bindParam($key, $value);
+        try {
+            $result = self::$connection->prepare($query);
+            foreach ($data as $key => &$value) {
+                $result->bindParam($key, $value);
+            }
+            return $result->execute();
+        } catch (\Exception $exception) {
+            $this->setError("Database execute failed unexpectedly.");
         }
-        return $result->execute();
+
     }
 }

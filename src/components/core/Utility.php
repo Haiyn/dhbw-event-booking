@@ -86,4 +86,17 @@ class Utility extends InternalComponent
         $url .= '://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
         return $url;
     }
+
+    /**
+     * Checks if a given string is a valid UUIDv4
+     * @param string $str * string to check
+     * @return boolean * true if valid, false if invalid
+     */
+    public static function isValidUUIDv4($str)
+    {
+        if (preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i', $str) !== 1) {
+            return false;
+        }
+        return true;
+    }
 }

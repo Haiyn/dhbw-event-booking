@@ -133,7 +133,7 @@ class AuthorizationService extends InternalComponent
         if (strpos($_SERVER['REQUEST_URI'], "login") || strpos($_SERVER['REQUEST_URI'], "register")) {
             if ($_SESSION['USER_ID']) {
                 // Logged in users cannot access these pages, redirect
-                header("Location: /event-overview");
+                header("Location: /home");
                 exit;
             }
         }

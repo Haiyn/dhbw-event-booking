@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
+        <link href="views/chat/chat.css" rel="stylesheet">
+    </head>
+    <body>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+        <div class="container min-vh-80">
+            <div class="container">
+                <h1>Private Chat</h1><br>
+                <?php if(isset($isError) && $isError): ?>
+                    <div class="alert alert-danger" role="alert">
+                        <p class="text-danger"><?php echo $_SESSION['CHAT_ERROR']; ?></p>
+                    </div>
+                <?php endif ?>
+                <?php if(isset($username)): ?>
+                    <p>You are chatting with <?= isset($username) ? $username : "a user"?>.</p>
+                <?php endif ?>
+                <p id="js-status"></p>
+            </div>
+
+            <div id="js-history-box" class="container">
+                <div class="msg-inbound bg-light">
+                    <p>This is an inbound message.</p>
+                </div>
+                <div class="msg-outbound bg-primary">
+                    <p>This is an outbound message.</p>
+                </div>
+            </div>
+
+            <div class="msg-send">
+                <input id="js-message-box" type="text" name="message" placeholder="Enter your message..."
+                       maxlength="2048" class="form-control"><br/>
+                <button id="js-send-button" class="btn btn-outline-primary">Send Message</button>
+            </div>
+
+
+
+        </div>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+    </body>
+</html>
