@@ -42,6 +42,16 @@ class Utility extends InternalComponent
     }
 
     /**
+     * Generates a hash with OpenSSL library (e.g. for verification hashes)
+     * @param $length * length of the generated hash
+     * @return string * hash
+     */
+    public static function generateSSLHash($length)
+    {
+        return bin2hex(openssl_random_pseudo_bytes($length));
+    }
+
+    /**
      * This function opens and returns the contents of the config.ini.php file
      * @param bool $process_sections * Get the ini contents as array with sections or without (default is without)
      * @return array|boolean * array of ini file contents or false on failure
