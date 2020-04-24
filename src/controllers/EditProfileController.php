@@ -3,6 +3,8 @@
 
 namespace controllers;
 
+use components\core\ControllerException;
+use components\validators\UserValidation;
 use models\User;
 
 class EditProfileController extends Controller
@@ -13,25 +15,20 @@ class EditProfileController extends Controller
         $user = User::getInstance();
         $userId = $user->getUserById($_SESSION['USER_ID']);
 
+        //The save button was pressed
+        if (isset($_POST["username"]) || isset($_POST["first_name"]) || isset($_POST["last_name"])) {
+            $new_data = [
+                'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
+                'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
+                'last_name' => filter_var(htmlspecialchars($_POST['last_name']), FILTER_SANITIZE_STRING),
+            ];
 
-            if (isset($_POST["username"]) || isset($_POST["first_name"]) || isset($_POST["last_name"]) || isset($_POST["email"]) || isset($_POST["password"]) || isset($_POST["password_repeat"])) {
-                $new_data = [
-                    'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
-                    'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
-                    'last_name' => filter_var(htmlspecialchars($_POST['last_name']), FILTER_SANITIZE_STRING),
-                    'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL),
-                    'password' => htmlspecialchars($_POST['password']),
-                    'password_repeat' => htmlspecialchars($_POST['password_repeat'])
-                ];
-
-                foreach ($new_data as $key => &$value) {
-                    $new_data[$key] = trim($value);
-                }
-
-                $this->updatePersonalInfo($new_data, $userId);
-                //$this->updateInfo($new_data, $userId);
-                $this->setSuccess("Profile successfully updated");
+            foreach ($new_data as $key => &$value) {
+                $new_data[$key] = trim($value);
             }
+            $this->updatePersonalInfo($new_data, $userId);
+            $this->setSuccess("Profile successfully updated");
+        }
 
         $this->view->pageTitle = "Edit Profile";
         $this->view->isSuccess = isset($_GET["success"]);
@@ -39,67 +36,39 @@ class EditProfileController extends Controller
 
     }
 
+    /* || isset($_POST["email"]) || isset($_POST["password"]))
+    'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL),
+                    'password' => htmlspecialchars($_POST['password']),
+    */
 
-    /**
-     * Validate if new input data is in correct form
-     * @param $new_data
-     * @param $old_data
-     */
-    private function checkData($new_data, $old_data)
-    {
-
-        //TODO check three input groups for empty separately??
-        // If the sanitized required values are empty
-        /*if (empty($new_data['username']) || empty($new_data['first_name']) || empty($new_data['last_name']) || empty($new_data['email']) || empty($new_data['password']) || empty($new_data['password_repeat'])) {
-            $this->setError("Fields cannot be empty!");
-        }*/
-
-        // Check if the username contains white spaces
-        if ($new_data['username'] !== $old_data->username && preg_match('/\s/', $new_data['username'])) {
-            $this->setError("Your username cannot contain whitespaces!");
-        }
-
-        if ($new_data['email'] !== $old_data->email && !filter_var($new_data['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->setError("Please enter a valid E-Mail address!");
-        }
-
-
-        // Check if maxlength is exceeded
-        if ($new_data['username'] !== $old_data->username && strlen($new_data["username"]) > 32) {
-            $this->setError("Length of username cannot exceed max length of 32.");
-        }
-        if ($new_data['email'] !== $old_data->email && strlen($new_data["email"]) > 32) {
-            $this->setError("Length of email cannot exceed max length of 32.");
-        }
-        if ($new_data['password'] !== $old_data->password && strlen($new_data["password"]) > 32) {
-            $this->setError("Length of password cannot exceed max length of 32.");
-        }
-        if ($new_data['first_name'] !== $old_data->first_name && strlen($new_data["first_name"]) > 32) {
-            $this->setError("Length of first_name cannot exceed max length of 32.");
-        }
-        if ($new_data['last_name'] !== $old_data->last_name && strlen($new_data["last_name"]) > 32) {
-            $this->setError("Length of last_name cannot exceed max length of 32.");
-        }
-    }
 
     /**
      * Updates username, first name or last name
-     * @param $new_data
-     * @param $old_data
+     * @param $new_data * new data to be saved to database
+     * @param $old_data *existing data
      */
-    private function updatePersonalInfo($new_data)
+    private function updatePersonalInfo($new_data, $old_data)
     {
         $user = User::getInstance();
-        $user_data["user_id"] = $user->getUserById($_SESSION["USER_ID"]);
+        $userId = $user->getUserById($_SESSION['USER_ID']);
+        //$data["username"] = $userId->username;
 
-        if (isset($_POST['updatePersonal'])) {
-            $this->checkData($new_data, $old_data);
-            $user->updateUser($new_data);
+         $userValidator = UserValidation::getInstance();
+         try {
+             $userValidator->validateNewData($new_data, $old_data);
+         } catch (ControllerException $exception) {
+             $this->setError($exception->getMessage());
+         }
+
+        $new_data += ["user_id" => $userId];
+        $user->updateUserData($new_data);
+
+        if (!$userId->updateUser($new_data)) {
+            $this->setError("Something went wrong");
         }
 
-
-
     }
+
 
     /**
      *Updates email address and requires the user to confirm new address

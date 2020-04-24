@@ -101,21 +101,40 @@ class User
         );
     }
 
+
     /**
-     * Update user data of the database
-     * @param $data * Data of the user
+     * Update user data in the database
+     * @param $data * Data of user
+     * @param $user_id
+     * @return bool
      */
-    public function updateUser($data)
+    public function updateUserData($data)
     {
-        // Map data
-        $data = $this->mapRegisterDataToUserTableData($data);
         self::$database->execute(
             "UPDATE users
-            SET username = :username, email = :email, first_name = :first_name, last_name = :last_name, password = :password
-            WHERE user_id = :user_id;",
-            $data
+            SET username = :username, first_name = :first_name, last_name = :last_name
+            WHERE user_id = :user_id",
+           $this->mapUpdatedDataToUserTableData($data)
         );
     }
+
+    /*email = :email, , password = :password*/
+
+
+    private function mapUpdatedDataToUserTableData($data)
+    {
+        if (empty($data['first_name'])) {
+            $data['first_name'] = null;
+        }
+        if (empty($data['last_name'])) {
+            $data['last_name'] = null;
+        }
+        return $data = [":username" => $data['username'],
+            ":first_name" => $data['first_name'],
+            ":last_name" => $data['last_name'],
+            ":user_id" => $data['user_id']];
+    }
+
 
 
 
