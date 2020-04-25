@@ -15,12 +15,13 @@ class EditProfileController extends Controller
         $user = User::getInstance();
         $userId = $user->getUserById($_SESSION['USER_ID']);
 
-        //The save button was pressed
-        if (isset($_POST["username"]) || isset($_POST["first_name"]) || isset($_POST["last_name"])) {
+        //Save button pressed on personal info
+        if (isset($_POST["username"]) || isset($_POST["first_name"]) || isset($_POST["last_name"]) || isset($_POST["email"])) {
             $new_data = [
                 'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
                 'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
                 'last_name' => filter_var(htmlspecialchars($_POST['last_name']), FILTER_SANITIZE_STRING),
+                'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL)
             ];
 
             foreach ($new_data as $key => &$value) {
@@ -30,65 +31,65 @@ class EditProfileController extends Controller
             $this->setSuccess("Profile successfully updated");
         }
 
+        //Save button pressed on password change
+        if (isset($_POST["password"])) {
+            $new_data = [
+                'password' => htmlspecialchars($_POST['password'])
+            ];
+
+            foreach ($new_data as $key => &$value) {
+                $new_data[$key] = trim($value);
+            }
+            $this->updatePassword($new_data, $userId);
+            $this->setSuccess("Please verify your new password");
+        }
+
         $this->view->pageTitle = "Edit Profile";
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
 
     }
 
-    /* || isset($_POST["email"]) || isset($_POST["password"]))
-    'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL),
-                    'password' => htmlspecialchars($_POST['password']),
-    */
-
 
     /**
-     * Updates username, first name or last name
+     * Updates username, first name, last name or email
      * @param $new_data * new data to be saved to database
      * @param $old_data *existing data
      */
-    private function updatePersonalInfo($new_data, $old_data)
+    private
+    function updatePersonalInfo($new_data, $old_data)
     {
         $user = User::getInstance();
-        $userId = $user->getUserById($_SESSION['USER_ID']);
-        //$data["username"] = $userId->username;
+        $userId = $_SESSION['USER_ID'];
 
-         $userValidator = UserValidation::getInstance();
-         try {
-             $userValidator->validateNewData($new_data, $old_data);
-         } catch (ControllerException $exception) {
-             $this->setError($exception->getMessage());
-         }
+        // Check if username is already in database
+        $existingUser = $user->getUserByUsername($new_data["username"]);
+        if (!empty($existingUser)) {
+            $this->setError("This username is already taken!");
+        }
+
+        // Check if email is already in database
+        /* $existingUser = $user->getUserByEmail($new_data["email"]);
+         if (!empty($existingUser)) {
+             $this->setError("An account with this E-Mail is already registered!");
+         }*/
+
+        $userValidator = UserValidation::getInstance();
+        try {
+            $userValidator->validateNewData($new_data, $old_data);
+        } catch (ControllerException $exception) {
+            $this->setError($exception->getMessage());
+        }
 
         $new_data += ["user_id" => $userId];
-        $user->updateUserData($new_data);
 
-        if (!$userId->updateUser($new_data)) {
+        //TODO data is updated but error displays
+        //TODO if nothing entered, deletes existing data (ex. if no email entered to update, empties email in database
+        if (!$user->updateUserData($new_data)) {
             $this->setError("Something went wrong");
         }
-
     }
 
-
-    /**
-     *Updates email address and requires the user to confirm new address
-     * @param $new_data
-     * @param $old_data
-     */
-    private function updateEmail($new_data, $old_data)
-    {
-        $user = User::getInstance();
-
-        if (isset($_SESSION["USER_ID"])) {
-            $user_data["user_id"] = $user->getUserById($_SESSION["USER_ID"]);
-        }
-//TODO how to get new email address?
-        $this->checkData($new_data, $old_data);
-        $user->updateUser($new_data);
-        $email = $user->getUserByEmail($new_data['email']);
-        $this->confirmEmail($email);
-
-    }
 
     /**
      *Updates password after checking if new password and repeated password match and requires
@@ -96,30 +97,31 @@ class EditProfileController extends Controller
      * @param $new_data
      * @param $old_data
      */
-    private function updatePassword($new_data, $old_data)
+    private
+    function updatePassword($new_data, $old_data)
     {
         $user = User::getInstance();
+        $userId = $_SESSION['USER_ID'];
 
-        if (isset($_SESSION["USER_ID"])) {
-            $user_data["user_id"] = $user->getUserById($_SESSION["USER_ID"]);
+        $userValidator = UserValidation::getInstance();
+        try {
+            $userValidator->validateNewPassword($new_data, $old_data);
+        } catch (ControllerException $exception) {
+            $this->setError($exception->getMessage());
         }
 
-        $this->checkData($new_data, $old_data);
+        $new_data += ["user_id" => $userId];
+        $email = $user->getUserByEmail($userId->email);
 
-        if ($new_data['password'] !== $old_data->password && strlen($new_data["password"]) > 32) {
-            $this->setError("Length of password cannot exceed max length of 32.");
+        //TODO doesn't send email
+        if ($user->updatePassword($new_data)){
+            $this->confirmationEmail($user, $email);
         }
 
-        if ($new_data['password'] !== $new_data['password_repeat']) {
-            $this->setError("Entered passwords do not match!");
-        } else {
-            $user->updateUser($new_data);
+       /* if (!$user->updatePassword($new_data)) {
+            $this->setError("Something went wrong");
+        }*/
 
-            //TODO how to get user email?
-            $email = $user->getUserByEmail($_SESSION['email']);
-            $this->confirmEmail($email);
-
-        }
 
 
     }
@@ -128,54 +130,20 @@ class EditProfileController extends Controller
      * Sends email to user to confirm changes
      * @param $email
      */
-    private function confirmEmail($email)
+    private function confirmationEmail($user, $email)
     {
         $iniFile = Utility::getIniFile();
-        $user = User::getInstance();
-        $hash = $user->getUserByEmail($email)->verification_hash;
 
         if (filter_var($iniFile['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             // Send the notification email to the email address
             $emailService = EmailService::getInstance();
-            $emailService->sendEmail($email,
-                "Confirm your email address",
-                "Follow <a href='{$iniFile['URL']}/confirm?hash={$hash}'>this link</a> to confirm your email address.");
+            $emailService->sendEmail($user->email,
+                "Your password has been updated.");
         } else {
             $this->setError(
                 "Email failed to send"
             );
         }
-    }
-
-
-    /**
-     * Updates user info depending on button clicked
-     * @param $new_data
-     * @param $old_data
-     */
-    private function updateInfo($new_data, $old_data)
-    {
-        if (isset($_POST["updatePersonal"])) {
-            $this->updatePersonalInfo($new_data, $old_data);
-        } elseif (isset($_POST["updateEmail"])) {
-            $this->updateEmail();
-        } elseif (isset($_POST["updatePassword"])) {
-            $this->updatePassword();
-        }
-        $this->setSuccess("Successfully updated profile");
-
-        /* if (isset($_POST["update"])) {
-             $user = User::getInstance();
-
-             if (isset($_SESSION["USER_ID"])) {
-                 $data["user_id"] = $user->getUserById($_SESSION["USER_ID"]);
-             }
-
-             $this->checkData($new_data, $old_data);
-
-             $user->updateUser($new_data);
-
-         }*/
     }
 
 

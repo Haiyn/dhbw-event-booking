@@ -9,68 +9,69 @@
 
         <?php if (isset($isError) && $isError): ?>
             <div class="alert alert-danger" role="alert">
-                <p class="text-danger"><?=$_SESSION["PROFILE_UPDATE_ERROR"]?></p>
+                <p class="text-danger"><?= $_SESSION["EDIT_PROFILE_ERROR"] ?></p>
             </div>
         <?php endif ?>
 
-        <?php if(isset($isSuccess) && $isSuccess): ?>
+        <?php if (isset($isSuccess) && $isSuccess): ?>
             <div class="alert alert-success" role="alert">
-                <p class="text-success"><?=$_SESSION["PROFILE_UPDATE_SUCCESS"]?></p>
+                <p class="text-success"><?= $_SESSION["EDIT_PROFILE_SUCCESS"] ?></p>
             </div>
         <?php endif ?>
 
-    <form method="post">
-        <div class="card" style="margin-bottom: 30px">
-            <div class="card-header">
-                <h3>Change personal information</h3>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" maxlength="32" class="form-control"><br/>
+        <form method="post">
+            <div class="card" style="margin-bottom: 30px">
+                <div class="card-header">
+                    <h3>Change personal information</h3>
                 </div>
-                <div class="form-group">
-                    <label for="first_name">First Name</label>
-                    <input type="text" name="first_name" maxlength="32" class="form-control"><br/>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="username">New username</label>
+                        <input type="text" name="username" maxlength="32" class="form-control"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="first_name">New First Name</label>
+                        <input type="text" name="first_name" maxlength="32" class="form-control"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">New Last Name</label>
+                        <input type="text" name="last_name" maxlength="32" class="form-control"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">New E-Mail</label>
+                        <input type="email" name="email" maxlength="32" class="form-control"><br/>
+                    </div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary" name="update">Save</button>
+                        <a href="/profile" class="btn btn-secondary">Cancel</a>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="last_name">Last Name</label>
-                    <input type="text" name="last_name" maxlength="32" class="form-control"><br/>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" name="updatePersonal">Save</button>
-        </div>
-    </form>
-        <div class="card" style="margin-bottom: 30px">
-            <div class="card-header">
-                <h3>Change email address</h3>
-            </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="email">E-Mail</label>
-                    <input type="email" name="email" maxlength="32" class="form-control"><br/>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" name="updateEmail">Save</button>
-        </div>
 
-        <div class="card" style="margin-bottom: 30px">
-            <div class="card-header">
-                <h3>Change password</h3>
             </div>
-            <div class="card-body">
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" maxlength="32" class="form-control"><br/>
-                </div>
-                <div class="form-group">
-                    <label for="password_repeat">Repeat password</label>
-                    <input type="password" name="password_repeat" maxlength="32" class="form-control"><br/>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" name="updatePassword">Save</button>
-        </div>
+        </form>
 
+
+        <form method="post">
+            <div class="card" style="margin-bottom: 30px">
+                <div class="card-header">
+                    <h3>Change password</h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" maxlength="32" class="form-control"><br/>
+                    </div>
+                    <div class="form-group">
+                        <label for="password_repeat">Repeat password</label>
+                        <input type="password" name="password_repeat" maxlength="32" class="form-control"><br/>
+                    </div>
+                    <div class="row">
+                        <button type="submit" class="btn btn-primary" name="update">Save</button>
+                        <a href="/profile" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </form>
 
 
     </div>

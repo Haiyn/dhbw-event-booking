@@ -98,11 +98,6 @@ class UserValidation
             throw new ControllerException("Your username cannot contain whitespaces!");
         }
 
-        if (!filter_var($new_data['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new ControllerException("Please enter a valid E-Mail address!");
-        }
-
-
         // Check if maxlength is exceeded
         if ($new_data['username'] !== $old_data->username && strlen($new_data["username"]) > 32) {
             throw new ControllerException("Length of username cannot exceed max length of 32.");
@@ -110,14 +105,21 @@ class UserValidation
         if ($new_data['email'] !== $old_data->email && strlen($new_data["email"]) > 32) {
             throw new ControllerException("Length of email cannot exceed max length of 32.");
         }
-        if ($new_data['password'] !== $old_data->password && strlen($new_data["password"]) > 32) {
-            throw new ControllerException("Length of password cannot exceed max length of 32.");
-        }
         if ($new_data['first_name'] !== $old_data->first_name && strlen($new_data["first_name"]) > 32) {
             throw new ControllerException("Length of first_name cannot exceed max length of 32.");
         }
         if ($new_data['last_name'] !== $old_data->last_name && strlen($new_data["last_name"]) > 32) {
             throw new ControllerException("Length of last_name cannot exceed max length of 32.");
+        }
+    }
+
+    public function validateNewPassword($new_data, $old_data){
+        if ($new_data['password'] !== $old_data->password && strlen($new_data["password"]) > 32) {
+            throw new ControllerException("Length of password cannot exceed max length of 32.");
+        }
+
+        if ($new_data['password'] !== $_POST['password_repeat']) {
+            $this->setError("Entered passwords do not match!");
         }
     }
 

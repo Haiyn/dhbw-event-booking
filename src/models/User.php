@@ -105,22 +105,37 @@ class User
     /**
      * Update user data in the database
      * @param $data * Data of user
-     * @param $user_id
-     * @return bool
      */
     public function updateUserData($data)
     {
         self::$database->execute(
             "UPDATE users
-            SET username = :username, first_name = :first_name, last_name = :last_name
+            SET username = :username, first_name = :first_name, last_name = :last_name, email = :email
             WHERE user_id = :user_id",
-           $this->mapUpdatedDataToUserTableData($data)
+            $this->mapUpdatedDataToUserTableData($data)
         );
     }
 
-    /*email = :email, , password = :password*/
 
+    /**
+     * Update user password in the database
+     * @param $data * new password
+     */
+    public function updatePassword($data)
+    {
+        self::$database->execute(
+            "UPDATE users
+        SET password = :password
+        WHERE user_id = :user_id",
+            $this->mapUpdatedPasswordToUserTableData($data)
+        );
+    }
 
+    /**
+     * Maps the updated user data into the database
+     * @param $data * data to map
+     * @return array * mapped data that fits users table data
+     */
     private function mapUpdatedDataToUserTableData($data)
     {
         if (empty($data['first_name'])) {
@@ -132,11 +147,24 @@ class User
         return $data = [":username" => $data['username'],
             ":first_name" => $data['first_name'],
             ":last_name" => $data['last_name'],
-            ":user_id" => $data['user_id']];
+            ":email" => $data['email'],
+            ":user_id" => $data['user_id']
+        ];
     }
 
-
-
+    /**
+     * Maps the updated password in hashed form into the database
+     * @param $data * data to map
+     * @return array * mapped data that fits users table data
+     */
+    private function mapUpdatedPasswordToUserTableData($data)
+    {
+        return $data =
+            [
+                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"]),
+                ":user_id" => $data['user_id']
+            ];
+    }
 
     /**
      * Maps the data from user_data to a users database object
