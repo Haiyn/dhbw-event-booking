@@ -40,3 +40,10 @@ CREATE TABLE IF NOT EXISTS sessions (
     ip_address VARCHAR(16) NOT NULL,
     user_agent TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS messages (
+    message_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id_from UUID  NOT NULL REFERENCES users (user_id),
+    id_to UUID  NOT NULL REFERENCES users (user_id),
+    time_sent TIMESTAMP DEFAULT NOW(),
+    message VARCHAR (2048) NOT NULL
+);

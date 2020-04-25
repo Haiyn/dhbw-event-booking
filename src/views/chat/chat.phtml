@@ -7,6 +7,7 @@
     <body>
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
         <div class="container min-vh-80">
+            <!-- Chat Header -->
             <div class="container">
                 <h1>Private Chat</h1><br>
                 <?php if(isset($isError) && $isError): ?>
@@ -15,11 +16,12 @@
                     </div>
                 <?php endif ?>
                 <?php if(isset($username)): ?>
-                    <p>You are chatting with <?= isset($username) ? $username : "a user"?>.</p>
+                    <p>You are chatting with <?=$username?>.</p>
                 <?php endif ?>
                 <p id="js-status"></p>
             </div>
 
+            <!-- Messages and message history box -->
             <div id="js-history-box" class="container">
                 <div class="msg-inbound bg-light">
                     <p>This is an inbound message.</p>
@@ -29,14 +31,12 @@
                 </div>
             </div>
 
+            <!-- Input and send button -->
             <div class="msg-send">
                 <input id="js-message-box" type="text" name="message" placeholder="Enter your message..."
                        maxlength="2048" class="form-control"><br/>
                 <button id="js-send-button" class="btn btn-outline-primary">Send Message</button>
             </div>
-
-
-
         </div>
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
     </body>
