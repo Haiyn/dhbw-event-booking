@@ -3,7 +3,7 @@
 namespace controllers;
 
 use components\core\Utility;
-use components\core\ValidatorException;
+use components\validators\ValidatorException;
 use components\email\EmailService;
 use components\validators\EventValidator;
 use models\Booking;
