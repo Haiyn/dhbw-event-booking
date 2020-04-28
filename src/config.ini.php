@@ -11,7 +11,7 @@ DB_PASS         = "dev"
 [Email]
 ; Enable sending of mails
 ; If false, critical information will be shown in the browser
-EMAIL_ENABLED           = "true"
+EMAIL_ENABLED           = "false"
 
 ; Enable PHPMailer Mailing
 ; EMAIL_ENABLED must be true
