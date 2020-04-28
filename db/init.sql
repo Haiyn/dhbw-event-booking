@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS users (
     user_id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     username VARCHAR(32) UNIQUE NOT NULL,
     email VARCHAR(32) UNIQUE NOT NULL,
-    password VARCHAR(32) NOT NULL,
+    password VARCHAR(255) NOT NULL,
     first_name VARCHAR(32),
     last_name VARCHAR(32),
     age SMALLINT,
