@@ -29,7 +29,7 @@ class ChatController extends Controller
 
             $messages = $this->getMessages($chatPartnerID);
 
-            $message = Message::getInstance();
+            //$message = Message::getInstance();
 
             $this->view->username = $partner['username'];
             $this->view->pageTitle = "Chat with " . $partner['username'];
@@ -56,7 +56,7 @@ class ChatController extends Controller
 
     private function getMessages($userID) {
 
-        $message = Message::getInstance();
+/*        $message = Message::getInstance();
 
         // Get all messages (inbound and outbound)
         $inbound = $message->getMessagesByUserIdDirection($userID, $_SESSION['USER_ID']);
@@ -70,6 +70,7 @@ class ChatController extends Controller
             return $v1 - $v2;
         });
 
-        return $messages;
+        return $messages;*/
+return null;
     }
 }
