@@ -2,7 +2,6 @@
 
 namespace components\validators;
 
-use components\core\ValidatorException;
 use models\Booking;
 use models\enums\Status;
 use models\enums\Visibility;

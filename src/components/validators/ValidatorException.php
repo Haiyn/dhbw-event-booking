@@ -1,6 +1,6 @@
 <?php
 
-namespace components\core;
+namespace components\validators;
 
 /**
  * Class ValidatorException
