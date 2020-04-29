@@ -7,6 +7,7 @@
         <link href="views/chat/chat.css" rel="stylesheet">
     </head>
     <body>
+
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
         <div class="container min-vh-80">
             <!-- Chat Header -->
@@ -20,7 +21,9 @@
                 <?php if(isset($username)): ?>
                     <p>You are chatting with <?=$username?>.</p>
                 <?php endif ?>
-                <p id="js-status"></p>
+                <div hidden id="js-alert-box" class="alert alert-danger" role="alert">
+                    <p id="js-alert-text" class="text-danger"></p>
+                </div>
             </div>
 
             <!-- Messages and message history box -->
@@ -37,7 +40,7 @@
             <div class="msg-send">
                 <input id="js-message-box" type="text" name="message" placeholder="Enter your message..."
                        maxlength="2048" class="form-control"><br/>
-                <button id="js-send-button" class="btn btn-outline-primary">Send Message</button>
+                <button disabled id="js-send-button" class="btn btn-outline-primary">Send Message</button>
             </div>
         </div>
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>

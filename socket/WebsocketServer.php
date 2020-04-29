@@ -4,17 +4,20 @@ class WebsocketServer
 {
     // Class Instances
     private static $instance;
-    private static $socket;
-    private static $clients;
+    private $socket;
 
     // Configuration
     private static $HOST                = "0.0.0.0";
     private static $PORT                = 8089;
-    private static $ALLOWED_ORIGINS     = [ "http://localhost:8080" ];      // Defines the origins that can connect
-    private static $READ_SIZE           = 2048;                             // The size of every message buffer
-    private static $TRACE_ENABLED       = true;                             // echo trace messages or not
-    private static $TIMEOUT             = 60;                               // Max timeout in s before client is stale
+    private static $ALLOWED_ORIGIN     = "http://localhost:8080";      // Defines the origins that can connect
+    private static $READ_SIZE           = 2048;                        // The size of every message buffer
+    private static $TRACE_ENABLED       = true;                        // echo trace messages or not
+    private static $TIMEOUT             = 10;                          // Timeout of each listen iteration in s
 
+    /**
+     * Creates a new class instance from a static context
+     * @return WebsocketServer
+     */
     public static function run()
     {
         if (self::$instance === null) {
@@ -26,19 +29,21 @@ class WebsocketServer
 
     public function __construct()
     {
-        echo "[DEBUG] Creating Websocket...";
+        $this->log("Creating Websocket...");
         $this->create();
-        echo "\n[DEBUG] Websocket created.\n[DEBUG] Initializing...";
         $this->initialize();
-        echo "\n[DEBUG] Initialized.\n[DEBUG] Waiting for connections...";
+        $this->log("Waiting for connections...");
         $this->listen();
     }
 
+    /**
+     * Creates master socket
+     */
     private function create() {
         try
         {
             self::$instance = $this;
-            self::$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         }
         catch (Exception $exception)
         {
@@ -47,12 +52,15 @@ class WebsocketServer
         }
     }
 
+    /**
+     * Sets options and with default configuration and binds master socket to host:port
+     */
     public function initialize()
     {
         try
         {
-            socket_set_option(self::$socket, SOL_SOCKET, SO_REUSEADDR, 1);
-            socket_bind(self::$socket, self::$HOST, self::$PORT);
+            socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+            socket_bind($this->socket, self::$HOST, self::$PORT);
         }
         catch(Exception $exception)
         {
@@ -61,98 +69,109 @@ class WebsocketServer
         }
     }
 
+    /**
+     * Work/Listen loop of the master socket
+     */
     public function listen()
     {
-        socket_listen(self::$socket);
+        socket_listen($this->socket);
 
-        $clients = [];  // Array of all connected sockets
-        $ticks = 0;     // Counter for stale client watchdog
+        $clients = array($this->socket);  // Array of all active sockets
 
         while (true) {
-            // Accept new connections
-            if ($newClient = socket_accept(self::$socket)) {
-                if (is_resource($newClient)) {
-                    // Try to accept the new client
-                    if($this->accept($newClient)) {
+            $read = $clients; // Array of all sockets with news
+
+            // Select all sockets that have news and write them to $read
+            if (socket_select($read, $write = array(), $except = array(), 0) < 1)
+                continue;
+
+            $this->log(count($read) . " socket(s) have a new message.");
+
+            // NEW CONNECTION
+            if (in_array($this->socket, $read)) {
+                // Accept new connection
+                $newClient = socket_accept($this->socket);
+                socket_getpeername($newClient, $ip);
+                $this->log("New connection request from {$ip}. Trying to accept...");
+
+                // Receive the request header
+                $request = $this->receive($newClient, 10000);
+                $this->trace("Incoming:\n{$request}");
+
+                // Check if origin is allowed
+                preg_match('/Origin: (.*)\r\n/', $request, $matches);
+                if(self::$ALLOWED_ORIGIN == $matches[1]) {
+                    // Origin is allowed, send response
+                    $response = $this->createResponse($request);
+                    $this->trace("Outgoing:\n{$response}");
+                    if($this->send($newClient, $response)) {
+                        // Response successful
+                        $this->log("Accepted connection from {$matches[1]}\n");
                         // Add the new client to the array of active clients
-                        array_push($clients, $newClient);
+                        $clients[] = $newClient;
+                        $this->log((count($clients) - 1) . " clients connected");
+
+                        // Remove from the master socket from news array
+                        $key = array_search($this->socket, $read);
+                        unset($read[$key]);
                     }
+                } else {
+                    // If not, refuse it
+                    $this->log("Refused connection from {$matches[1]}");
+                    socket_close($newClient);
                 }
             }
 
-            // Poll every active client in clients for a new message
-            if (count($clients)) {
-                foreach ($clients as $count => $socket) {
-                    // Check if client has sent a new message
+            // NEW MESSAGES
+            if (count($read)) {
+                // Receive message from every client with news
+                foreach ($read as $count => $socket) {
+                    // Get the new message
+                    $this->log("Socket #" . $count . " has news");
                     $message = $this->receive($socket);
-                    if ($message) {
-                        if(self::$TRACE_ENABLED) {
-                            echo "\n[TRACE] New message from client #$count: $message";
-                        }
-                        // If client has sent new message, broadcast it to all clients
-                        foreach ($clients as $recipient) {
-                            if ($socket != $recipient) {
-                                // TODO: Unmask message before sending
-                                if(!$this->send($recipient, $message)) {
-                                    echo "\n[WARN] A client refused a broadcast. Is it stale?";
-                                }
-                            }
-                        }
 
-                    } else {
-                        // If client has not sent a new message, check if the client is stale
-                        // TODO: Fix watchdog
-                        if ($ticks > self::$TIMEOUT) {
-                            // Ping the client
-                            if (!$this->send($socket, "PING")) {
-                                echo "[TRACE] Pinged socket is not responding. Removing...";
-                                // Close non-responsive connection
-                                socket_close($clients[$count]);
-                                // Remove from active connections array
-                                unset($clients[$count]);
-                            }
-                            // Client socket got the ping, reset the stale timer
-                            $ticks = 0;
+                    // Client has new message
+                    if (!empty($message)) {
+                        // Unmask the message
+                        $message = $this->unmask($message);
+                        $this->trace("New message from client #$count: $message");
+
+                        // Broadcast unmasked message to all active clients
+                        foreach ($clients as $recipient) {
+                            // Ignore master socket and current socket
+                            if ($recipient == $this->socket || $recipient == $socket)
+                                continue;
+
+                            // Send message to the recipient socket
+                            $this->trace("Sending message to socket");
+                            print_r($recipient);
+                            $this->send($recipient, $message."\n");
                         }
+                        continue;
+                    } else {
+                        // Message is empty, remove the client
+                        $this->trace("Socket is sending malformed data: ---{$message}--- Is it disconnected? Removing...");
+                        socket_close($socket);
+                        $key = array_search($socket, $clients);
+                        unset($clients[$key]);
+                        $this->log("Client disconnected.");
                     }
                 }
             }
-            $ticks++;
+            // End of message polling
+            sleep(self::$TIMEOUT);
         }
 
         // Close the master sockets
-        socket_close(self::$socket);
-
-
-    }
-    function accept($client) {
-        echo "\n[DEBUG] New connection request. Trying to accept...";
-        // Receive the request header
-        $request = $this->receive($client, 10000);
-        if(self::$TRACE_ENABLED) {
-            echo "\n[TRACE] {$request}\n";
-        }
-
-        // Check if the request came from an origin that is in the ini
-        preg_match('/Origin: (.*)\r\n/', $request, $matches);
-        foreach(self::$ALLOWED_ORIGINS as $origin)
-        if($matches[1] == $origin) {
-            // If origin is in allowed origins ini setting, accept the connection
-            $response = $this->createResponse($request);
-            if($this->send($client, $response)) {
-                echo "\n[INFO] Accepted connection from {$matches[1]}\n";
-                return true;
-            }
-            echo "\n[ERROR] Client refused response";
-            return false;
-        }
-
-        // If not, refuse it
-        echo "\n[WARN] Refused connection from {$matches[1]}\n";
-        socket_close($client);
-        return false;
+        socket_close($this->socket);
     }
 
+    /**
+     * Read data from a given socket
+     * @param $socket * socket to read from
+     * @param null $length * Length to read (if null, default READ_SIZE will be read)
+     * @return false|string * failure | read message
+     */
     private function receive($socket, $length = null) {
         if(empty($length)) {
             $length = self::$READ_SIZE;
@@ -160,20 +179,124 @@ class WebsocketServer
         return socket_read($socket, $length);
     }
 
-    private function send($client, $message) {
-        return socket_write($client, $message, strlen($message));
+    /**
+     * Writes data to a given socket
+     * @param $socket * socket to write to
+     * @param $message * message to write
+     * @return bool * success on >0 Bytes written, failure if write failed or 0 byte written
+     */
+    private function send($socket, $message) {
+        $result = socket_write($socket, $message, strlen($message));
+        if($result === false) {
+            // Writing failed, log error
+            $this->log("ERROR: " . socket_strerror(socket_last_error()));
+            return false;
+        } else if ($result === 0) {
+            // Writing succeeded but 0 bytes were written
+            $this->log("WARNING: 0 Bytes were sent");
+            return false;
+        }
+        // Writing succeeded
+        $this->trace($result . " Bytes were sent.");
+        return true;
     }
 
+    /**
+     * Checks a message for masking and unmasks if needed
+     * @param $message * message to check
+     * @return false|string * failure | unmasked data
+     */
+    private function unmask($message) {
+        $bytes = $message;
+        $decodedData = '';
+
+        // Get the second byte
+        $secondByte = sprintf('%08b', ord($bytes[1]));
+        // Check first bit of second byte (mask bit) is 1 (true) or 0 (false)
+        $masked = ($secondByte[0] == '1') ? true : false;
+        // Get the data length if mask bit is set
+        $dataLength = ($masked === true) ? ord($bytes[1]) & 127 : ord($bytes[1]);
+
+        // Check if masked byte is set
+        if ($masked === true)
+        {
+            // Get the masking key for different payload lengths
+            // See https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
+            if ($dataLength === 126) {
+                // Extended payload length  (16): 24 Bits, 3 Bytes
+                $mask = substr($bytes, 4, 4);
+                $codedData = substr($bytes, 8);
+            }
+            elseif ($dataLength === 127) {
+                // Extended payload length continued (64): 84 Bits, 14 Bytes (8+16+64)
+                $mask = substr($bytes, 10, 4);
+                $codedData = substr($bytes, 14);
+            }
+            else {
+                // Payload length (8): 8 Bits, 1 Byte
+                $mask = substr($bytes, 2, 4);
+                $codedData = substr($bytes, 6);
+            }
+
+            // Decode the data with the mask
+            for ($i = 0; $i < strlen($codedData); $i++) {
+                $decodedData .= $codedData[$i] ^ $mask[$i % 4];
+            }
+        }
+        else
+        {
+            // Message is not masked, get the payload for different payload lengths
+            if ($dataLength === 126) {
+                // Extended Payload
+                $decodedData = substr($bytes, 4);
+            } elseif ($dataLength === 127) {
+                // Extended payload continued
+                $decodedData = substr($bytes, 10);
+            } else {
+                // payload
+                $decodedData = substr($bytes, 2);
+            }
+
+        }
+
+        return $decodedData;
+    }
+
+    /**
+     * Creates a response header for accepting a message
+     * @param $input * Request header
+     * @return string * Response header
+     */
     function createResponse($input) {
+        // Get the sent key and generate accept key
         preg_match('/Sec-WebSocket-Key: (.*)\r\n/', $input, $matches);
         $rawKey = sha1($matches[1].'258EAFA5-E914-47DA-95CA-C5AB0DC85B11',true);
         $acceptKey = base64_encode($rawKey);
 
-        return $result = "HTTP/1.1 101 Switching Protocols\r\n"
+        // Construct and return response header
+        return $output = "HTTP/1.1 101 Switching Protocols\r\n"
             . "Upgrade: websocket\r\n"
             . "Connection: Upgrade\r\n"
             . "Sec-WebSocket-Version: 13\r\n"
             . "Sec-WebSocket-Accept: $acceptKey\r\n\r\n";
+    }
+
+    /**
+     * Logs a message
+     * @param $message
+     */
+    private function log($message) {
+        echo("\n[LOG] {$message}");
+    }
+
+    /**
+     * Logs a very verbose message if TRACE_ENABLED true
+     * @param $message
+     */
+    private function trace($message) {
+        if(self::$TRACE_ENABLED) {
+            echo("\n[TRACE] {$message}");
+        }
     }
 
 
