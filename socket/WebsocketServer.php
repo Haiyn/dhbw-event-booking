@@ -133,19 +133,19 @@ class WebsocketServer
                     // Client has new message
                     if (!empty($message)) {
                         // Unmask the message
+                        if(!$this->handleOpcode($message, $socket)) continue;
                         $message = $this->unmask($message);
                         $this->trace("New message from client #$count: $message");
 
                         // Broadcast unmasked message to all active clients
                         foreach ($clients as $recipient) {
                             // Ignore master socket and current socket
-                            if ($recipient == $this->socket || $recipient == $socket)
-                                continue;
+                            if ($recipient == $this->socket || $recipient == $socket) continue;
 
                             // Send message to the recipient socket
                             $this->trace("Sending message to socket");
                             print_r($recipient);
-                            $this->send($recipient, $message."\n");
+                            $this->send($recipient, $this->mask($message."\n"));
                         }
                         continue;
                     } else {
@@ -201,65 +201,94 @@ class WebsocketServer
         return true;
     }
 
+    private function handleOpcode($bytes, $socket) {
+
+        // Get the first byte to check for opcode
+        $firstByte = sprintf('%08b', ord($bytes[0]));
+        $opcode = dechex(bindec(substr($firstByte, 4, 4)));
+
+        //https://tools.ietf.org/html/rfc6455#section-11.8
+        $opcodes = [
+            "0" => "Continuation",
+            "1" => "Text",
+            "2" => "Binary Data",
+            "8" => "Connection Close",
+            "9" => "Ping",
+            "A" => "Pong"
+        ];
+        $this->trace("Opcode is 0x{$opcode} ({$opcodes[$opcode]})");
+
+        switch($opcodes[$opcode]) {
+            case "8":
+                $this->log("Remote client closed the connection.");
+                socket_close($socket);
+                return false;
+            default:
+                return true;
+        }
+    }
+
     /**
      * Checks a message for masking and unmasks if needed
      * @param $message * message to check
      * @return false|string * failure | unmasked data
      */
-    private function unmask($message) {
-        $bytes = $message;
+    private function unmask($bytes) {
         $decodedData = '';
 
-        // Get the second byte
-        $secondByte = sprintf('%08b', ord($bytes[1]));
-        // Check first bit of second byte (mask bit) is 1 (true) or 0 (false)
-        $masked = ($secondByte[0] == '1') ? true : false;
         // Get the data length if mask bit is set
-        $dataLength = ($masked === true) ? ord($bytes[1]) & 127 : ord($bytes[1]);
+        $dataLength = ord($bytes[1]) & 127;
+        $this->trace("Message length is " . $dataLength);
 
-        // Check if masked byte is set
-        if ($masked === true)
-        {
-            // Get the masking key for different payload lengths
-            // See https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
-            if ($dataLength === 126) {
-                // Extended payload length  (16): 24 Bits, 3 Bytes
-                $mask = substr($bytes, 4, 4);
-                $codedData = substr($bytes, 8);
-            }
-            elseif ($dataLength === 127) {
-                // Extended payload length continued (64): 84 Bits, 14 Bytes (8+16+64)
-                $mask = substr($bytes, 10, 4);
-                $codedData = substr($bytes, 14);
-            }
-            else {
-                // Payload length (8): 8 Bits, 1 Byte
-                $mask = substr($bytes, 2, 4);
-                $codedData = substr($bytes, 6);
-            }
-
-            // Decode the data with the mask
-            for ($i = 0; $i < strlen($codedData); $i++) {
-                $decodedData .= $codedData[$i] ^ $mask[$i % 4];
-            }
+        // Get the masking key for different payload lengths
+        // See https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
+        if ($dataLength === 126) {
+            // Extended payload length  (16): 24 Bits, 3 Bytes
+            $mask = substr($bytes, 4, 4);
+            $codedData = substr($bytes, 8);
         }
-        else
-        {
-            // Message is not masked, get the payload for different payload lengths
-            if ($dataLength === 126) {
-                // Extended Payload
-                $decodedData = substr($bytes, 4);
-            } elseif ($dataLength === 127) {
-                // Extended payload continued
-                $decodedData = substr($bytes, 10);
-            } else {
-                // payload
-                $decodedData = substr($bytes, 2);
-            }
-
+        elseif ($dataLength === 127) {
+            // Extended payload length continued (64): 84 Bits, 14 Bytes (8+16+64)
+            $mask = substr($bytes, 10, 4);
+            $codedData = substr($bytes, 14);
         }
+        else {
+            // Payload length (8): 8 Bits, 1 Byte
+            $mask = substr($bytes, 2, 4);
+            $codedData = substr($bytes, 6);
+        }
+
+        // Decode the data with the mask
+        for ($i = 0; $i < strlen($codedData); $i++) {
+            $decodedData .= $codedData[$i] ^ $mask[$i % 4];
+        }
+
 
         return $decodedData;
+    }
+
+    function mask($message)
+    {
+        $codedData = '';
+
+        // Set data length and mask
+        $b1 = 0x80 | (0x1 & 0x0f);
+        $dataLength = strlen($message);
+
+        // Mask message for different payload lengths
+        // See https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
+        if($dataLength <= 125) {
+            $codedData = pack('CC', $b1, $dataLength);
+        }
+        elseif($dataLength > 125 && $dataLength < 65536) {
+            $codedData = pack('CCn', $b1, 126, $dataLength);
+        }
+
+        elseif($dataLength >= 65536) {
+            $codedData = pack('CCNN', $b1, 127, $dataLength);
+        }
+
+        return $codedData.$message;
     }
 
     /**

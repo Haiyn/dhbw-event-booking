@@ -46,7 +46,7 @@ $(document).ready(function () {
      */
     server.onmessage = e => {
         // Create a new inbound message box
-        createNewMessage(e.data.message, true);
+        createNewMessage(e.data, true);
         console.log(e.data);
     };
 
