@@ -3,7 +3,7 @@
 namespace controllers;
 
 use components\core\Utility;
-use components\core\ValidatorException;
+use components\validators\ValidatorException;
 use components\email\EmailService;
 use components\validators\EventValidator;
 use models\Booking;
@@ -153,7 +153,8 @@ class EventDetailController extends Controller
             $creator = $user->getUserById($event->creator_id);
 
             if (isset($creator)) {
-                $event->creator = $creator->username;
+                $event->creator_username = $creator->username;
+                $event->creator_email = $creator->email;
             }
 
             $current_user_id = $_SESSION['USER_ID'];

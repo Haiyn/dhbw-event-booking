@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label for="event-detail-title">Creator</label>
                 <input id="event-detail-title" type="text" name="creator"
-                       value="<?=isset($event) ? $event->creator : '' ?>" readonly class="form-control"><br/>
+                       value="<?=isset($event) ? $event->creator_username : '' ?>" readonly class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-title">Creation Date</label>
@@ -145,7 +145,7 @@
         </form>
         <!-- Buttons at the bottom -->
         <?php if (isset($event) && isset($edit) && !$edit): ?>
-            <a href="#" class="btn btn-primary mb-3">Contact Creator</a>
+            <a href="mailto:<?=$event->creator_email?>" class="btn btn-primary mb-3">Contact Creator</a>
             <a href="/chat?user_id=<?=$event->creator_id?>" class="btn btn-primary mb-3">Contact Creator</a>
             <?php if (isset($status) && $status == \models\enums\Status::$ACCEPTED): ?>
                 <a href="/event-detail?event_id=<?=$event->event_id . '&unbook_event=' . $_SESSION['USER_ID']?>"
