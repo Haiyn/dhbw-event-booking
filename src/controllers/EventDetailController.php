@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use components\core\ControllerException;
 use components\core\Utility;
+use components\validators\ValidatorException;
 use components\email\EmailService;
 use components\validators\EventValidator;
 use models\Booking;
@@ -11,6 +11,11 @@ use models\enums\Status;
 use models\Event;
 use models\User;
 
+/**
+ * Class EventDetailController
+ * Controls everything in the event detail view: displaying and editing event data
+ * @package controllers
+ */
 class EventDetailController extends Controller
 {
     public function render($params)
@@ -129,7 +134,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateEventEditData($new_data, $old_data);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 
@@ -148,7 +153,8 @@ class EventDetailController extends Controller
             $creator = $user->getUserById($event->creator_id);
 
             if (isset($creator)) {
-                $event->creator = $creator->username;
+                $event->creator_username = $creator->username;
+                $event->creator_email = $creator->email;
             }
 
             $current_user_id = $_SESSION['USER_ID'];
@@ -268,7 +274,7 @@ class EventDetailController extends Controller
         $status = null;
         try {
             $status = $event_validator->validateAttendData($event, $attendees, $attendee_id);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
         // Add the attendee, based on the current status
@@ -321,7 +327,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateInviteUserData($event, $found_user, $attendees);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 
@@ -360,7 +366,7 @@ class EventDetailController extends Controller
         $event_validator = EventValidator::getInstance();
         try {
             $event_validator->validateUnattendData($attendees, $attendee_id);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage(), $exception->getParams());
         }
 

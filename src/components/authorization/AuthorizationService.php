@@ -3,9 +3,15 @@
 namespace components\authorization;
 
 use components\core\Utility;
+use components\InternalComponent;
 use models\Session;
 
-class AuthorizationService
+/**
+ * Class AuthorizationService
+ * Manages everything that has to do with session. Sessions are created, validated and destroyed here.
+ * @package components\authorization
+ */
+class AuthorizationService extends InternalComponent
 {
     private static $instance;
 
@@ -40,11 +46,9 @@ class AuthorizationService
 
         // Save the session to the database
         $session = Session::getInstance();
-        if (!$session->saveSession($session_data))
-        {
+        if (!$session->saveSession($session_data)) {
             // Insert/Update was unsuccessful
-            header("Location: /internal-error");
-            exit(1);
+            $this->setError("Could not update session in database.");
         }
     }
 
@@ -57,11 +61,9 @@ class AuthorizationService
     {
         // Delete the session from the database
         $session = Session::getInstance();
-        if (!$session->deleteSessionById(session_id()))
-        {
+        if (!$session->deleteSessionById(session_id())) {
             // Something went wrong while deleting the existing session
-            header("Location: /internal-error");
-            exit(1);
+            $this->setError("Could not find existing session in database.");
         }
 
         // Delete the session from the server
@@ -85,15 +87,15 @@ class AuthorizationService
     public function checkSession()
     {
         // If user_id is not set, the user is not logged in
-        if (empty($_SESSION['USER_ID']))
-        {
+        if (empty($_SESSION['USER_ID'])) {
             header("Location: /login");
             exit(0);
         }
         // Check if the session is expired
-        if (!empty($_SESSION['LOGIN_TIME']) &&
-            time() - Utility::getIniFile()['LOGIN_TIMEOUT'] > $_SESSION['LOGIN_TIME'])
-        {
+        if (
+            !empty($_SESSION['LOGIN_TIME']) &&
+            time() - Utility::getIniFile()['LOGIN_TIMEOUT'] > $_SESSION['LOGIN_TIME']
+        ) {
             $this->unsetSession();
         }
         // Beyond this point, the user to that session ID is logged in
@@ -104,17 +106,20 @@ class AuthorizationService
         $currentSession = self::generateCurrentSessionData();
 
         // Check if session exists in database
-        if (empty($savedSession))
-        {
+        if (empty($savedSession)) {
             $this->unsetSession();
         }
 
         // Check if current user session matches the database session for that ID
-        if ($savedSession->ip_address != $currentSession['ip_address'] ||
-            $savedSession->user_agent != $currentSession['user_agent'])
-        {
+        if (
+            $savedSession->ip_address != $currentSession['ip_address'] ||
+            $savedSession->user_agent != $currentSession['user_agent']
+        ) {
             $this->unsetSession();
         }
+        // Reset the login timer
+        $_SESSION['LOGIN_TIME'] = $_SERVER['REQUEST_TIME'];
+
         // Beyond this point, the user is logged in and actually the session owner of the session ID
         // It is now safe to show the web page to this user
     }
@@ -123,12 +128,13 @@ class AuthorizationService
      * Resume an existing session from the cookie regardless of login status
      * Used for pages that require a session but not a logged in session (-> checkSession)
      */
-    public function resumeSession() {
+    public function resumeSession()
+    {
         session_start();
 
         // Check if a logged in user called /login or /register
-        if(strpos($_SERVER['REQUEST_URI'], "login") || strpos($_SERVER['REQUEST_URI'], "register")) {
-            if($_SESSION['USER_ID']) {
+        if (strpos($_SERVER['REQUEST_URI'], "login") || strpos($_SERVER['REQUEST_URI'], "register")) {
+            if ($_SESSION['USER_ID']) {
                 // Logged in users cannot access these pages, redirect
                 header("Location: /event-overview");
                 exit;

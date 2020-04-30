@@ -1,8 +1,13 @@
 <?php
 
-namespace components\core;
+namespace components\validators;
 
-class ControllerException extends \Exception
+/**
+ * Class ValidatorException
+ * Thrown by validators. Contains all information to show a user error message.
+ * @package components\core
+ */
+class ValidatorException extends \Exception
 {
     private $params;
 

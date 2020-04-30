@@ -2,9 +2,14 @@
 
 namespace models;
 
-use components\database\Database;
 use components\core\Utility;
+use components\database\DatabaseService;
 
+/**
+ * Class User
+ * Database model for the users table. Includes all needed queries.
+ * @package models
+ */
 class User
 {
     private static $instance;
@@ -13,7 +18,7 @@ class User
     public function __construct()
     {
         self::$instance = $this;
-        self::$database = Database::newInstance(null);
+        self::$database = DatabaseService::newInstance(null);
     }
 
     public static function getInstance()
@@ -90,14 +95,32 @@ class User
     }
 
     /**
-     * Sets the verified field of the user to true when the email was verified
+     * Sets the verified field of the user to true when the email was verified and generates a new verification hash
+     * Prevents reusing of the old hash when switching to a new email
      * @param $hash * verification hash of the user
+     * @return bool * false on user for hash not found, true on update successful
      */
     public function confirmUser($hash)
     {
-        self::$database->execute(
-            "UPDATE users SET verified = true WHERE verification_hash = :hash",
+        // Check if the user to that hash exists in database
+        // content of the user is not relevant so we check just for existence
+        $exists = self::$database->fetch(
+            "SELECT 1 FROM users WHERE verification_hash = :hash",
             [":hash" => $hash]
+        );
+        if (!$exists) {
+            return false;
+        }
+
+        // If user exists for hash, update it with new hash so old one cant be reused
+        return self::$database->execute(
+            "UPDATE users 
+                    SET verified = true, verification_hash = :new_hash
+                    WHERE verification_hash = :hash",
+            [
+                ":hash" => $hash,
+                ":new_hash" => Utility::generateSSLHash(16)
+            ]
         );
     }
 
@@ -190,11 +213,11 @@ class User
             ":username" => $user_data['username'],
             ":email" => $user_data['email'],
             // Hash the password with the salt from config.ini.php
-            ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $user_data["password"]),
+            ":password" => Utility::encryptPassword($user_data['password']),
             ":first_name" => $user_data['first_name'],
             ":last_name" => $user_data['last_name'],
             ":age" => $user_data['age'],
-            ":verification_hash" => bin2hex(openssl_random_pseudo_bytes(16)),
+            ":verification_hash" => Utility::generateSSLHash(16),
             ":verified" => "false"
         ];
     }

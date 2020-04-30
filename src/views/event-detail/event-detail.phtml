@@ -3,7 +3,7 @@
 <head>
     <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/resources/assets/jqueryui/jquery-ui.js"></script>
-    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/head.phtml" ?>
+    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
     <script type="text/javascript" src="/views/event-detail/event-detail.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.1/js/bootstrap-datepicker.js"></script>
     <link href="/resources/assets/font-awesome/css/all.min.css" rel="stylesheet">
@@ -13,7 +13,7 @@
     <div class="container min-vh-80">
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
         <h1><?php if( isset($pageTitle)) echo($pageTitle)?></h1><br>
-
+        <!-- Warnings and errors -->
         <?php if (isset($isError) && $isError): ?>
             <div class="alert alert-danger" role="alert">
                 <p class="text-danger"><?=$_SESSION["EVENT_DETAIL_ERROR"]?></p>
@@ -36,7 +36,7 @@
             <a href="/event-detail?event_id=<?=$event->event_id . '&edit'?>"
                class="btn btn-primary mb-3">Edit</a>
         <?php endif; ?>
-
+        <!-- Form -->
         <form method="post">
             <div class="form-group">
                 <label for="event-detail-title">Title</label>
@@ -47,7 +47,7 @@
             <div class="form-group">
                 <label for="event-detail-title">Creator</label>
                 <input id="event-detail-title" type="text" name="creator"
-                       value="<?=isset($event) ? $event->creator : '' ?>" readonly class="form-control"><br/>
+                       value="<?=isset($event) ? $event->creator_username : '' ?>" readonly class="form-control"><br/>
             </div>
             <div class="form-group">
                 <label for="event-detail-title">Creation Date</label>
@@ -89,6 +89,7 @@
                        value="<?=isset($event) ? $event->maximum_attendees : ''?>"
                        <?=(isset($edit) && !$edit) ? 'readonly' : ''?> class="form-control"><br/>
             </div>
+            <!-- Attendees list -->
             <div class="form-group">
                 <label for="event-detail-maximum-attendees">Current Attendees</label><br/>
                 <?php if (isset($edit) && $edit): ?>
@@ -142,9 +143,10 @@
                 <button type="submit" class="btn btn-primary mb-3">Update Event</button>
             <?php endif; ?>
         </form>
-
+        <!-- Buttons at the bottom -->
         <?php if (isset($event) && isset($edit) && !$edit): ?>
-            <a href="#" class="btn btn-primary mb-3">Contact Creator</a>
+            <a href="mailto:<?=$event->creator_email?>" class="btn btn-primary mb-3">Contact Creator</a>
+            <a href="/chat?user_id=<?=$event->creator_id?>" class="btn btn-primary mb-3">Contact Creator</a>
             <?php if (isset($status) && $status == \models\enums\Status::$ACCEPTED): ?>
                 <a href="/event-detail?event_id=<?=$event->event_id . '&unbook_event=' . $_SESSION['USER_ID']?>"
                    class="btn btn-primary mb-3">Unbook Event</a>
@@ -160,7 +162,7 @@
             Cancel Event</button>
         <?php endif; ?>
     </div>
-
+    <!-- Cancel event modal -->
     <div id="event-detail-cancel-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -185,7 +187,7 @@
             </div>
         </div>
     </div>
-
+    <!-- Invite attendee modal -->
     <div id="event-detail-add-attendee-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

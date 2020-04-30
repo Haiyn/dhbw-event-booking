@@ -4,6 +4,11 @@ namespace components\core;
 
 use components\InternalComponent;
 
+/**
+ * Class Utility
+ * Various methods needed throughout different functions in the application.
+ * @package components\core
+ */
 class Utility extends InternalComponent
 {
     /**
@@ -34,6 +39,16 @@ class Utility extends InternalComponent
             mt_rand(0, 0xffff),
             mt_rand(0, 0xffff)
         );
+    }
+
+    /**
+     * Generates a hash with OpenSSL library (e.g. for verification hashes)
+     * @param $length * length of the generated hash
+     * @return string * hash
+     */
+    public static function generateSSLHash($length)
+    {
+        return bin2hex(openssl_random_pseudo_bytes($length));
     }
 
     /**
@@ -70,5 +85,15 @@ class Utility extends InternalComponent
         // Add the host and port to the protocol
         $url .= '://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
         return $url;
+    }
+
+    /**
+     * Ecnrypts a password for database saving
+     * @param $input * clear text password
+     * @return string * encrypted password hash
+     */
+    public static function encryptPassword($input)
+    {
+        return password_hash($input, PASSWORD_DEFAULT);
     }
 }
