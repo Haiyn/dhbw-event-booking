@@ -37,24 +37,6 @@ class ProfileEditController extends Controller
             $this->setSuccess("Profile successfully updated");
 
         }
-//TODO REMOVE THIS
-        //Save button pressed on password change
-        if (isset($_POST["password"])) {
-            $new_data = [
-                'password' => htmlspecialchars($_POST['password'])
-            ];
-
-            foreach ($new_data as $key => &$value) {
-                $new_data[$key] = trim($value);
-            }
-            $this->updatePassword($new_data, $userId);
-            $this->setSuccess("Please verify your new password");
-        }
-
-        $this->view->pageTitle = "Edit Profile";
-        $this->view->isSuccess = isset($_GET["success"]);
-        $this->view->isError = isset($_GET["error"]);
-
     }
 
 
@@ -101,64 +83,5 @@ class ProfileEditController extends Controller
             $this->setError("Something went wrong");
         }
     }
-
-
-
-//   TODO REMOVE THIS
-    /**
-     *Updates password after checking if new password and repeated password match and requires
-     * user to confirm new password via email
-     * @param $new_data
-     * @param $old_data
-     */
-    private
-    function updatePassword($new_data, $old_data)
-    {
-        $user = User::getInstance();
-        $userId = $_SESSION['USER_ID'];
-
-        $userValidator = UserValidator::getInstance();
-        try {
-            $userValidator->validateNewPassword($new_data, $old_data);
-        } catch (ValidatorException $exception) {
-            $this->setError($exception->getMessage());
-        }
-
-        $new_data += ["user_id" => $userId];
-        $email = $user->getUserByEmail($userId->email);
-
-        //TODO doesn't send email
-        if ($user->updatePassword($new_data)) {
-            $this->confirmationEmail($user, $email);
-        }
-
-        /* if (!$user->updatePassword($new_data)) {
-             $this->setError("Something went wrong");
-         }*/
-
-
-    }
-
-    /**
-     * Sends email to user to confirm changes
-     * @param $email
-     */
-    private function confirmationEmail($user, $email)
-    {
-        $iniFile = Utility::getIniFile();
-
-        if (filter_var($iniFile['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
-            // Send the notification email to the email address
-            $emailService = EmailService::getInstance();
-            $emailService->sendEmail($user->email,
-                "Your password has been updated.");
-        } else {
-            $this->setError(
-                "Email failed to send"
-            );
-        }
-    }
-
-
 }
 
