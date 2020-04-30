@@ -24,17 +24,13 @@
                 <div hidden id="js-alert-box" class="alert alert-danger" role="alert">
                     <p id="js-alert-text" class="text-danger"></p>
                 </div>
+                <div hidden id="js-info-box" class="alert alert-info" role="alert">
+                    <p id="js-info-text" class="text-info"></p>
+                </div>
             </div>
 
             <!-- Messages and message history box -->
-            <div id="js-history-box" class="container">
-                <div class="msg-inbound bg-light">
-                    <p>This is an inbound message.</p>
-                </div>
-                <div class="msg-outbound bg-primary">
-                    <p>This is an outbound message.</p>
-                </div>
-            </div>
+            <div id="js-history-box" class="container"></div>
 
             <!-- Input and send button -->
             <div class="msg-send">
@@ -44,5 +40,11 @@
             </div>
         </div>
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+
+    <script>
+        // Set the IDs for the websocket
+        const selfId = "<?= $_SESSION['USER_ID'] ?>";
+        const partnerId = "<?= $_GET['user_id'] ?>";
+    </script>
     </body>
 </html>

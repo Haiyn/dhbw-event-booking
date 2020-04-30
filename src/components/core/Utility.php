@@ -7,6 +7,7 @@ use components\InternalComponent;
 /**
  * Class Utility
  * Various methods needed throughout different functions in the application.
+ * Methods must be static
  * @package components\core
  */
 class Utility extends InternalComponent

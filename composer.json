@@ -18,7 +18,8 @@
     "ext-openssl": "*",
     "ext-pdo": "*",
     "components/font-awesome": "5.12.1",
-    "ext-sockets": "*"
+    "ext-sockets": "*",
+    "ext-json": "*"
   },
   "scripts": {
     "post-install-cmd": [

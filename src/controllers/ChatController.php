@@ -16,7 +16,7 @@ class ChatController extends Controller
     {
         $this->session->checkSession();
         // user_id needs to be set, a valid UUIDv4 and not the logged in user
-        if (isset($_GET['user_id']) && Utility::isValidUUIDv4($_GET['user_id']) && $_GET['user_id'] != $_SESSION['user_id']) {
+        if (isset($_GET['user_id']) && Utility::isValidUUIDv4($_GET['user_id']) && $_GET['user_id'] != $_SESSION['USER_ID']) {
 
             $chatPartnerID = htmlspecialchars($_GET['user_id']);
 
