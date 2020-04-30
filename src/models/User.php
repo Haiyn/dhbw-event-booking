@@ -147,7 +147,7 @@ class User
      */
     public function updatePassword($data)
     {
-        self::$database->execute(
+        return self::$database->execute(
             "UPDATE users
         SET password = :password
         WHERE user_id = :user_id",
