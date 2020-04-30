@@ -7,34 +7,15 @@ use components\core\ControllerException;
 use components\validators\UserValidation;
 use models\User;
 
-class EditProfileController extends Controller
+class ResetPasswordController extends Controller
 {
     public function render($params)
     {
-        $this->session->checkSession();
+
+      /*  $this->session->checkSession();
         $user = User::getInstance();
         $userId = $user->getUserById($_SESSION['USER_ID']);
 
-        //Save button pressed on personal info
-        if (isset($_POST["username"]) && isset($_POST["first_name"]) && isset($_POST["last_name"]) && isset($_POST["email"])) {
-
-                $new_data = [
-                    'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
-                    'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
-                    'last_name' => filter_var(htmlspecialchars($_POST['last_name']), FILTER_SANITIZE_STRING),
-                    'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL)
-                ];
-
-                foreach ($new_data as $key => &$value) {
-                    $new_data[$key] = trim($value);
-                }
-
-                $this->updatePersonalInfo($new_data, $userId);
-                $this->setSuccess("Profile successfully updated");
-
-        }
-
-        //Save button pressed on password change
         if (isset($_POST["password"])) {
             $new_data = [
                 'password' => htmlspecialchars($_POST['password'])
@@ -45,41 +26,12 @@ class EditProfileController extends Controller
             }
             $this->updatePassword($new_data, $userId);
             $this->setSuccess("Please verify your new password");
-        }
+        }*/
 
-        $this->view->pageTitle = "Edit Profile";
+        $this->view->pageTitle = "Reset Password";
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
-
     }
-
-
-    /**
-     * Updates username, first name, last name or email
-     * @param $new_data * new data to be saved to database
-     * @param $old_data *existing data
-     */
-    private function updatePersonalInfo($new_data, $old_data)
-    {
-        $user = User::getInstance();
-        $userId = $_SESSION['USER_ID'];
-
-        $userValidator = UserValidation::getInstance();
-        try {
-            $userValidator->validateNewData($new_data, $old_data);
-        } catch (ControllerException $exception) {
-            $this->setError($exception->getMessage());
-        }
-
-        $new_data += ["user_id" => $userId];
-
-        //TODO first name and last name present in database but not recognized as values and displayed on profile
-        //TODO if fields are left empty, data is errased from database, except email
-        if (!$user->updateUserData($new_data)) {
-            $this->setError("Something went wrong");
-        }
-    }
-
 
     /**
      *Updates password after checking if new password and repeated password match and requires
@@ -90,6 +42,8 @@ class EditProfileController extends Controller
     private
     function updatePassword($new_data, $old_data)
     {
+
+//        TODO GET USER INSTANCE BY CHECKING EMAIL OR USERNAME BECAUSE USER IS NOT LOGGED IN HERE
         $user = User::getInstance();
         $userId = $_SESSION['USER_ID'];
 
@@ -119,7 +73,7 @@ class EditProfileController extends Controller
      * Sends email to user to confirm changes
      * @param $email
      */
-    private function confirmationEmail($user, $email)
+  /*  private function confirmationEmail($user, $email)
     {
         $iniFile = Utility::getIniFile();
 
@@ -133,8 +87,5 @@ class EditProfileController extends Controller
                 "Email failed to send"
             );
         }
-    }
-
-
+    }*/
 }
-

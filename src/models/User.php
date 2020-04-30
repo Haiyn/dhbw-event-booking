@@ -105,10 +105,11 @@ class User
     /**
      * Update user data in the database
      * @param $data * Data of user
+     * @return bool
      */
     public function updateUserData($data)
     {
-        self::$database->execute(
+        return self::$database->execute(
             "UPDATE users
             SET username = :username, first_name = :first_name, last_name = :last_name, email = :email
             WHERE user_id = :user_id",
@@ -138,12 +139,12 @@ class User
      */
     private function mapUpdatedDataToUserTableData($data)
     {
-        if (empty($data['first_name'])) {
+        /*if (empty($data['first_name'])) {
             $data['first_name'] = null;
         }
         if (empty($data['last_name'])) {
             $data['last_name'] = null;
-        }
+        }*/
         return $data = [":username" => $data['username'],
             ":first_name" => $data['first_name'],
             ":last_name" => $data['last_name'],

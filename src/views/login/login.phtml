@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?php if( isset($pageTitle)) echo($pageTitle)?></title>
+    <title><?php if (isset($pageTitle)) echo($pageTitle) ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
     <script type="text/javascript" src="/resources/assets/bootstrap/js/bootstrap.min.js"></script>
@@ -16,7 +16,7 @@
                 <h1>Login</h1>
                 <h3>Event Booking</h3>
 
-                <?php if(isset($isError) && $isError): ?>
+                <?php if (isset($isError) && $isError): ?>
                     <div class="alert alert-danger" role="alert">
                         <p class="text-danger"><?php echo $_SESSION['LOGIN_ERROR']; ?></p>
                     </div>
@@ -28,7 +28,8 @@
                                maxlength="32" required>
                     </div>
                     <div class="form-group">
-                        <input type="password" class="form-control" name="password" placeholder="Password" maxlength="32" required>
+                        <input type="password" class="form-control" name="password" placeholder="Password"
+                               maxlength="32" required>
                     </div>
                     <div>
                         <button type="submit" class="btn btn-primary" name="login">Login</button>
@@ -39,6 +40,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="text-center">
+        <a href="/reset-password">Forgot password?</a>
     </div>
 </div>
 </body>

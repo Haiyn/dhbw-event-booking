@@ -43,7 +43,6 @@ class ProfileController extends Controller
         $this->view->firstName = $firstName;
         $this->view->lastName = $lastName;
         $this->view->email = $email;
-
     }
 
 

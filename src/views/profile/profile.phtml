@@ -11,7 +11,7 @@
                 <div class="card-header text-center">
                     <img class="rounded-circle" src="/resources/icons/user.ico" alt="User icon" height="150px">
                     <?php if (isset($username)): ?>
-                    <h5 class="card-title"><?=$username?></h5>
+                        <h5 class="card-title"><?= $username ?></h5>
                     <?php endif; ?>
                     <div class="button-container">
 
@@ -26,13 +26,13 @@
 
                 <div class="card-body">
                     <?php if (isset($first_name)): ?>
-                        <h6 class="card-title"><?=$first_name?></h6>
+                        <h6 class="card-title"><?= $first_name ?></h6>
                     <?php endif; ?>
                     <?php if (isset($last_name)): ?>
-                        <h6 class="card-title"><?=$last_name?></h6>
+                        <h6 class="card-title"><?= $last_name ?></h6>
                     <?php endif; ?>
                     <?php if (isset($email)): ?>
-                        <h6 class="card-title"><?=$email?></h6>
+                        <h6 class="card-title"><?= $email ?></h6>
                     <?php endif; ?>
                 </div>
             </div>
@@ -44,26 +44,29 @@
                     <!--TODO insert javascript to toggle between links-->
                     <ul class="nav nav-tabs card-header-tabs" id="tabs">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#created" role="tab" aria-controls="created" aria-selected="true">Created events</a>
+                            <a class="nav-link active" href="#created" role="tab" aria-controls="created"
+                               aria-selected="true">Created events</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="booked" href="#booked" role="tab" aria-controls="booked" aria-selected="false">Booked events</a>
+                            <a class="nav-link" id="booked" href="#booked" role="tab" aria-controls="booked"
+                               aria-selected="false">Booked events</a>
                         </li>
                     </ul>
                 </div>
                 <div class="card-body">
                     <div class="tab-content">
                         <div class="tab-pane active" id="created" role="tabpanel">
-                    <?php if (isset($events)):
-                        foreach($events as $event){?>
-                        <p><?=$event->title?></p>
-                    <?php } endif; ?>
-                    </div>
+                            <?php if (isset($events)):
+                                foreach ($events as $event) {
+                                    ?>
+                                    <p><?= $event->title ?></p>
+                                <?php } endif; ?>
+                        </div>
 
                         <div class="tab-pane" id="booked" role="tabpanel" aria-labelledby="booked-tab">
-                          <?php if (isset($booked)):
-                                foreach($booked as $b){ ?>
-                                    <p><?=$b->title?></p>
+                            <?php if (isset($booked)):
+                                foreach ($booked as $b) { ?>
+                                    <p><?= $b->title ?></p>
                                 <?php } endif; ?>
                             <p>test</p>
                         </div>
