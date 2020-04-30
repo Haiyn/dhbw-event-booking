@@ -17,7 +17,7 @@ services:
 
   web:
     container_name: web-server
-    image: event-booking:2020
+    image: event-booking-apache:2020
     ports:
     - 8080:80
     networks:
@@ -42,7 +42,7 @@ services:
 
   websocket:
     container_name: websocket-server
-    image: event-booking-socket:2020
+    image: event-booking-websocket:2020
     ports:
     -  8089:8089
     networks:
