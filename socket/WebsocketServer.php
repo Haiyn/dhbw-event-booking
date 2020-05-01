@@ -74,37 +74,12 @@ class WebsocketServer
             Utility::log(count($read) . " socket(s) have a new message.");
             // NEW CONNECTION
             if (in_array($this->socket, $read)) {
-                // Accept new connection
-                $newClient = socket_accept($this->socket);
-                socket_getpeername($newClient, $ip);
-                Utility::log("New connection request from {$ip}. Trying to accept...");
+                // Try to accept the request
+                $this->accept();
 
-                // Receive the request header
-                $request = $this->receive($newClient, 10000);
-                Utility::trace("Incoming:\n{$request}");
-
-                // Check if origin is allowed
-                preg_match('/Origin: (.*)\r\n/', $request, $matches);
-                if(Utility::getIniFile()['ALLOWED_ORIGIN'] == $matches[1]) {
-                    // Origin is allowed, send response
-                    $response = Utility::createResponse($request);
-                    Utility::trace("Outgoing:\n{$response}");
-                    if($this->send($newClient, $response, false)) {
-                        // Response successful
-                        Utility::log("Accepted connection from {$matches[1]}\n");
-                        // Add the new client to the array of active clients
-                        $this->clients[] = $newClient;
-                        Utility::log((count($this->clients) - 1) . " clients connected");
-
-                        // Remove from the master socket from news array
-                        $key = array_search($this->socket, $read);
-                        unset($read[$key]);
-                    }
-                } else {
-                    // If not, refuse it
-                    Utility::log("Refused connection from {$matches[1]}");
-                    socket_close($newClient);
-                }
+                // Regardless of success, remove from the master socket from news array
+                $key = array_search($this->socket, $read);
+                unset($read[$key]);
             }
 
             // NEW MESSAGES
@@ -124,7 +99,6 @@ class WebsocketServer
                         $this->handleMessage($message, $socket);
                     } else {
                         // Message is empty, remove the client
-                        Utility::trace("Socket is sending malformed data: ---{$message}--- Is it disconnected? Removing...");
                         $this->close($socket);
                         Utility::log("Client disconnected.");
                     }
@@ -136,6 +110,39 @@ class WebsocketServer
 
         // Close the master sockets
         socket_close($this->socket);
+    }
+
+    /**
+     * Tries to accept an incoming connection request
+     */
+    private function accept() {
+        // Accept new connection
+        $newClient = socket_accept($this->socket);
+        socket_getpeername($newClient, $ip);
+        Utility::log("New connection request from {$ip}. Trying to accept...");
+
+        // Receive the request header
+        $request = $this->receive($newClient, 10000);
+        Utility::trace("Incoming:\n{$request}");
+
+        // Check if origin is allowed
+        preg_match('/Origin: (.*)\r\n/', $request, $matches);
+        if(Utility::getIniFile()['ALLOWED_ORIGIN'] == $matches[1]) {
+            // Origin is allowed, send response
+            $response = Utility::createResponse($request);
+            Utility::trace("Outgoing:\n{$response}");
+            if($this->send($newClient, $response, false)) {
+                // Response successful
+                Utility::log("Accepted connection from {$matches[1]}\n");
+                // Add the new client to the array of active clients
+                $this->clients[] = $newClient;
+                Utility::log((count($this->clients) - 1) . " clients connected");
+            }
+        } else {
+            // If not, refuse it
+            Utility::log("Refused connection from {$matches[1]}");
+            socket_close($newClient);
+        }
     }
 
     /**
