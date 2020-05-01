@@ -92,50 +92,47 @@ class UserValidator
     }
 
 
-    /**
-     * Checks if all the form data is in a valid format
-     * @param $new_data * new data
-     * @param $old_data * existing data
-     * @throws ControllerException
-     */
-    public function validateNewData($new_data, $old_data)
+    public function validateUsername($new_data, $old_data)
     {
         if (empty($new_data['username'])){
             $new_data['username'] = $old_data->username;
         }
         // Check if the username contains white spaces
         if (preg_match('/\s/', $new_data['username'])) {
-            throw new ControllerException("Your username cannot contain whitespaces!");
+            throw new ValidatorException("Your username cannot contain whitespaces!");
         }
         //Check if username is already taken
         if ($new_data['username'] === $old_data->username) {
-            throw new ControllerException("This username is already taken!");
+            throw new ValidatorException("This username is already taken!");
         }
         // Check if maxlength is exceeded
         if (strlen($new_data["username"]) > 32) {
-            throw new ControllerException("Length of username cannot exceed max length of 32.");
+            throw new ValidatorException("Length of username cannot exceed max length of 32.");
         }
-        if (strlen($new_data["first_name"]) > 32) {
-            throw new ControllerException("Length of first_name cannot exceed max length of 32.");
+
+    }
+
+
+
+    /**
+     * Checks if all the form data is in a valid format
+     * @param $new_data * new data
+     * @param $old_data * existing data
+     * @throws ValidatorException
+     */
+    public function validateNewData($new_data, $old_data)
+    {
+        // Check if maxlength is exceeded
+        if ($new_data['first_name'] !== $old_data->first_name && strlen($new_data["first_name"]) > 32) {
+            throw new ValidatorException("Length of first_name cannot exceed max length of 32.");
         }
         if (strlen($new_data["last_name"]) > 32) {
-            throw new ControllerException("Length of last_name cannot exceed max length of 32.");
+            throw new ValidatorException("Length of last_name cannot exceed max length of 32.");
         }
         if (strlen($new_data["email"]) > 32) {
-            throw new ControllerException("Length of email cannot exceed max length of 32.");
+            throw new ValidatorException("Length of email cannot exceed max length of 32.");
         }
     }
 
-
-    public function validateNewPassword($new_data, $old_data)
-    {
-        if ($new_data['password'] !== $old_data->password && strlen($new_data["password"]) > 32) {
-            throw new ControllerException("Length of password cannot exceed max length of 32.");
-        }
-
-        if ($new_data['password'] !== $_POST['password_repeat']) {
-            $this->setError("Entered passwords do not match!");
-        }
-    }
 
 }

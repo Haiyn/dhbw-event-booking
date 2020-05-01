@@ -1,6 +1,5 @@
 <head>
     <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
-    <script type="text/javascript" src="profile.js"></script>
 </head>
 <body>
 <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
@@ -36,15 +35,10 @@
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-header">
-                    <!--TODO insert javascript to toggle between links-->
                     <ul class="nav nav-tabs card-header-tabs" id="tabs">
                         <li class="nav-item">
                             <a class="nav-link active" href="#created" role="tab" aria-controls="created"
                                aria-selected="true">Created events</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="booked" href="#booked" role="tab" aria-controls="booked"
-                               aria-selected="false">Booked events</a>
                         </li>
                     </ul>
                 </div>
@@ -56,14 +50,6 @@
                                     ?>
                                     <p><?= $event->title ?></p>
                                 <?php } endif; ?>
-                        </div>
-
-                        <div class="tab-pane" id="booked" role="tabpanel" aria-labelledby="booked-tab">
-                            <?php if (isset($booked)):
-                                foreach ($booked as $b) { ?>
-                                    <p><?= $b->title ?></p>
-                                <?php } endif; ?>
-                            <p>test</p>
                         </div>
                     </div>
                 </div>

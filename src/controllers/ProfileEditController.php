@@ -19,11 +19,24 @@ class ProfileEditController extends Controller
 
         $this->displayUserInfo();
 
+        if (isset($_POST["username"])) {
+            $new_data = [
+                'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING)
+            ];
+            foreach ($new_data as $key => &$value) {
+                $new_data[$key] = trim($value);
+            }
+
+            $this->updateUsername($new_data, $userId);
+            $this->setSuccess("Profile successfully updated");
+
+        }
+
+
         //Save button pressed on personal info
-        if (isset($_POST["username"]) && isset($_POST["first_name"]) && isset($_POST["last_name"]) && isset($_POST["email"])) {
+        if (isset($_POST["first_name"]) && isset($_POST["last_name"]) && isset($_POST["email"])) {
 
             $new_data = [
-                'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
                 'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
                 'last_name' => filter_var(htmlspecialchars($_POST['last_name']), FILTER_SANITIZE_STRING),
                 'email' => filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL)
@@ -59,9 +72,32 @@ class ProfileEditController extends Controller
         $this->view->email = $email;
     }
 
+    /**
+     * Updates username
+     * @param $new_data *new username
+     * @param $old_data *old username
+     */
+    private function updateUsername($new_data, $old_data)
+    {
+        $user = User::getInstance();
+        $userId = $_SESSION['USER_ID'];
+
+        $userValidator = UserValidator::getInstance();
+        try {
+            $userValidator->validateUsername($new_data, $old_data);
+        } catch (ValidatorException $exception) {
+            $this->setError($exception->getMessage());
+        }
+
+        $new_data += ["user_id" => $userId];
+
+        if (!$user->updateUsername($new_data)) {
+            $this->setError("Something went wrong");
+        }
+    }
 
     /**
-     * Updates username, first name, last name or email
+     * Updates first name, last name or email
      * @param $new_data * new data to be saved to database
      * @param $old_data *existing data
      */
@@ -73,7 +109,7 @@ class ProfileEditController extends Controller
         $userValidator = UserValidator::getInstance();
         try {
             $userValidator->validateNewData($new_data, $old_data);
-        } catch (ControllerException $exception) {
+        } catch (ValidatorException $exception) {
             $this->setError($exception->getMessage());
         }
 

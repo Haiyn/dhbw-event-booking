@@ -124,6 +124,22 @@ class User
         );
     }
 
+    /**
+     *Update username in database
+     * @param $data *username
+     * @return bool
+     */
+    public function updateUsername($data)
+    {
+        return self::$database->execute(
+            "UPDATE users
+            SET username = :username
+            WHERE user_id = :user_id",
+            $this->mapUpdatedUsernameToUserTableData($data)
+        );
+    }
+
+
 
     /**
      * Update user data in the database
@@ -134,7 +150,7 @@ class User
     {
         return self::$database->execute(
             "UPDATE users
-            SET username = :username, first_name = :first_name, last_name = :last_name, email = :email
+            SET first_name = :first_name, last_name = :last_name, email = :email
             WHERE user_id = :user_id",
             $this->mapUpdatedDataToUserTableData($data)
         );
@@ -144,6 +160,7 @@ class User
     /**
      * Update user password in the database
      * @param $data * new password
+     * @return bool
      */
     public function updatePassword($data)
     {
@@ -153,6 +170,18 @@ class User
         WHERE user_id = :user_id",
             $this->mapUpdatedPasswordToUserTableData($data)
         );
+    }
+
+    /**
+     * Map updated username to database
+     * @param $data
+     * @return array
+     */
+    private function mapUpdatedUsernameToUserTableData($data)
+    {
+        return $data = [":username" => $data['username'],
+            ":user_id" => $data['user_id']
+        ];
     }
 
     /**
@@ -168,8 +197,7 @@ class User
         if (empty($data['last_name'])) {
             $data['last_name'] = null;
         }*/
-        return $data = [":username" => $data['username'],
-            ":first_name" => $data['first_name'],
+        return $data = [":first_name" => $data['first_name'],
             ":last_name" => $data['last_name'],
             ":email" => $data['email'],
             ":user_id" => $data['user_id']
