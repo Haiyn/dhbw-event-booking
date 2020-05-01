@@ -20,22 +20,18 @@ class WebsocketServer
 
     /**
      * Creates a new class instance from a static context
-     * @return WebsocketServer
      */
     public static function run()
     {
         if (self::$instance === null) {
             self::$instance = new self();
         }
-        return self::$instance;
-
     }
 
     public function __construct()
     {
         Utility::log("Creating Websocket...");
         $this->create();
-        $this->initialize();
         Utility::log("Waiting for connections...");
         $this->listen();
     }
@@ -48,27 +44,12 @@ class WebsocketServer
         {
             self::$instance = $this;
             $this->socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+            socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
+            socket_bind($this->socket, Utility::getIniFile()['HOST'], Utility::getIniFile()['PORT']);
         }
         catch (\Exception $exception)
         {
             echo("\n\n[FATAL] Websocket failed to construct {$exception}");
-            exit(1);
-        }
-    }
-
-    /**
-     * Sets options and with default configuration and binds master socket to host:port
-     */
-    public function initialize()
-    {
-        try
-        {
-            socket_set_option($this->socket, SOL_SOCKET, SO_REUSEADDR, 1);
-            socket_bind($this->socket, Utility::getIniFile()['HOST'], Utility::getIniFile()['PORT']);
-        }
-        catch(\Exception $exception)
-        {
-            echo("\n\n[FATAL] Websocket failed to initialize: {$exception}");
             exit(1);
         }
     }
