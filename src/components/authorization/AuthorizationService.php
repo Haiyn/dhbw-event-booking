@@ -117,6 +117,9 @@ class AuthorizationService extends InternalComponent
         ) {
             $this->unsetSession();
         }
+        // Reset the login timer
+        $_SESSION['LOGIN_TIME'] = $_SERVER['REQUEST_TIME'];
+
         // Beyond this point, the user is logged in and actually the session owner of the session ID
         // It is now safe to show the web page to this user
     }

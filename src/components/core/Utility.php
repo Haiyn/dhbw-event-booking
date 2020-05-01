@@ -100,4 +100,14 @@ class Utility extends InternalComponent
         }
         return true;
     }
+
+    /**
+     * Encrypts a password for database saving
+     * @param $input * clear text password
+     * @return string * encrypted password hash
+     */
+    public static function encryptPassword($input)
+    {
+        return password_hash($input, PASSWORD_DEFAULT);
+    }
 }

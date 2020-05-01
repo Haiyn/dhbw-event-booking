@@ -6,21 +6,12 @@
                 <a class="nav-item nav-link <?= strpos($_SERVER['REQUEST_URI'], "event") ? "active" : "" ?>" href="/event-overview">Events</a>
 
 <!--                if user is logged in, display Profile button, else display login button-->
-                <?php if (isset($_SESSION["USER_ID"])) {?>
-                <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "profile") ? "active" : "" ?> href="/profile">My Profile</a>
+                <?php if (isset($_SESSION['USER_ID'])) {?>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                    <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "profile") ? "active" : "" ?> href="/profile">My Profile</a>
                 <?php }else{ ?>
-                <a class="nav-item nav-link" href="/login">Login</a>
+                    <a class="nav-item nav-link" href="/login">Login</a>
                 <?php } ?>
-
-<!--                if user is logged in, display logout button, else hide the button-->
-                <?php if(isset($_SESSION["USER_ID"])) {?>
-                <a class="nav-item nav-link" href="/login?logout">Logout</a>
-                <?php } else { ?>
-                <a class="nav-item nav-link" style="visibility: hidden" href="/login?logout">Logout</a>
-                <?php } ?>
-
-
-
             </div>
         </div>
     </nav>

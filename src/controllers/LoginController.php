@@ -49,9 +49,6 @@ class LoginController extends Controller
                 $user_data['foundUser'] = $user->getUserByEmail($user_data['emailOrId']);
             }
 
-            // Encrypt the input password with the config salt
-            $user_data['passwordHash'] = md5(Utility::getIniFile()['AUTH_SALT'] . $user_data['password']);
-
             // Validate all data
             $userValidator = UserValidator::getInstance();
             try {

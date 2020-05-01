@@ -147,6 +147,7 @@
         <?php if (isset($event) && isset($edit) && !$edit): ?>
             <a href="/chat?user_id=<?=$event->creator_id?>" class="btn btn-primary mb-3">Message Creator</a>
             <a href="mailto:<?=$event->creator_email?>" class="btn btn-primary mb-3">Contact Creator</a>
+            <a href="/chat?user_id=<?=$event->creator_id?>" class="btn btn-primary mb-3">Contact Creator</a>
             <?php if (isset($status) && $status == \models\enums\Status::$ACCEPTED): ?>
                 <a href="/event-detail?event_id=<?=$event->event_id . '&unbook_event=' . $_SESSION['USER_ID']?>"
                    class="btn btn-primary mb-3">Unbook Event</a>
