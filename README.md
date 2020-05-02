@@ -70,15 +70,15 @@ PostgreSQL database and the SMTP Server as well as global settings such as Email
 Notable settings are:
   * EMAIL_ENABLED
 
-  This settings controls whether emails will be sent or not. Further Email configuration requires this setting to be true.
+    This settings controls whether emails will be sent or not. Further Email configuration requires this setting to be true.
 
   * PHP_MAILER_ENABLED
 
-  This controls whether r not the PHPMailer framework should be used to send Emails. **SMTP Emails currently only work with this set to true.**
+    This controls whether r not the PHPMailer framework should be used to send Emails. **SMTP Emails currently only work with this set to true.**
 
   * LOGIN_TIMEOUT
 
-  The login timeout is the time in seconds that controls how long a user must go without activity (page reload or page switch) before they are logged out.
+    The login timeout is the time in seconds that controls how long a user must go without activity (page reload or page switch) before they are logged out.
 
 
 #### 3.2 Websocket Server
@@ -90,9 +90,9 @@ Notable settings are:
     **This is a value in seconds. The higher it is, the more the server will wait between each listen loop.**
     If your CPU is melting the heatsink, you might want to increase this number. Please note that the higher the timeout
     is set, the more something can break on client side. Messages might not be sent or connections might be faulty.
-  * TRACE_ENABLED:
-
-  Turning this on and of lets you see Trace logs in the server, such as message payloads or verbose
+  * TRACE_ENABLED
+  
+    Turning this on and of lets you see Trace logs in the server, such as message payloads or verbose
     process progress.
 
 ## PHPStorm
