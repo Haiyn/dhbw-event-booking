@@ -9,7 +9,6 @@ $(document).ready(function () {
     server.onopen= e => {
         console.log('Connected.');
         server.send("IDENT " + selfId);
-        console.log("Identified as " +selfId);
         document.getElementById("js-send-button").removeAttribute("disabled");
     };
 
@@ -37,7 +36,11 @@ $(document).ready(function () {
      * @param e * Message event
      */
     server.onmessage = e => {
-        console.log(e.data);
+        if(e.data === "ERR_USER_NOT_CONNECTED") {
+            showInfo("Uh-Oh, looks like your chat partner is not online right now! You can still <a href=\"mailto:" + partnerEmail + "\">email them</a>");
+            return;
+        }
+
         const message = JSON.parse(e.data);
         if(message.from === partnerId) {
             // Message is from chat partner, show it
@@ -53,12 +56,20 @@ $(document).ready(function () {
      * Send button pressed
      * Sends a JSON payload to the server
      */
-    $( "#js-send-button" ).on( "click", function() {
-        let message = document.getElementById("js-message-box").value;
+    $("#js-send-button").on("click", function() {
+        // Get message and check for validity
+        let message = document.getElementById("js-message-box").value.trim();
+        if(!message) {
+            return;
+        }
+        if (message.length > 2048) {
+            showError("Your message is too long!");
+            return;
+        }
+
         // Wrap the message and send it
         const wsMessage = JSON.stringify({ from: selfId, to: partnerId, message: message });
         server.send(wsMessage);
-        console.log("Message sent.");
 
         // Reset the input field
         document.getElementById("js-message-box").value = "";
@@ -86,6 +97,10 @@ $(document).ready(function () {
         document.getElementById("js-history-box").appendChild(newMessage);
     }
 
+    /**
+     * Shows an error message
+     * @param message
+     */
     function showError(message) {
         // disable the send button
         document.getElementById("js-send-button").setAttribute("disabled", null);
@@ -95,6 +110,10 @@ $(document).ready(function () {
         document.getElementById("js-alert-box").removeAttribute("hidden");
     }
 
+    /**
+     * Shows an info message
+     * @param message
+     */
     function showInfo(message) {
         document.getElementById("js-info-text").innerHTML = message;
         try {

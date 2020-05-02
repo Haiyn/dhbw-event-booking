@@ -15,37 +15,34 @@ class ChatController extends Controller
     public function render($parameters)
     {
         $this->session->checkSession();
-        // user_id needs to be set, a valid UUIDv4 and not the logged in user
-        if (isset($_GET['user_id']) && Utility::isValidUUIDv4($_GET['user_id']) && $_GET['user_id'] != $_SESSION['USER_ID']) {
 
-            $chatPartnerID = htmlspecialchars($_GET['user_id']);
-
-            $partner = $this->getChatPartnerInformation($chatPartnerID);
-
-            // If the partner information is empty, the user id does not exist in the database
-            if(empty($partner['username'])) {
-                $this->redirect("/not-found");
-            }
-
-            $this->view->username = $partner['username'];
-            $this->view->pageTitle = "Chat with " . $partner['username'];
-
-        } else {
-            $this->redirect("/not-found");
+        // Search button pressed
+        if (isset($_POST['search_username'])) {
+            $this->redirect("/chat?username={$_POST['search_username']}");
         }
 
+        if (isset($_GET['username'])) {
+            // Get the initiating user and the chat partner user
+            $user = User::getInstance();
+            $self = $user->getUserById($_SESSION['USER_ID']);
+            $partner = $user->getUserByUsername(htmlspecialchars($_GET['username']));
+
+            if(empty($partner)) {
+                $this->setError("This user does not exist! Try searching for one that exists.
+                You can also message people via the attendees list in an event!");
+            }
+            if($_GET['username'] == $self->username) {
+                // User is trying to chat with themselves
+                $this->redirect("/event-overview");
+            }
+
+            $this->view->partnerUserId = $partner->user_id;
+            $this->view->partnerUsername = $partner->username;
+            $this->view->partnerEmail = $partner->email;
+            $this->view->pageTitle = "Chat with " . $partner->username;
+        }
 
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
-    }
-
-    private function getChatPartnerInformation($userID) {
-        // Get the username of the chat partner
-        $partnerInformation = [];
-        $user = User::getInstance();
-
-        $partnerInformation['username'] = $user->getUserById($userID)->username;
-
-        return $partnerInformation;
     }
 }

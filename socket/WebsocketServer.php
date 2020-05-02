@@ -96,7 +96,7 @@ class WebsocketServer
                         if(!$this->handleOpcode($message, $socket)) continue;
                         $message = Utility::unmask($message);
                         Utility::trace("New message from client #$count: $message");
-                        $this->handleMessage($message, $socket);
+                        $this->handleMessage(htmlspecialchars($message), $socket);
                     } else {
                         // Message is empty, remove the client
                         $this->close($socket);
@@ -176,7 +176,7 @@ class WebsocketServer
             // Writing failed, log error
             Utility::log("ERROR: " . socket_strerror(socket_last_error()));
             return false;
-        } else if ($result === 0) {
+        } elseif ($result === 0) {
             // Writing succeeded but 0 bytes were written
             Utility::log("WARNING: 0 Bytes were sent");
             return false;
@@ -272,11 +272,13 @@ class WebsocketServer
                 ));
                 $this->send($recipient, $newMessage);
                 Utility::trace("Message sent to Socket (ID {$messageObject->to}): {$newMessage}");
-                Utility::log("Message to Socket with ID {[}$messageObject->to} was successfully routed.");
+                Utility::log("Message to Socket with ID {$messageObject->to} was successfully routed.");
 
             } else {
                 // Lookup failed, ID is not in registry
                 Utility::log("Socket with ID {$messageObject->to} is not connected. Aborted routing.");
+                $this->send($socket, "ERR_USER_NOT_CONNECTED");
+                Utility::trace("Send Error message back to client.");
             }
         }
     }
