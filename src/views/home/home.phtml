@@ -1,9 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
-    </head>
-    <body>
-        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
-    </body>
-</html>
+<head>
+    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
+<body>
+<?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+
+
+<div class="jumbotron text-center" style="margin-bottom: 100px; border-bottom: 1px solid darkgray">
+    <div class="container-fluid">
+        <h1 style="font-size: 64px">Event booking</h1>
+        <p style="font-size: 32px">An easy way to keep track of your event schedule</p>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="card-deck">
+        <div class="card" style="border: white">
+            <img class="card-img-top" src="../resources/images/security.png" alt="Card image cap"
+                 style="width: 100px; height: 100px; margin-left: 150px">
+            <div class="card-body text-center">
+                <h5 class="card-title">Create events</h5>
+                <p class="card-text">Create your own events, from birthday parties to business meetings</p>
+            </div>
+        </div>
+        <div class="card" style="border: white">
+            <img class="card-img-top" src="../resources/images/party.png" alt="Card image cap"
+                 style="width: 100px; height: 100px; margin-left: 150px">
+            <div class="card-body text-center">
+                <h5 class="card-title">Invite friends</h5>
+                <p class="card-text">Make your events public or invite-only to decide who joins in</p>
+            </div>
+        </div>
+        <div class="card" style="border: white">
+            <img class="card-img-top" src="../resources/images/check.png" alt="Card image cap"
+                 style="width: 100px; height: 100px; margin-left: 150px">
+            <div class="card-body text-center">
+                <h5 class="card-title">Book events</h5>
+                <p class="card-text">Book events you are interested in or are invited to</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="jumbotron text-center"
+     style="margin-top: 100px; margin-bottom: 100px; border-top: 1px solid darkgray; border-bottom: 1px solid darkgray">
+    <div class="container">
+        <h1>How it works</h1>
+        <p>Simply log into your profile and create an event with a specific date, time and location. Maintain control of
+            who attends
+            the events by setting them as public or by making the event a private affair. Additionally, the events
+            section offers a list of current
+            events that you can attend with a simple click.</p><br>
+        <p>Not a member yet?<br>
+            Register <a href="/register">here</a> for free!</p>
+
+    </div>
+</div>
+
+<div class="container-fluid">
+    <h3 class="text-center" style="margin-bottom: 60px">Useful links</h3>
+    <div class="links" style="margin-left: 100px">
+        <div class="row">
+            <div class="col-sm-3">
+                <a href="https://www.eventim.de/" target="_blank"><img src="../resources/images/EVE_Logo.svg_.png"
+                                                                       alt="eventim" style="width: 120px; height: 50px"></a>
+            </div>
+            <div class="col-sm-3">
+                <a href="https://www.ticketmaster.de/" target="_blank"><img src="../resources/images/ticketmaster.png"
+                                                                            alt="ticketmaster"
+                                                                            style="width: 120px; height: 50px"></a>
+            </div>
+            <div class="col-sm-3">
+                <a href="https://www.eventinc.de/" target="_blank"><img
+                            src="../resources/images/EventInc_Logo_Black_S.jpg"
+                            alt="eventinc"
+                            style="width: 200px; height: 50px"></a>
+            </div>
+            <div class="col-sm-3">
+                <a href="https://www.eventsofa.de/" target="_blank"><img src="../resources/images/logo--dark.svg"
+                                                                         alt="eventsofa"></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+
+
+<?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+</body>
+

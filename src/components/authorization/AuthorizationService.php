@@ -74,7 +74,7 @@ class AuthorizationService extends InternalComponent
         $this->resumeSession();
 
         // Redirect to the login page
-        header("Location: /login");
+        header("Location: /home");
         exit(0);
     }
 
