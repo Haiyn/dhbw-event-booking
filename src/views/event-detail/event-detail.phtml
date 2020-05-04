@@ -122,11 +122,12 @@
                                            <a href="/event-detail?event_id=<?=$event->event_id . '&edit=' . $edit . '&delete_attendee=' . $attendees[$i]->user_id?>"
                                               title="Delete" class="btn btn-danger"><i class="fa fa-trash"></i></a>
                                        </td>
-                                   <?php endif; ?>
-                                   <?php if($attendees[$i]->user_id != $_SESSION['USER_ID'] && isset($edit) && !$edit): ?>
+                                   <?php elseif ($attendees[$i]->user_id != $_SESSION['USER_ID'] && isset($edit) && !$edit): ?>
                                        <td>
                                            <a href="/chat?username=<?=$attendees[$i]->username?>"><i class="fa fa-comment" title="Message"></i></a>
                                        </td>
+                                   <?php else: ?>
+                                       <td></td>
                                    <?php endif; ?>
                                </tr>
                            <?php }
