@@ -125,6 +125,38 @@ class User
     }
 
     /**
+     * Update user password in the database
+     * @param $data * new password
+     */
+    public function updatePassword($data)
+    {
+        self::$database->execute(
+            "UPDATE users
+        SET password = :password
+        WHERE user_id = :user_id",
+            $this->mapUpdatedPasswordToUserTableData($data)
+        );
+    }
+
+
+    /**
+     * Maps the updated password in hashed form into the database
+     * @param $data * data to map
+     * @return array * mapped data that fits users table data
+     */
+    private function mapUpdatedPasswordToUserTableData($data)
+    {
+        return $data =
+            [
+                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"]),
+                ":user_id" => $data['user_id']
+            ];
+    }
+
+
+
+
+    /**
      * Maps the data from user_data to a users database object
      * user_id and creation_date are generated in database
      * @param $user_data * data to map

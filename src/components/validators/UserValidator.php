@@ -90,4 +90,14 @@ class UserValidator
                         <a href='/register?verify={$user_data['foundUser']->email}'> to confirm</a>.");
         }
     }
+
+    public function validateNewPassword($new_data, $old_data){
+        if ($new_data['password'] !== $old_data->password && strlen($new_data["password"]) > 32) {
+            throw new ControllerException("Length of password cannot exceed max length of 32.");
+        }
+
+        if ($new_data['password'] !== $_POST['password_repeat']) {
+            $this->setError("Entered passwords do not match!");
+        }
+    }
 }
