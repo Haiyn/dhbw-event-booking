@@ -17,7 +17,7 @@ services:
 
   web:
     container_name: web-server
-    image: event-booking:2020
+    image: event-booking-apache:2020
     ports:
     - 8080:80
     networks:
@@ -39,6 +39,14 @@ services:
       development:
     environment:
       MAILNAME: "dhbw-event.com"
+
+  websocket:
+    container_name: websocket-server
+    image: event-booking-websocket:2020
+    ports:
+    -  8089:8089
+    networks:
+      development:
 
 volumes:
   database:

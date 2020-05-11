@@ -2,7 +2,7 @@
 
 namespace components\validators;
 
-use components\core\ValidatorException;
+use components\core\Utility;
 
 /**
  * Class UserValidator
@@ -81,7 +81,7 @@ class UserValidator
             throw new ValidatorException("Invalid Username or Email!");
         }
 
-        if ($user_data['passwordHash'] != $user_data['foundUser']->password) {
+        if (!password_verify($user_data['password'], $user_data['foundUser']->password)) {
             throw new ValidatorException("Invalid password!");
         }
 

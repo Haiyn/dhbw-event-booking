@@ -40,7 +40,6 @@ class AuthorizationService extends InternalComponent
 
         // Set the server session
         $_SESSION['USER_ID'] = $session_data['user_id'];
-        $_SESSION['LOGIN_TIME'] = $session_data['login_time'];
         $_SESSION['IP_ADDRESS'] = $session_data['ip_address'];
         $_SESSION['USER_AGENT'] = $session_data['user_agent'];
 
@@ -117,6 +116,9 @@ class AuthorizationService extends InternalComponent
         ) {
             $this->unsetSession();
         }
+        // Reset the login timer
+        $_SESSION['LOGIN_TIME'] = $_SERVER['REQUEST_TIME'];
+
         // Beyond this point, the user is logged in and actually the session owner of the session ID
         // It is now safe to show the web page to this user
     }
@@ -133,7 +135,7 @@ class AuthorizationService extends InternalComponent
         if (strpos($_SERVER['REQUEST_URI'], "login") || strpos($_SERVER['REQUEST_URI'], "register")) {
             if ($_SESSION['USER_ID']) {
                 // Logged in users cannot access these pages, redirect
-                header("Location: /event-overview");
+                header("Location: /home");
                 exit;
             }
         }
@@ -151,8 +153,6 @@ class AuthorizationService extends InternalComponent
         return $session_data = [
             "session_id" => session_id(),
             "user_id" => $user_id,
-            // only set the login time if the user is logged in (user_id not null)
-            "login_time" => empty($user_id) ? null : $_SERVER['REQUEST_TIME'],
             // check for HTTP_X_FORWARDED_FOR to save the correct IP
             "ip_address" => isset($_SERVER['HTTP_X_FORWARDED_FOR'])
                 ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'],

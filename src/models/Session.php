@@ -74,11 +74,11 @@ class Session
         // Check if there's already an entry for the passed session_id
         if (empty($this->getSessionBySessionId($session_data['session_id']))) {
             // No session with this ID exists yet, insert it
-            $query = "INSERT INTO sessions VALUES (:session_id, :user_id, :login_time, :ip_address, :user_agent)";
+            $query = "INSERT INTO sessions VALUES (:session_id, :user_id, :ip_address, :user_agent)";
         } else {
             // Session ID already exists in database, update the existing entry
             $query = "UPDATE sessions
-                SET user_id = :user_id, login_time = :login_time, ip_address = :ip_address, user_agent = :user_agent
+                SET user_id = :user_id, ip_address = :ip_address, user_agent = :user_agent
                 WHERE session_id = :session_id";
         }
 
@@ -112,14 +112,10 @@ class Session
         if (empty($session_data['user_id'])) {
             $session_data['user_id'] = null;
         }
-        if (empty($session_data['login_time'])) {
-            $session_data['login_time'] = null;
-        }
 
         return $session_data = [
             ":session_id" => $session_data['session_id'],
             ":user_id" => $session_data['user_id'],
-            ":login_time" => $session_data['login_time'],
             ":ip_address" => $session_data['ip_address'],
             ":user_agent" => $session_data['user_agent']
         ];

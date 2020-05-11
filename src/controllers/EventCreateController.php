@@ -2,7 +2,7 @@
 
 namespace controllers;
 
-use components\core\ValidatorException;
+use components\validators\ValidatorException;
 use components\validators\EventValidator;
 use models\Event;
 

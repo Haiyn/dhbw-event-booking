@@ -17,7 +17,9 @@
     "phpmailer/phpmailer": "~6.1",
     "ext-openssl": "*",
     "ext-pdo": "*",
-    "components/font-awesome": "5.12.1"
+    "components/font-awesome": "5.12.1",
+    "ext-sockets": "*",
+    "ext-json": "*"
   },
   "scripts": {
     "post-install-cmd": [

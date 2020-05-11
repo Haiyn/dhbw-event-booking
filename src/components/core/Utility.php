@@ -7,6 +7,7 @@ use components\InternalComponent;
 /**
  * Class Utility
  * Various methods needed throughout different functions in the application.
+ * Methods must be static
  * @package components\core
  */
 class Utility extends InternalComponent
@@ -85,5 +86,28 @@ class Utility extends InternalComponent
         // Add the host and port to the protocol
         $url .= '://' . $_SERVER['SERVER_NAME'] . ':' . $_SERVER['SERVER_PORT'];
         return $url;
+    }
+
+    /**
+     * Checks if a given string is a valid UUIDv4
+     * @param string $str * string to check
+     * @return boolean * true if valid, false if invalid
+     */
+    public static function isValidUUIDv4($str)
+    {
+        if (preg_match('/^[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}$/i', $str) !== 1) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Encrypts a password for database saving
+     * @param $input * clear text password
+     * @return string * encrypted password hash
+     */
+    public static function encryptPassword($input)
+    {
+        return password_hash($input, PASSWORD_DEFAULT);
     }
 }

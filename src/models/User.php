@@ -147,7 +147,7 @@ class User
             ":username" => $user_data['username'],
             ":email" => $user_data['email'],
             // Hash the password with the salt from config.ini.php
-            ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $user_data["password"]),
+            ":password" => Utility::encryptPassword($user_data['password']),
             ":first_name" => $user_data['first_name'],
             ":last_name" => $user_data['last_name'],
             ":age" => $user_data['age'],
