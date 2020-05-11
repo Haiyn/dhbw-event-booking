@@ -16,7 +16,6 @@ class ProfileEditController extends Controller
         $this->session->checkSession();
         $user = User::getInstance();
         $userId = $user->getUserById($_SESSION['USER_ID']);
-        $email = $userId->email;
 
         $this->displayUserInfo();
 
@@ -48,7 +47,7 @@ class ProfileEditController extends Controller
             }
 
             $this->updatePersonalInfo($new_data, $userId);
-            $this->generateEmailConfirmation($email);
+            $this->confirmEmail($new_data['email']);
             $this->setSuccess("Profile successfully updated");
 
         }
@@ -122,31 +121,25 @@ class ProfileEditController extends Controller
         }
     }
 
-    private function generateEmailConfirmation($email)
+
+    private function confirmEmail($email)
     {
-        $user = User::getInstance();
-        $hash = $user->getUserByEmail($email)->verification_hash;
+        if (isset($_POST['email']) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $initFile = Utility::getIniFile();
+            $user = User::getInstance();
+            $hash = $user->getUserByEmail($email)->verification_hash;
 
-        // If the hash is empty, the user does not exist
-        // prevents abusing /verify to verify an account with another email
-        if (empty($hash)) {
-            $this->setError("Sorry, there is no user associated with the email <strong>{$email}</strong>!");
-        }
+            if (filter_var($initFile['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
+                $emailService = EmailService::getInstance();
+                $emailService->sendEmail(
+                    $email,
+                    "Confirm your new email address",
+                    "Follow <a href='" . Utility::getApplicationURL() . "/confirm?hash={$hash}'>this link</a> 
+                to confirm your email address.");
+            } else {
+                $this->setSuccess("Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");
 
-        // Check if Email Sending is enabled
-        if (filter_var(Utility::getIniFile()['EMAIL_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
-            // Send a verification email to the email address
-            $emailService = EmailService::getInstance();
-            $url = Utility::getApplicationURL();
-            $emailService->sendEmail(
-                $email,
-                "Confirm your email address",
-                "Follow <a href='" . Utility::getApplicationURL() . "/confirm?hash={$hash}'>this link</a> 
-                to confirm your email address."
-            );
-        } else {
-            // Display the verification link in the browser for testing
-            $this->setSuccess("Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");
+            }
         }
     }
 }

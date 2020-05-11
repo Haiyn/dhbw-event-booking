@@ -123,7 +123,7 @@ class UserValidator
     public function validateNewData($new_data, $old_data)
     {
         // Check if maxlength is exceeded
-        if ($new_data['first_name'] !== $old_data->first_name && strlen($new_data["first_name"]) > 32) {
+        if (strlen($new_data["first_name"]) > 32) {
             throw new ValidatorException("Length of first_name cannot exceed max length of 32.");
         }
         if (strlen($new_data["last_name"]) > 32) {
@@ -131,6 +131,11 @@ class UserValidator
         }
         if (strlen($new_data["email"]) > 32) {
             throw new ValidatorException("Length of email cannot exceed max length of 32.");
+        }
+
+        //Check if a user with given email address already exists
+        if ($new_data['email'] === $old_data->email) {
+            throw new ValidatorException("A user with this email already exists!");
         }
     }
 
