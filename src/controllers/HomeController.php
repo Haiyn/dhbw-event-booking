@@ -9,7 +9,11 @@ namespace controllers;
  */
 class HomeController extends Controller
 {
-    public function render($params)
+    public function render($parameters)
     {
+
+        $this->view->pageTitle = "Home";
+        $this->view->isSuccess = isset($_GET["success"]);
+        $this->view->isError = isset($_GET["error"]);
     }
 }
