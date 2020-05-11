@@ -8,13 +8,13 @@
                 <?php if (isset($_SESSION['USER_ID'])): ?>
                     <!-- User logged in -->
                     <a class="nav-item nav-link <?= strpos($_SERVER['REQUEST_URI'], "event") ? "active" : "" ?>" href="/event-overview">Events</a>
-                    <a class="nav-item nav-link" href="/logout">Logout</a>
                     <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "profile") ? "active" : "" ?> href="/profile">My Profile</a>
                     <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "chat") ? "active" : "" ?> href="/chat">Chat</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
                 <?php else: ?>
                     <!-- User not logged in -->
                     <a class="nav-item nav-link" href="/login">Login</a>
-                    <a class="nav-item nva-link" href="/register">Register</a>
+                    <a class="nav-item nav-link" href="/register">Register</a>
                 <?php endif; ?>
             </div>
         </div>

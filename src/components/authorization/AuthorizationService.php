@@ -72,8 +72,8 @@ class AuthorizationService extends InternalComponent
         // Create a new "not logged in" session, it is needed for error message displaying
         $this->resumeSession();
 
-        // Redirect to the login page
-        header("Location: /login");
+        // Redirect to the home page
+        header("Location: /home");
         exit(0);
     }
 
