@@ -28,8 +28,10 @@ All needed dependency files are copied from `/vendor` to
 To automatically make all dependencies available on the webserver, run
 
 ```
-composer update && composer install
+composer install
 ```
+
+Important: The command needs to be run in a POSIX-compatible CLI such as bash, cygwin or the GIT bash (mingw64).
 
 
 ### 2. Docker
@@ -135,7 +137,14 @@ Installation:
     * Event Detail View
 
 * 0.2
-    * t.b.a.
+    * User Login
+    * User Sessions
+    * Email Sending (Email verification, Invitation email)
+    * Event Attending
+    * Event Editing
+    * Event Cancelling
+    * Event Inviting
+    * Error Pages & Header and Footer
 * 0.3
     * t.b.a.
 
