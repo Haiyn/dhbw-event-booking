@@ -133,10 +133,6 @@ class UserValidator
             throw new ValidatorException("Length of email cannot exceed max length of 32.");
         }
 
-        //Check if a user with given email address already exists
-        if ($new_data['email'] === $old_data->email) {
-            throw new ValidatorException("A user with this email already exists!");
-        }
     }
 
 

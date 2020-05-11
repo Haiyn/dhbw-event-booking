@@ -24,10 +24,11 @@
             <h3>Edit profile</h3>
         </div>
 
-        <!--        only display option to edit username when clicked-->
+        <!--  only display option to edit username when clicked-->
         <div class="row" style="padding-left: 15px; padding-bottom: 15px">
             <h4><b>Username: </b><?= isset($username) ? $username : '' ?></h4>
-            <button type="button" class="btn btn-secondary" onclick="showDiv()" style="margin-left: 10px">Edit</button>
+            <a href="#" onclick="showDiv()" style="margin-left: 10px; margin-top: 5px">Edit username</a>
+<!--            <button type="button" class="btn btn-secondary" onclick="showDiv()" style="margin-left: 10px">Edit</button>-->
         </div>
 
         <form id="usernameInput" style="display: none;" method="post">
@@ -57,6 +58,7 @@
                 <input type="email" name="email" maxlength="32" value="<?= isset($email) ? $email : '' ?>"
                        class="form-control"><br/>
             </div>
+
             <div class="form-group">
                 <span><b>Click here to change password: </b><a href="/reset-password">Change password</a></span>
 
@@ -66,6 +68,7 @@
                 <a href="/profile" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
+
     </div>
 </div>
 

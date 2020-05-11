@@ -16,9 +16,11 @@ class ProfileEditController extends Controller
         $this->session->checkSession();
         $user = User::getInstance();
         $userId = $user->getUserById($_SESSION['USER_ID']);
+        $userMail = $userId->email;
 
         $this->displayUserInfo();
 
+        //save button is pressed on username edit
         if (isset($_POST["username"])) {
             $new_data = [
                 'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING)
@@ -29,7 +31,6 @@ class ProfileEditController extends Controller
 
             $this->updateUsername($new_data, $userId);
             $this->setSuccess("Profile successfully updated");
-
         }
 
 
@@ -47,10 +48,18 @@ class ProfileEditController extends Controller
             }
 
             $this->updatePersonalInfo($new_data, $userId);
-            $this->confirmEmail($new_data['email']);
-            $this->setSuccess("Profile successfully updated");
 
+            //check if there has been any input in the email field and if yes, send confirmation email
+            if ($new_data['email'] !== $userMail){
+                $this->confirmEmail($new_data['email']);
+            }
+
+            $this->setSuccess("Profile successfully updated");
         }
+
+        $this->view->pageTitle = "Profile";
+        $this->view->isSuccess = isset($_GET["success"]);
+        $this->view->isError = isset($_GET["error"]);
     }
 
 
@@ -114,6 +123,12 @@ class ProfileEditController extends Controller
             $this->setError($exception->getMessage());
         }
 
+        //check if there has been any input to the email field and if that email is already being used
+        $existingEmail = $user->getUserByEmail($new_data["email"]);
+        if ($new_data['email'] !== $old_data->email && !empty($existingEmail)) {
+            $this->setError("This E-Mail address is already being used by another account!");
+        }
+
         $new_data += ["user_id" => $userId];
 
         if (!$user->updateUserData($new_data)) {
@@ -138,8 +153,10 @@ class ProfileEditController extends Controller
                 to confirm your email address.");
             } else {
                 $this->setSuccess("Please confirm your email address with this link: <a href='/confirm?hash={$hash}'>Confirm</a>");
-
             }
+
+            $this->setSuccess("The E-Mail confirmation link has been successfully sent to 
+                    <strong>{$email}</strong>");
         }
     }
 }
