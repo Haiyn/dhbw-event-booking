@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <script type="text/javascript" src="/resources/assets/jquery/jquery.min.js"></script>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
+        <script type="text/javascript" src="/views/chat/chat.js"></script>
+        <link href="views/chat/chat.css" rel="stylesheet">
+    </head>
+    <body>
+
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+        <div class="container min-vh-80">
+            <h1>Private Chat</h1><br>
+            <!-- Error boxes -->
+            <?php if(isset($isError) && $isError): ?>
+                <div class="alert alert-danger" role="alert">
+                    <p class="text-danger"><?php echo $_SESSION['CHAT_ERROR']; ?></p>
+                </div>
+            <?php endif ?>
+            <div hidden id="js-alert-box" class="alert alert-danger" role="alert">
+                <p id="js-alert-text" class="text-danger"></p>
+            </div>
+            <div hidden id="js-info-box" class="alert alert-info" role="alert">
+                <p id="js-info-text" class="text-info"></p>
+            </div>
+
+            <!-- Search Box -->
+            <form method="post">
+                <div class="form-row">
+                    <div class="col-auto">
+                        <input name="search_username" placeholder="Search for username" class="form-control">
+                    </div>
+                    <div class="col-auto">
+                        <button id="js-search-button" type="submit" class="btn btn-outline-primary">Go To Chat</button>
+                    </div>
+                </div>
+            </form>
+
+            <br/>
+
+            <?php if(isset($_GET['username'])): ?>
+                <!-- Chat Header -->
+                <div class="container">
+                    <p>You are chatting with <?= isset($partnerUsername) ? $partnerUsername : "a user" ?>.</p>
+                </div>
+
+                <!-- Messages and message history box -->
+                <div id="js-history-box" class="container"></div>
+
+                <!-- Input and send button -->
+                <div class="msg-send">
+                    <input id="js-message-box" type="text" name="message" placeholder="Enter your message..."
+                           maxlength="2048" class="form-control"><br/>
+                    <button disabled id="js-send-button" class="btn btn-outline-primary">Send Message</button>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+
+    <script>
+        // Set the IDs for the websocket
+        const selfId = "<?= $_SESSION['USER_ID'] ?>";
+        const partnerId = "<?= isset($partnerUserId) ? $partnerUserId : "" ?>";
+        const partnerEmail = "<?= isset($partnerEmail) ? $partnerEmail : "" ?>";
+    </script>
+    </body>
+</html>

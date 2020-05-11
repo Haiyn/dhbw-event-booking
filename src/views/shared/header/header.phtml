@@ -3,15 +3,19 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="navbar-brand" href="/event-overview"><img alt="Logo" src="/resources/icons/calendar.ico" height="32px"></a>
-                <a class="nav-item nav-link <?= strpos($_SERVER['REQUEST_URI'], "event") ? "active" : "" ?>" href="/event-overview">Events</a>
+                <a class="nav-item nav-link <?= strpos($_SERVER['REQUEST_URI'], "home") ? "active" : "" ?>" href="/">Home</a>
 
-<!--                if user is logged in, display Profile button, else display login button-->
-                <?php if (isset($_SESSION['USER_ID'])) {?>
-                    <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "profile") ? "active" : "" ?> href="/profile">My Profile</a>
+                <?php if (isset($_SESSION['USER_ID'])): ?>
+                    <!-- User logged in -->
+                    <a class="nav-item nav-link <?= strpos($_SERVER['REQUEST_URI'], "event") ? "active" : "" ?>" href="/event-overview">Events</a>
                     <a class="nav-item nav-link" href="/logout">Logout</a>
-                <?php }else{ ?>
+                    <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "profile") ? "active" : "" ?> href="/profile">My Profile</a>
+                    <a class="nav-item nav-link" <?= strpos($_SERVER['REQUEST_URI'], "chat") ? "active" : "" ?> href="/chat">Chat</a>
+                <?php else: ?>
+                    <!-- User not logged in -->
                     <a class="nav-item nav-link" href="/login">Login</a>
-                <?php } ?>
+                    <a class="nav-item nva-link" href="/register">Register</a>
+                <?php endif; ?>
             </div>
         </div>
     </nav>

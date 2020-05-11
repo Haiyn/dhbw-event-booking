@@ -22,7 +22,7 @@ class EventDetailController extends Controller
     {
         $this->session->checkSession();
 
-        if (isset($_GET['event_id'])) {
+        if (isset($_GET['event_id']) && Utility::isValidUUIDv4($_GET['event_id'])) {
             $event = Event::getInstance();
             $eventById = $event->getEventById(trim(htmlspecialchars($_GET['event_id'])));
             // Check if event with id exists, if not, redirect to event overview
@@ -102,6 +102,10 @@ class EventDetailController extends Controller
                     ["event_id" => $_GET['event_id']]
                 );
             }
+        }
+        else {
+            // No event ID set or event id is invalid
+            $this->redirect("/event-overview");
         }
 
         $this->view->pageTitle = "Event Details";
