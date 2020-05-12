@@ -1,62 +1,63 @@
-<head>
-    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
-</head>
-<body>
-<?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="card" style="width: 18rem;">
-                <div class="card-header text-center">
-                    <img class="rounded-circle" src="/resources/icons/user.ico" alt="User icon" height="150px">
+<html lang="en">
+    <head>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
+    </head>
+    <body>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+        <div class="container-fluid min-vh-80">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-header text-center">
+                            <img class="rounded-circle" src="/resources/icons/user.ico" alt="User icon" height="150px">
 
-                    <h5 class="card-title"><?= (isset($username)) ? $username : " " ?></h5>
+                            <h5 class="card-title"><?= (isset($username)) ? $username : " " ?></h5>
 
-                    <div class="button-container">
+                            <div class="button-container">
+                                <button class="btn btn-outline-primary" type="button"><a href="/profile-edit">Edit
+                                        profile</a></button>
+                            </div>
+                        </div>
 
-                        <?php if (isset($_SESSION["USER_ID"])) { ?>
-                            <button class="btn btn-outline-primary" type="button"><a href="/profile-edit">Edit
-                                    profile</a></button>
-                        <?php } else { ?>
-                            <button class="btn btn-outline-primary" type="button"><a href="#">Message</a></button>
-                        <?php } ?>
+                        <div class="card-body">
+                            <h6 class="card-title"><?= (isset($firstName)) ? $firstName : " " ?></h6>
+                            <h6 class="card-title"><?= (isset($lastName)) ? $lastName : " " ?></h6>
+                            <h6 class="card-title"><?= (isset($email)) ? $email : " " ?></h6>
+
+                        </div>
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <h6 class="card-title"><?= (isset($firstName)) ? $firstName : " " ?></h6>
-                    <h6 class="card-title"><?= (isset($lastName)) ? $lastName : " " ?></h6>
-                    <h6 class="card-title"><?= (isset($email)) ? $email : " " ?></h6>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-8">
-            <div class="card">
-                <div class="card-header">
-                    <ul class="nav nav-tabs card-header-tabs" id="tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#created" role="tab" aria-controls="created"
-                               aria-selected="true">Created events</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body">
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="created" role="tabpanel">
-                            <?php if (isset($events)):
-                                foreach ($events as $event) {
-                                    ?>
-                                    <p><?= $event->title ?></p>
-                                <?php } endif; ?>
+                <div class="col-sm-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" id="tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#created" role="tab" aria-controls="created"
+                                       aria-selected="true">Created events</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="created" role="tabpanel">
+                                    <?php if (isset($events)):
+                                        foreach ($events as $event) {
+                                            ?>
+                                            <p>
+                                                <a href="/event-detail?event_id=<?= $event->event_id ?>">
+                                                    <?= $event->title ?>
+                                                </a>
+                                            </p>
+                                        <?php } endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
-</body>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+    </body>
+</html>

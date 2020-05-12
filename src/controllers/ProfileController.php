@@ -8,6 +8,11 @@ use models\User;
 use models\Event;
 use function Composer\Autoload\includeFile;
 
+/**
+ * Class ProfileController
+ * Displays the users profile
+ * @package controllers
+ */
 class ProfileController extends Controller
 {
 
@@ -15,14 +20,10 @@ class ProfileController extends Controller
     {
         $this->session->checkSession();
 
-
         $this->displayUserInfo();
         $this->displayCreatorEvents();
-        //$this->displayBookedEvents();
-
 
         $this->view->pageTitle = "Profile";
-
     }
 
     /**
@@ -65,28 +66,6 @@ class ProfileController extends Controller
         }
 
         $this->view->events = $creator_events;
-
-    }
-
-
-    /**
-     * Displays all events that have been booked by current user
-     */
-    private function displayBookedEvents()
-    {
-
-        $booking = Booking::getInstance();
-        $attended = $booking->getBookingsByUserId($_SESSION['USER_ID']);
-
-        $booked_events = [];
-        foreach ($attended as $a) {
-            if ($a->user_id == $_SESSION['USER_ID']) {
-                array_push($booked_events, $a);
-                continue;
-            }
-        }
-
-        $this->view->booked = $booked_events;
 
     }
 }

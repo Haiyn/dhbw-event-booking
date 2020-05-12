@@ -125,23 +125,6 @@ class User
     }
 
     /**
-     *Update username in database
-     * @param $data *username
-     * @return bool
-     */
-    public function updateUsername($data)
-    {
-        return self::$database->execute(
-            "UPDATE users
-            SET username = :username
-            WHERE user_id = :user_id",
-            $this->mapUpdatedUsernameToUserTableData($data)
-        );
-    }
-
-
-
-    /**
      * Update user data in the database
      * @param $data * Data of user
      * @return bool
@@ -150,7 +133,7 @@ class User
     {
         return self::$database->execute(
             "UPDATE users
-            SET first_name = :first_name, last_name = :last_name, email = :email
+            SET first_name = :first_name, last_name = :last_name, email = :email, username = :username
             WHERE user_id = :user_id",
             $this->mapUpdatedDataToUserTableData($data)
         );
@@ -173,33 +156,24 @@ class User
     }
 
     /**
-     * Map updated username to database
-     * @param $data
-     * @return array
-     */
-    private function mapUpdatedUsernameToUserTableData($data)
-    {
-        return $data = [":username" => $data['username'],
-            ":user_id" => $data['user_id']
-        ];
-    }
-
-    /**
      * Maps the updated user data into the database
      * @param $data * data to map
      * @return array * mapped data that fits users table data
      */
     private function mapUpdatedDataToUserTableData($data)
     {
-        /*if (empty($data['first_name'])) {
+        if (empty($data['first_name'])) {
             $data['first_name'] = null;
         }
         if (empty($data['last_name'])) {
             $data['last_name'] = null;
-        }*/
-        return $data = [":first_name" => $data['first_name'],
+        }
+
+        return $data = [
+            ":first_name" => $data['first_name'],
             ":last_name" => $data['last_name'],
             ":email" => $data['email'],
+            ":username" => $data['username'],
             ":user_id" => $data['user_id']
         ];
     }
@@ -211,11 +185,10 @@ class User
      */
     private function mapUpdatedPasswordToUserTableData($data)
     {
-        return $data =
-            [
-                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"]),
-                ":user_id" => $data['user_id']
-            ];
+        return $data = [
+            ":password" => Utility::encryptPassword($data['password']),
+            ":user_id" => $data['user_id']
+        ];
     }
 
     /**

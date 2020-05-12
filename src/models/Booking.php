@@ -42,18 +42,6 @@ class Booking
         );
     }
 
-
-
-    public function getBookingsByUserId($user_id)
-    {
-        return self::$database->fetch(
-            "SELECT users.username, users.email, bookings.user_id FROM bookings
-            INNER JOIN users ON bookings.user_id = users.user_id WHERE user_id = :user_id",
-            [":event_id" => $event_id]
-        );
-    }
-
-
     /**
      * Add the booking to the database
      * @param $data * Data of the booking
