@@ -111,6 +111,11 @@ class ProfileEditController extends Controller
     }
 
 
+    /**
+     * If a new email address has been entered, generates a confirmation email, similar to the one
+     * sent after registering
+     * @param $email
+     */
     private function confirmEmail($email)
     {
         if (isset($_POST['email']) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
