@@ -127,13 +127,14 @@ class User
     /**
      * Update user password in the database
      * @param $data * new password
+     * @return bool
      */
     public function updatePassword($data)
     {
-        self::$database->execute(
+       return self::$database->execute(
             "UPDATE users
         SET password = :password
-        WHERE user_id = :user_id",
+        WHERE verification_hash = :hash",
             $this->mapUpdatedPasswordToUserTableData($data)
         );
     }
@@ -148,8 +149,8 @@ class User
     {
         return $data =
             [
-                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"]),
-                ":user_id" => $data['user_id']
+                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"])
+//                ":user_id" => $data['user_id']
             ];
     }
 
