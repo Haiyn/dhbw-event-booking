@@ -1,0 +1,60 @@
+<html lang="en">
+    <head>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
+    </head>
+    <body>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+
+        <div class="container min-vh-80">
+            <?php if (isset($isError) && $isError): ?>
+                <div class="alert alert-danger" role="alert">
+                    <p class="text-danger"><?= $_SESSION["PROFILE_EDIT_ERROR"] ?></p>
+                </div>
+            <?php endif ?>
+
+            <?php if (isset($isSuccess) && $isSuccess): ?>
+                <div class="alert alert-success" role="alert">
+                    <p class="text-success"><?= $_SESSION["PROFILE_EDIT_SUCCESS"] ?></p>
+                </div>
+            <?php endif ?>
+
+            <div style="margin-bottom: 40px">
+                <h3>Edit profile</h3>
+            </div>
+
+            <form method="post">
+                <div class="form-group">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" name="username" maxlength="32" value="<?= isset($username) ? $username : '' ?>"
+                               class="form-control">
+                    </div>
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" maxlength="32" value="<?= isset($firstName) ? $firstName : '' ?>"
+                           class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" maxlength="32" value="<?= isset($lastName) ? $lastName : '' ?>"
+                           class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="email">E-Mail</label>
+                    <input type="email" name="email" maxlength="32" value="<?= isset($email) ? $email : '' ?>"
+                           class="form-control"><br/>
+                </div>
+
+                <div class="form-group">
+                    <span><b>Click here to change password: </b><a href="/reset-password">Change password</a></span>
+                </div>
+
+                <div class="row">
+                    <button type="submit" class="btn btn-primary" name="update" style="margin-right: 10px">Save</button>
+                    <a href="/profile" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+    </body>
+</html>
