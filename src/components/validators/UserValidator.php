@@ -90,4 +90,38 @@ class UserValidator
                         <a href='/register?verify={$user_data['foundUser']->email}'> to confirm</a>.");
         }
     }
+
+    /**
+     * Checks if all the form data is in a valid format
+     * @param $new_data * new data
+     * @param $old_data * existing data
+     * @throws ValidatorException
+     */
+    public function validateNewData($new_data)
+    {
+        if (empty($new_data['username'])){
+            throw new ValidatorException("Your username cannot be empty!");
+        }
+        // Check if the username contains white spaces
+        if (preg_match('/\s/', $new_data['username'])) {
+            throw new ValidatorException("Your username cannot contain whitespaces!");
+        }
+        // Check if maxlength is exceeded
+        if (strlen($new_data["username"]) > 32) {
+            throw new ValidatorException("Length of username cannot exceed max length of 32.");
+        }
+        // Check if maxlength is exceeded
+        if (strlen($new_data["first_name"]) > 32) {
+            throw new ValidatorException("Length of first_name cannot exceed max length of 32.");
+        }
+        if (strlen($new_data["last_name"]) > 32) {
+            throw new ValidatorException("Length of last_name cannot exceed max length of 32.");
+        }
+        if (strlen($new_data["email"]) > 32) {
+            throw new ValidatorException("Length of email cannot exceed max length of 32.");
+        }
+
+    }
+
+
 }
