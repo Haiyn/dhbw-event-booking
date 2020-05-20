@@ -32,7 +32,7 @@ class PasswordSaveController extends Controller
                 foreach ($new_data as $key => &$value) {
                     $new_data[$key] = trim($value);
                 }
-                $this->updatePassword($new_data);
+                $this->updatePassword($new_data, $hash);
                 $this->setSuccess("You have successfully changed your password");
             }
         } else {
@@ -50,9 +50,10 @@ class PasswordSaveController extends Controller
      *Updates password after checking if new password and repeated password match and requires
      * user to confirm new password via email
      * @param $new_data
+     * @param $hash
      */
     private
-    function updatePassword($new_data)
+    function updatePassword($new_data, $hash)
     {
         $user = User::getInstance();
         /* $userId = $_SESSION['USER_ID'];*/
