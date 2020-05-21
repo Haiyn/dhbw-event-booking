@@ -179,11 +179,21 @@ class User
             [":hash" => $hash]
         );
         if ($exists) {
-            return self::$database->execute(
+            self::$database->execute(
                 "UPDATE users
         SET password = :password
         WHERE verification_hash = :verification_hash",
                 $this->mapUpdatedPasswordToUserTableData($data, $hash)
+            );
+
+            return self::$database->execute(
+                "UPDATE users 
+                    SET verification_hash = :new_hash
+                    WHERE verification_hash = :hash",
+                [
+                    ":hash" => $hash,
+                    ":new_hash" => Utility::generateSSLHash(16)
+                ]
             );
         }
     }
