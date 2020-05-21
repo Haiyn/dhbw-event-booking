@@ -2,8 +2,6 @@
 
 namespace controllers;
 
-use components\core\Utility;
-use components\email\EmailService;
 use components\validators\ValidatorException;
 use components\validators\UserValidator;
 use models\User;
@@ -45,8 +43,7 @@ class PasswordSaveController extends Controller
     }
 
     /**
-     *Updates password after checking if new password and repeated password match and requires
-     * user to confirm new password via email
+     *Updates password after checking if new password and repeated password match
      * @param $new_data
      * @param $hash
      */

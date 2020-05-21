@@ -94,7 +94,6 @@ class UserValidator
     /**
      * Checks if all the form data is in a valid format
      * @param $new_data * new data
-     * @param $old_data * existing data
      * @throws ValidatorException
      */
     public function validateNewData($new_data)
@@ -124,7 +123,12 @@ class UserValidator
     }
 
 
-
+    /**
+     * Checks the length of the new password and if the password input matches
+     * the repeated password input
+     * @param $new_data *new password
+     * @throws ValidatorException
+     */
     public function validateNewPassword($new_data){
         if (strlen($new_data["password"]) > 32) {
             throw new ValidatorException("Length of password cannot exceed max length of 32.");

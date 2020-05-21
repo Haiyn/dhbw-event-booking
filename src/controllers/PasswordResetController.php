@@ -4,8 +4,6 @@ namespace controllers;
 
 use components\core\Utility;
 use components\email\EmailService;
-use components\validators\ValidatorException;
-use components\validators\UserValidator;
 use models\User;
 
 /**
@@ -33,7 +31,8 @@ class PasswordResetController extends Controller
 
 
     /**
-     * Verifies user by email and sends a link that will redirect to password reset
+     * Verifies user by email and sends a link that will redirect to a form
+     * for new password input
      * @param $email
      */
     private function sendResetPasswordEmail($email)
