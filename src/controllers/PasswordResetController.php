@@ -21,7 +21,6 @@ class PasswordResetController extends Controller
             $this->sendResetPasswordEmail($email);
             $this->setSuccess("The verification link has been successfully sent to 
                     <strong>{$email}</strong>");
-
         }
 
         $this->view->pageTitle = "Password Reset";
@@ -51,7 +50,11 @@ class PasswordResetController extends Controller
                 "Reset your password",
                 "Follow <a href='" . Utility::getApplicationURL() . "/password-save?hash={$hash}'>this link</a> 
                 to reset your password.");
+        } else{
+            $this->setSuccess("Follow <a href='" . Utility::getApplicationURL() . "/password-save?hash={$hash}'>this link</a> 
+                to reset your password.");
         }
+
     }
 
 }

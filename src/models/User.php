@@ -183,7 +183,8 @@ class User
                 "UPDATE users
         SET password = :password
         WHERE verification_hash = :verification_hash",
-                $this->mapUpdatedPasswordToUserTableData($data, $hash)
+                [":password" => Utility::encryptPassword($data['password']),
+                    ":verification_hash" => $hash]
             );
 
             return self::$database->execute(
@@ -196,22 +197,6 @@ class User
                 ]
             );
         }
-    }
-
-
-    /**
-     * Maps the updated password in hashed form into the database
-     * @param $data * data to map
-     * @param $hash
-     * @return array * mapped data that fits users table data
-     */
-    private function mapUpdatedPasswordToUserTableData($data, $hash)
-    {
-        return $data =
-            [
-                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"]),
-                ":verification_hash" => $hash
-            ];
     }
 
 
