@@ -49,7 +49,7 @@ docker build -t event-booking-apache:2020 .
 
 3. Build the websocket image
 ```
-docker build -t event-booking-websocket:2020
+docker build -t event-booking-websocket:2020 .
 ```
 
 4. Change directory back to document root
