@@ -204,7 +204,7 @@ class User
             "SELECT 1 FROM users WHERE verification_hash = :hash",
             [":hash" => $hash]
         );
-        if (!$exists) {
+        if ($exists) {
             return self::$database->execute(
                 "UPDATE users
         SET password = :password
