@@ -208,25 +208,25 @@ class User
             return self::$database->execute(
                 "UPDATE users
         SET password = :password
-        WHERE verification_hash = :hash",
-                $this->mapUpdatedPasswordToUserTableData($data)
+        WHERE verification_hash = :verification_hash",
+                $this->mapUpdatedPasswordToUserTableData($data, $hash)
             );
         }
     }
 
 
-
     /**
      * Maps the updated password in hashed form into the database
      * @param $data * data to map
+     * @param $hash
      * @return array * mapped data that fits users table data
      */
-    private function mapUpdatedPasswordToUserTableData($data)
+    private function mapUpdatedPasswordToUserTableData($data, $hash)
     {
         return $data =
             [
-                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"])
-//                ":user_id" => $data['user_id']
+                ":password" => md5(Utility::getIniFile()['AUTH_SALT'] . $data["password"]),
+                ":verification_hash" => $hash
             ];
     }
 

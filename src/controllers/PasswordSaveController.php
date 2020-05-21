@@ -34,10 +34,8 @@ class PasswordSaveController extends Controller
                 }
                 $this->updatePassword($new_data, $hash);
                 $this->setSuccess("You have successfully changed your password");
+                $this->redirect("/login");
             }
-        } else {
-            $this->setError("Sorry, something went wrong!");
-
         }
 
 
@@ -56,7 +54,6 @@ class PasswordSaveController extends Controller
     function updatePassword($new_data, $hash)
     {
         $user = User::getInstance();
-        /* $userId = $_SESSION['USER_ID'];*/
 
         $userValidator = UserValidator::getInstance();
         try {
@@ -65,9 +62,7 @@ class PasswordSaveController extends Controller
             $this->setError($exception->getMessage());
         }
 
-        //$new_data += ["user_id" => $userId];
-
-        if (!$user->updatePassword($new_data)) {
+        if (!$user->updatePassword($new_data, $hash)) {
             $this->setError("Something went wrong");
         }
     }
