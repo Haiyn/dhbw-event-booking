@@ -15,11 +15,14 @@ class PasswordSaveController extends Controller
 {
     public function render($params)
     {
-
         if (isset($_GET['hash'])) {
 
             $hash = htmlspecialchars($_GET['hash']);
             $user = User::getInstance();
+
+            if (empty($user)) {
+                $this->redirect("/home");
+            }
 
             //Save button pressed on password change
             if (isset($_POST["password"])) {
@@ -32,10 +35,8 @@ class PasswordSaveController extends Controller
                 }
                 $this->updatePassword($new_data, $hash);
                 $this->setSuccess("You have successfully changed your password");
-                $this->redirect("/login");
             }
         }
-
 
         $this->view->pageTitle = "Password Save";
         $this->view->isSuccess = isset($_GET["success"]);
