@@ -48,8 +48,7 @@ class PasswordSaveController extends Controller
      * @param $new_data
      * @param $hash
      */
-    private
-    function updatePassword($new_data, $hash)
+    private function updatePassword($new_data, $hash)
     {
         $user = User::getInstance();
 

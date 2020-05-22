@@ -98,7 +98,7 @@ class UserValidator
      */
     public function validateNewData($new_data)
     {
-        if (empty($new_data['username'])){
+        if (empty($new_data['username'])) {
             throw new ValidatorException("Your username cannot be empty!");
         }
         // Check if the username contains white spaces
@@ -124,14 +124,21 @@ class UserValidator
 
 
     /**
-     * Checks the length of the new password and if the password input matches
+     * Checks if any of the input fields have been left empty,
+     * the length of the new password and if the password input matches
      * the repeated password input
      * @param $new_data *new password
      * @throws ValidatorException
      */
-    public function validateNewPassword($new_data){
-        if (strlen($new_data["password"]) > 32) {
-            throw new ValidatorException("Length of password cannot exceed max length of 32.");
+    public function validateNewPassword($new_data)
+    {
+
+        if (empty($new_data['password']) || empty($_POST['password_repeat'])) {
+            throw new ValidatorException("Please enter something valid into the required fields.");
+        }
+
+        if (strlen($new_data['password']) > 32) {
+            throw new ValidatorException("Length of password cannot exceed max length of 32 characters.");
         }
 
         if ($new_data['password'] !== $_POST['password_repeat']) {
