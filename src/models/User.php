@@ -140,20 +140,6 @@ class User
     }
 
 
-    /**
-     * Update user password in the database
-     * @param $data * new password
-     * @return bool
-     */
-    public function updatePassword($data)
-    {
-        return self::$database->execute(
-            "UPDATE users
-        SET password = :password
-        WHERE user_id = :user_id",
-            $this->mapUpdatedPasswordToUserTableData($data)
-        );
-    }
 
     /**
      * Maps the updated user data into the database
@@ -178,18 +164,42 @@ class User
         ];
     }
 
+
+
     /**
-     * Maps the updated password in hashed form into the database
-     * @param $data * data to map
-     * @return array * mapped data that fits users table data
+     * Update user password in the database
+     * @param $data * new password
+     * @param $hash
+     * @return bool
      */
-    private function mapUpdatedPasswordToUserTableData($data)
+    public function updatePassword($data, $hash)
     {
-        return $data = [
-            ":password" => Utility::encryptPassword($data['password']),
-            ":user_id" => $data['user_id']
-        ];
+        $exists = self::$database->fetch(
+            "SELECT 1 FROM users WHERE verification_hash = :hash",
+            [":hash" => $hash]
+        );
+        if ($exists) {
+            self::$database->execute(
+                "UPDATE users
+        SET password = :password
+        WHERE verification_hash = :verification_hash",
+                [":password" => Utility::encryptPassword($data['password']),
+                    ":verification_hash" => $hash]
+            );
+
+            return self::$database->execute(
+                "UPDATE users 
+                    SET verification_hash = :new_hash
+                    WHERE verification_hash = :hash",
+                [
+                    ":hash" => $hash,
+                    ":new_hash" => Utility::generateSSLHash(16)
+                ]
+            );
+        }
     }
+
+
 
     /**
      * Maps the data from user_data to a users database object

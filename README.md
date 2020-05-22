@@ -39,23 +39,22 @@ Important: The command needs to be run in a POSIX-compatible CLI such as bash, c
 ![Docker Version][docker-image] needed
 
 A Dockerfile and docker-compose is available for running the PostgreSQL database, Apache, SMTP and Websocket Server
-in a docker container. In order to set this up, the following two steps are needed:
+in a docker container. In order to set this up, the following steps are needed:
 1. Build the apache image
 ```
 docker build -t event-booking-apache:2020 .
 ```
 
 2. Change directory to `/socket`
-```
-cd ./socket
-```
 
 3. Build the websocket image
 ```
 docker build -t event-booking-websocket:2020 .
 ```
 
-4. Run docker-compose
+4. Change directory back to document root
+
+5. Run docker-compose
 ```
 docker-compose up -d
 ```

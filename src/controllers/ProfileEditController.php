@@ -67,11 +67,13 @@ class ProfileEditController extends Controller
         $firstName = $userById->first_name;
         $lastName = $userById->last_name;
         $email = $userById->email;
+        $hash = $userById->verification_hash;
 
         $this->view->username = $username;
         $this->view->firstName = $firstName;
         $this->view->lastName = $lastName;
         $this->view->email = $email;
+        $this->view->hash = $hash;
     }
 
     /**
