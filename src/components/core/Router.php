@@ -78,7 +78,7 @@ class Router extends InternalComponent
         $controller->viewName = $viewName;
 
         // Invoke the controller view
-        $controller->render($params);
+        $controller->render();
         $controller->showView();
     }
 }

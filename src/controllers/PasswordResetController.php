@@ -13,7 +13,7 @@ use models\User;
  */
 class PasswordResetController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         if (isset($_POST['email'])) {
             $email = filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL);

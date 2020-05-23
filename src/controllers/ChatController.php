@@ -12,7 +12,7 @@ use models\User;
  */
 class ChatController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         $this->session->checkSession();
 

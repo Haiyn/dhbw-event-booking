@@ -11,7 +11,7 @@ use models\User;
  */
 class ConfirmController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         if (isset($_GET['hash'])) {
 

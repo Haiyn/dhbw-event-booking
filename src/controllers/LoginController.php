@@ -14,7 +14,7 @@ use models\User;
  */
 class LoginController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         if (isset($_POST["emailOrId"]) && isset($_POST["password"])) {
             // Sanitize the data by removing any harmful code and markup

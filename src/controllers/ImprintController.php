@@ -9,7 +9,7 @@ namespace controllers;
  */
 class ImprintController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         $this->view->pageTitle = "Imprint";
     }

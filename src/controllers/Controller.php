@@ -23,7 +23,7 @@ abstract class Controller
         $this->session->resumeSession();
     }
 
-    abstract public function render($params);
+    abstract public function render();
 
     /*
      * Redirects to the given url. Makes use of the router.

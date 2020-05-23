@@ -18,7 +18,7 @@ use models\User;
  */
 class EventDetailController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         $this->session->checkSession();
 

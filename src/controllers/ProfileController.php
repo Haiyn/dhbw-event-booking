@@ -16,7 +16,7 @@ use function Composer\Autoload\includeFile;
 class ProfileController extends Controller
 {
 
-    public function render($params)
+    public function render()
     {
         $this->session->checkSession();
 

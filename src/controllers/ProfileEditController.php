@@ -16,7 +16,7 @@ use models\User;
  */
 class ProfileEditController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         $this->session->checkSession();
         $user = User::getInstance();

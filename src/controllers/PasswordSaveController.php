@@ -13,7 +13,7 @@ use models\User;
  */
 class PasswordSaveController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         if (isset($_GET['hash'])) {
 
