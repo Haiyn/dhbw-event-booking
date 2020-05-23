@@ -52,9 +52,7 @@ docker build -t event-booking-apache:2020 .
 docker build -t event-booking-websocket:2020 .
 ```
 
-4. Change directory back to document root
-
-5. Run docker-compose
+4. Run docker-compose
 ```
 docker-compose up -d
 ```
@@ -92,7 +90,7 @@ Notable settings are:
     If your CPU is melting the heatsink, you might want to increase this number. Please note that the higher the timeout
     is set, the more something can break on client side. Messages might not be sent or connections might be faulty.
   * TRACE_ENABLED
-  
+
     Turning this on and of lets you see Trace logs in the server, such as message payloads or verbose
     process progress.
 
@@ -127,7 +125,8 @@ Installation:
 
 ## Release History
 
-* 0.1
+* Version 0.1 (12.03.2020)
+  * Implemented:
     * Docker Setup for webserver and Database
     * Website MVC structure with router and autoloader
     * User Registration
@@ -135,17 +134,43 @@ Installation:
     * Event Overview
     * Event Detail View
 
-* 0.2
+
+* Version 0.2 (30.03.2020)
+  * Implemented:
     * User Login
     * User Sessions
-    * Email Sending (Email verification, Invitation email)
+    * Email Sending  
     * Event Attending
     * Event Editing
     * Event Cancelling
     * Event Inviting
-    * Error Pages & Header and Footer
-* 0.3
-    * t.b.a.
+    * Error Pages
+    * Header and Footer
+  * Fixed:
+    * Root URL throws error
+    * Footer is not always at the bottom
+
+
+* Version 0.3 (20.04.2020)
+  * Implemented:
+    * Websocket Real-Time Chat
+    * Event Filtering
+    * Logout
+    * Imprint
+  * Fixed:
+    * Insecure password encrypting
+    * Event creator can book and unbook own events
+    * Email verification issue fixed
+    * Login time of session does not refresh on user activity
+
+* Version 0.4 ([DATE])
+  * Implemented:
+    * Home page
+    * Profile
+    * Profile Edit
+    * Password Reset
+  * Fixed:
+    * Composer post-install does not work on windows
 
 <!-- Markdown link & img dfn's -->
 [php-image]: https://img.shields.io/badge/php-v7.4.3-brightgreen?style=flat-square&logo=php
