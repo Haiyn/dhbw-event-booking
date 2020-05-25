@@ -30,7 +30,7 @@ class PasswordSaveController extends Controller
                     'password' => htmlspecialchars($_POST['password'])
                 ];
 
-                foreach ($new_data as $key => &$value) {
+                foreach ($new_data as $key => $value) {
                     $new_data[$key] = trim($value);
                 }
                 $this->updatePassword($new_data, $hash);
