@@ -13,7 +13,10 @@ PostgreSQL database, startable via docker. Created as a PHP lecture assignment a
 ## Development Setup
 
 ### A shell script (`run.sh`) is supplied to automatically do steps 1. and 2.
-It is located in the project root. Be sure to make it executable with `chmod +x ./run.sh` beforehand. If you want to use this script, run it and skip ahead to 3. Configuration.
+It is located in the project root. Be sure to make it executable with `chmod +x ./run.sh` beforehand. 
+You'll need Composer and Docker to run this script, as defined by the above versioning tags.
+
+If you want to use this script, run it and skip ahead to 3. Configuration.
 
 If you'd like to do it manually, please follow steps 1. trough 3.:
 
@@ -30,8 +33,6 @@ To automatically make all dependencies available on the webserver, run
 ```
 composer install
 ```
-
-Important: The command needs to be run in a POSIX-compatible CLI such as bash, cygwin or the GIT bash (mingw64).
 
 
 ### 2. Docker
@@ -73,7 +74,7 @@ Notable settings are:
 
   * PHP_MAILER_ENABLED
 
-    This controls whether r not the PHPMailer framework should be used to send Emails. **SMTP Emails currently only work with this set to true.**
+    This controls whether or not the PHPMailer framework should be used to send Emails. **SMTP Emails currently only work with this set to true.**
 
   * LOGIN_TIMEOUT
 
