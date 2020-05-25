@@ -139,7 +139,22 @@ class User
         );
     }
 
-
+    /**
+     * Update the verified state when the email is being updated
+     * @param $email * Email of the user
+     * @param $hash * New hash
+     * @param $verified * New verified state
+     * @return bool * Successful/ not successful
+     */
+    public function updateUserVerified($email, $hash, $verified)
+    {
+        return self::$database->execute(
+            "UPDATE users
+            SET verification_hash = :hash, verified = :verified
+            WHERE email = :email",
+            [":email" => $email, ":hash" => $hash, ":verified" => $verified]
+        );
+    }
 
     /**
      * Maps the updated user data into the database
