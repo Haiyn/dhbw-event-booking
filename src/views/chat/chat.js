@@ -41,6 +41,11 @@ $(document).ready(function () {
             return;
         }
 
+        if(e.data === "ERR_MSG_NOT_DELIVERED") {
+            showError("Sorry, something went wrong. Your message was not delivered.");
+            return;
+        }
+
         const message = JSON.parse(e.data);
         if(message.from === partnerId) {
             // Message is from chat partner, show it
