@@ -96,6 +96,14 @@ class Utility
     }
 
     /**
+     * Log a non-fatal error
+     * @param $message
+     */
+    public static function error($message) {
+        echo("\n[ERROR] {$message}");
+    }
+
+    /**
      * Logs a message
      * @param $message
      */
@@ -120,6 +128,10 @@ class Utility
      */
     public static function getIniFile($process_sections = false)
     {
-        return parse_ini_file("./config.ini", $process_sections);
+        $data = parse_ini_file("./config.ini", $process_sections);
+        if($data === false) {
+            echo("\n[WARN] Config file could not be found: Utility getIniFile returns false");
+        }
+        return $data;
     }
 }

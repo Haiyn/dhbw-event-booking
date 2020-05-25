@@ -71,7 +71,7 @@ class WebsocketServer
             if (socket_select($read, $write = array(), $except = array(), 0) < 1)
                 continue;
 
-            Utility::log(count($read) . " socket(s) have a new message.");
+            Utility::trace(count($read) . " socket(s) have a new message.");
             // NEW CONNECTION
             if (in_array($this->socket, $read)) {
                 // Try to accept the request
@@ -87,7 +87,7 @@ class WebsocketServer
                 // Receive message from every client with news
                 foreach ($read as $count => $socket) {
                     // Get the new message
-                    Utility::log("Socket #" . $count . " has news");
+                    Utility::trace("Socket #" . $count . " has news");
                     $message = $this->receive($socket);
 
                     // Client has new message
@@ -96,7 +96,7 @@ class WebsocketServer
                         if(!$this->handleOpcode($message, $socket)) continue;
                         $message = Utility::unmask($message);
                         Utility::trace("New message from client #$count: $message");
-                        $this->handleMessage(htmlspecialchars($message), $socket);
+                        $this->handleMessage($message, $socket);
                     } else {
                         // Message is empty, remove the client
                         $this->close($socket);
@@ -246,18 +246,26 @@ class WebsocketServer
     private function handleMessage($message, $socket) {
         if(strpos($message, "IDENT") === 0) {
             // Message is an identification message, register the client
-            Utility::trace("IDENT message received, trying to register...");
+            Utility::log("IDENT message received, trying to register...");
             $id = substr($message, 6);
 
             // Add the socket to the client registry for lookup
             $this->clientRegistry[$id] = $socket;
             Utility::log("Registered new client with ID {$id}");
             Utility::log(count($this->clientRegistry) . " clients are registered.");
+            Utility::trace("Registered clients: " . print_r(array_keys($this->clientRegistry), true));
         }
         else {
             // Message is not IDENT, handle it as a routable chat message
-            Utility::trace("Chat message received, trying to route...");
             $messageObject = json_decode($message);
+            if(empty($messageObject) && !empty($message)) {
+                // JSON Decode Error
+                Utility::error("Error decoding message:" . json_last_error() . ": " . json_last_error_msg());
+                $this->send($socket, "ERR_MSG_NOT_DELIVERED");
+                Utility::trace("Sent Error message back to client.");
+                return;
+            }
+            Utility::log("Chat message received, trying to route to ID {$messageObject->to}...");
 
             // Do a lookup in the client registry for the "to" value of the received json message
             Utility::trace("Checking registry for ID {$messageObject->to}...");
@@ -278,7 +286,7 @@ class WebsocketServer
                 // Lookup failed, ID is not in registry
                 Utility::log("Socket with ID {$messageObject->to} is not connected. Aborted routing.");
                 $this->send($socket, "ERR_USER_NOT_CONNECTED");
-                Utility::trace("Send Error message back to client.");
+                Utility::trace("Sent Error message back to client.");
             }
         }
     }
