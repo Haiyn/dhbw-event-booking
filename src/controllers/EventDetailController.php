@@ -307,8 +307,8 @@ class EventDetailController extends Controller
         );
         if (!$successful) {
             $this->setWarning(
-                "You have successfully booked this event. Emails are disabled. Creator was not
-                                notified of your booking.",
+                "You have successfully booked this event. Emails are disabled. You have not received
+                a booking confirmation email.",
                 ["event_id" => $_GET['event_id']]
             );
         }
