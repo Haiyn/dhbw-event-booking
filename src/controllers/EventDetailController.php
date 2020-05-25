@@ -286,7 +286,7 @@ class EventDetailController extends Controller
         if ($status == Status::$INVITED) {
             if (!$booking->updateBookingStatus($event->event_id, $attendee_id, Status::$ACCEPTED)) {
                 // Something went wrong while updating the booking
-                $this->setError("An error occurred while attending to the event.", []);
+                $this->setError("An error occurred while attending the event.", []);
             }
         } else {
             if (
@@ -294,7 +294,7 @@ class EventDetailController extends Controller
                 "status" => Status::$ACCEPTED])
             ) {
                 // Something went wrong while adding the booking
-                $this->setError("An error occurred while attending to the event.", []);
+                $this->setError("An error occurred while attending the event.", []);
             }
         }
         // Notify attendee
@@ -307,8 +307,8 @@ class EventDetailController extends Controller
         );
         if (!$successful) {
             $this->setWarning(
-                "Attendee successfully added. Emails are disabled. Attendee was not
-                                notified of the change.",
+                "You have successfully booked this event. Emails are disabled. Creator was not
+                                notified of your booking.",
                 ["event_id" => $_GET['event_id']]
             );
         }

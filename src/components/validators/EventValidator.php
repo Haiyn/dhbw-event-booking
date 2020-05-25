@@ -252,11 +252,11 @@ class EventValidator
                 ["event_id" => $_GET['event_id']]
             );
         }
-        // Check if user is already attending to this event
+        // Check if user is already attending this event
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $attendee_id && $attendee->status == Status::$ACCEPTED) {
                 throw new ValidatorException(
-                    "Cannot attend to this event, because you are already attending to it!",
+                    "Cannot attend to this event, because you are already attending it!",
                     ["event_id" => $_GET['event_id']]
                 );
             } elseif ($attendee->user_id == $attendee_id && $attendee->status == Status::$INVITED) {
@@ -293,7 +293,7 @@ class EventValidator
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $user->user_id) {
                 throw new ValidatorException(
-                    "User is already attending to this event.",
+                    "User is already attending this event.",
                     ["event_id" => $_GET['event_id'], "edit" => ""]
                 );
             }
@@ -308,7 +308,7 @@ class EventValidator
      */
     public function validateUnattendData($attendees, $attendee_id)
     {
-        // Check if user is already attending to this event
+        // Check if user is already attending this event
         $attending = false;
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $attendee_id) {
@@ -318,7 +318,7 @@ class EventValidator
         }
         if (!$attending) {
             throw new ValidatorException(
-                "Cannot be removed from the event, because you are not attending to it!",
+                "Cannot be removed from the event, because you are not attending it!",
                 ["event_id" => $_GET['event_id']]
             );
         }
