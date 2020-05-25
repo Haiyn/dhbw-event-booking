@@ -279,14 +279,14 @@ class EventValidator
         if (empty($user)) {
             throw new ValidatorException(
                 "User not found.",
-                ["event_id" => $_GET['event_id']]
+                ["event_id" => $_GET['event_id'], "edit" => ""]
             );
         }
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
             throw new ValidatorException(
                 "Cannot invite another user to this event, because it is full!",
-                ["event_id" => $_GET['event_id']]
+                ["event_id" => $_GET['event_id'], "edit" => ""]
             );
         }
         // Check if user hasn't already booked the event
@@ -294,7 +294,7 @@ class EventValidator
             if ($attendee->user_id == $user->user_id) {
                 throw new ValidatorException(
                     "User is already attending to this event.",
-                    ["event_id" => $_GET['event_id']]
+                    ["event_id" => $_GET['event_id'], "edit" => ""]
                 );
             }
         }
