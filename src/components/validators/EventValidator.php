@@ -252,11 +252,11 @@ class EventValidator
                 ["event_id" => $_GET['event_id']]
             );
         }
-        // Check if user is already attending to this event
+        // Check if user is already attending this event
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $attendee_id && $attendee->status == Status::$ACCEPTED) {
                 throw new ValidatorException(
-                    "Cannot attend to this event, because you are already attending to it!",
+                    "Cannot attend to this event, because you are already attending it!",
                     ["event_id" => $_GET['event_id']]
                 );
             } elseif ($attendee->user_id == $attendee_id && $attendee->status == Status::$INVITED) {
@@ -279,6 +279,13 @@ class EventValidator
         if (empty($user)) {
             throw new ValidatorException(
                 "User not found.",
+                ["event_id" => $_GET['event_id'], "edit" => ""]
+            );
+        }
+        // Check if user to be invited is event creator
+        if ($user->user_id == $event->creator_id) {
+            throw new ValidatorException(
+                "You cannot invite yourself to this event, because you are the creator!",
                 ["event_id" => $_GET['event_id']]
             );
         }
@@ -286,15 +293,15 @@ class EventValidator
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
             throw new ValidatorException(
                 "Cannot invite another user to this event, because it is full!",
-                ["event_id" => $_GET['event_id']]
+                ["event_id" => $_GET['event_id'], "edit" => ""]
             );
         }
         // Check if user hasn't already booked the event
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $user->user_id) {
                 throw new ValidatorException(
-                    "User is already attending to this event.",
-                    ["event_id" => $_GET['event_id']]
+                    "User is already attending this event.",
+                    ["event_id" => $_GET['event_id'], "edit" => ""]
                 );
             }
         }
@@ -308,7 +315,7 @@ class EventValidator
      */
     public function validateUnattendData($attendees, $attendee_id)
     {
-        // Check if user is already attending to this event
+        // Check if user is already attending this event
         $attending = false;
         foreach ($attendees as $attendee) {
             if ($attendee->user_id == $attendee_id) {
@@ -318,7 +325,7 @@ class EventValidator
         }
         if (!$attending) {
             throw new ValidatorException(
-                "Cannot be removed from the event, because you are not attending to it!",
+                "Cannot be removed from the event, because you are not attending it!",
                 ["event_id" => $_GET['event_id']]
             );
         }

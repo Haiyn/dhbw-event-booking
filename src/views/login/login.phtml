@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title><?php if (isset($pageTitle)) echo($pageTitle) ?></title>
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
     </head>
     <body>
-        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
-
         <div class="container-fluid min-vh-80">
             <div class="modal-dialog text-center">
                 <div class="modal-content text-center">
@@ -43,6 +40,5 @@
                 </div>
             </div>
         </div>
-        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
     </body>
 </html>

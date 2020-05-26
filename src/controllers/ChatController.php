@@ -33,7 +33,7 @@ class ChatController extends Controller
             }
             if($_GET['username'] == $self->username) {
                 // User is trying to chat with themselves
-                $this->redirect("/event-overview");
+                $this->redirect("/chat");
             }
 
             $this->view->partnerUserId = $partner->user_id;

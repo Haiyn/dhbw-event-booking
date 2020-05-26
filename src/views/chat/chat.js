@@ -1,5 +1,7 @@
 $(document).ready(function () {
     const server = new WebSocket("ws://0.0.0.0:8089");
+    // only set the send button if it exists
+    let sendButton = $('#js-send-button').length ? $('#js-send-button') : false;
 
     /**
      * Connection established
@@ -9,7 +11,10 @@ $(document).ready(function () {
     server.onopen= e => {
         console.log('Connected.');
         server.send("IDENT " + selfId);
-        document.getElementById("js-send-button").removeAttribute("disabled");
+        if(sendButton) {
+            sendButton.removeAttr("disabled");
+        }
+
     };
 
     /**
@@ -41,6 +46,11 @@ $(document).ready(function () {
             return;
         }
 
+        if(e.data === "ERR_MSG_NOT_DELIVERED") {
+            showError("Sorry, something went wrong. Your message was not delivered.");
+            return;
+        }
+
         const message = JSON.parse(e.data);
         if(message.from === partnerId) {
             // Message is from chat partner, show it
@@ -56,27 +66,31 @@ $(document).ready(function () {
      * Send button pressed
      * Sends a JSON payload to the server
      */
-    $("#js-send-button").on("click", function() {
-        // Get message and check for validity
-        let message = document.getElementById("js-message-box").value.trim();
-        if(!message) {
-            return;
-        }
-        if (message.length > 2048) {
-            showError("Your message is too long!");
-            return;
-        }
+    if (sendButton) {
+        sendButton.on("click", function() {
+            // Get message and check for validity
+            let messageBox = $('#js-message-box');
+            let message = messageBox.val().trim();
+            if(!message) {
+                return;
+            }
+            if (message.length > 2048) {
+                showError("Your message is too long!");
+                return;
+            }
 
-        // Wrap the message and send it
-        const wsMessage = JSON.stringify({ from: selfId, to: partnerId, message: message });
-        server.send(wsMessage);
+            // Wrap the message and send it
+            const wsMessage = JSON.stringify({ from: selfId, to: partnerId, message: message });
+            server.send(wsMessage);
 
-        // Reset the input field
-        document.getElementById("js-message-box").value = "";
+            // Reset the input field
+            messageBox.val("");
 
-        // Create a new outbound message box
-        createNewMessage(message, false);
-    });
+            // Create a new outbound message box
+            createNewMessage(message, false);
+        });
+    }
+
 
     /**
      * Creates a new message box in the message history
@@ -84,17 +98,13 @@ $(document).ready(function () {
      * @param isInbound * Whether the message is outbound (sent) or inbound (received)
      */
     function createNewMessage(message, isInbound) {
-        let newMessage = document.createElement("div");
-        if(isInbound) {
-            newMessage.className = "msg-inbound bg-light";
-        } else {
-            newMessage.className = "msg-outbound bg-primary";
-        }
-        let newParagraph = document.createElement("p");
-        newParagraph.innerHTML = message;
-        newMessage.appendChild(newParagraph);
+        let className = isInbound ? "msg-inbound bg-light" : "msg-outbound bg-primary";
 
-        document.getElementById("js-history-box").appendChild(newMessage);
+        $('#js-history-box').append(
+            "<div class='" + className + "'>" +
+            "<p>" + message + "</p>" +
+            "</div>"
+        );
     }
 
     /**
@@ -102,12 +112,21 @@ $(document).ready(function () {
      * @param message
      */
     function showError(message) {
-        // disable the send button
-        document.getElementById("js-send-button").setAttribute("disabled", null);
+        // Set the error message
+        $('#js-error-text').html(message);
 
-        // Show an error message
-        document.getElementById("js-alert-text").innerHTML = message;
-        document.getElementById("js-alert-box").removeAttribute("hidden");
+        // disable the send button if it exists
+        if (sendButton) {
+            sendButton.attr("disabled", "true");
+        }
+
+        // Check if error box is hidden, if yes "unhide" it
+        let errorBox = $('#js-error-box');
+        let hidden = errorBox.attr("hidden");
+        if (typeof hidden !== typeof undefined && hidden !== false) { // browser compatibility checks
+            errorBox.removeAttr("hidden");
+        }
+
     }
 
     /**
@@ -115,12 +134,14 @@ $(document).ready(function () {
      * @param message
      */
     function showInfo(message) {
-        document.getElementById("js-info-text").innerHTML = message;
-        try {
-            document.getElementById("js-info-box").removeAttribute("hidden");
-        } catch (ex) {
-            // Box already visible, ignore it
-        }
+        // Set the info message
+        $('#js-info-text').html(message);
 
+        // Check if info box is hidden, if yes "unhide" it
+        let infoBox = $('#js-info-box');
+        let hidden = infoBox.attr("hidden");
+        if (typeof hidden !== typeof undefined && hidden !== false) { // browser compatibility checks
+            infoBox.removeAttr("hidden");
+        }
     }
 });
