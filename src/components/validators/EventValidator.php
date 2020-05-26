@@ -282,6 +282,13 @@ class EventValidator
                 ["event_id" => $_GET['event_id'], "edit" => ""]
             );
         }
+        // Check if user to be invited is event creator
+        if ($user->user_id == $event->creator_id) {
+            throw new ValidatorException(
+                "You cannot invite yourself to this event, because you are the creator!",
+                ["event_id" => $_GET['event_id']]
+            );
+        }
         // Check if event is full
         if (!empty($event->maximum_attendees) && count($attendees) >= $event->maximum_attendees) {
             throw new ValidatorException(
