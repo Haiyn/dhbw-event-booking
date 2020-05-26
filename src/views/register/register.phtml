@@ -3,54 +3,54 @@
     <head>
         <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/shared.phtml" ?>
     </head>
-<body>
-    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
+    <body>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/header/header.phtml" ?>
 
-    <div class="container min-vh-80">
-        <h1>Register</h1><br>
-        <p>Please enter following values to register.</p>
+        <div class="container min-vh-80">
+            <h1>Register</h1><br>
+            <p>Please enter following values to register.</p>
 
-        <?php if(isset($isError) && $isError): ?>
-            <div class="alert alert-danger" role="alert">
-                <p class="text-danger"><?php echo $_SESSION['REGISTER_ERROR']; ?></p>
-            </div>
-        <?php endif ?>
+            <?php if(isset($isError) && $isError): ?>
+                <div class="alert alert-danger" role="alert">
+                    <p class="text-danger"><?php echo $_SESSION['REGISTER_ERROR']; ?></p>
+                </div>
+            <?php endif ?>
 
-        <?php if(isset($isSuccess) && $isSuccess): ?>
-            <div class="alert alert-success" role="alert">
-                <p class="text-success"><?php echo $_SESSION["REGISTER_SUCCESS"]; ?></p>
-            </div>
-        <?php endif ?>
-        
-        <form method="post">
-            <div class="form-group">
-                <label for="js-register-username">Username*</label>
-                <input required id="js-register-username" type="text" name="username" maxlength="32" class="form-control"><br/>
-            </div>
-            <div class="form-group">
-                <label for="js-register-email">E-Mail*</label>
-                <input required id="js-register-email" type="email" name="email" maxlength="32" class="form-control"><br/>
-            </div>
-            <div class="form-group">
-                <label for="js-register-password">Password*</label>
-                <input required id="js-register-password" type="password" name="password" maxlength="32" class="form-control"><br/>
-            </div>
-            <div class="form-group">
-                <label for="js-register-firstname">First Name</label>
-                <input id="js-register-firstname" type="text" name="first_name" maxlength="32" class="form-control"><br/>
-            </div>
-            <div class="form-group">
-                <label for="js-register-lastname">Last Name</label>
-                <input id="js-register-lastname" type="text" name="last_name" maxlength="32" class="form-control"><br/>
-            </div>
-            <div class="form-group">
-                <label for="js-register-age">Age</label>
-                <input id="js-register-age" type="number" name="age" class="form-control"><br/>
-            </div>
-            <p class="text-danger">*These fields are required.</p>
-            <button id="js-register-submit" type="submit" class="btn btn-primary">Register</button>
-        </form>
-    </div>
-    <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
-</body>
+            <?php if(isset($isSuccess) && $isSuccess): ?>
+                <div class="alert alert-success" role="alert">
+                    <p class="text-success"><?php echo $_SESSION["REGISTER_SUCCESS"]; ?></p>
+                </div>
+            <?php endif ?>
+
+            <form method="post">
+                <div class="form-group">
+                    <label for="js-register-username">Username*</label>
+                    <input required id="js-register-username" type="text" name="username" maxlength="32" class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="js-register-email">E-Mail*</label>
+                    <input required id="js-register-email" type="email" name="email" maxlength="32" class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="js-register-password">Password*</label>
+                    <input required id="js-register-password" type="password" name="password" maxlength="32" class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="js-register-firstname">First Name</label>
+                    <input id="js-register-firstname" type="text" name="first_name" maxlength="32" class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="js-register-lastname">Last Name</label>
+                    <input id="js-register-lastname" type="text" name="last_name" maxlength="32" class="form-control"><br/>
+                </div>
+                <div class="form-group">
+                    <label for="js-register-age">Age</label>
+                    <input id="js-register-age" type="number" name="age" class="form-control"><br/>
+                </div>
+                <p class="text-danger">*These fields are required.</p>
+                <button id="js-register-submit" type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+        <?php include "{$_SERVER['DOCUMENT_ROOT']}/views/shared/footer/footer.phtml" ?>
+    </body>
 </html>

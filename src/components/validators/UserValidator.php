@@ -2,8 +2,6 @@
 
 namespace components\validators;
 
-use components\core\Utility;
-
 /**
  * Class UserValidator
  * Validates all user input for user functions. Throws ValidatorError if validation fails
@@ -119,7 +117,6 @@ class UserValidator
         if (strlen($new_data["email"]) > 32) {
             throw new ValidatorException("Length of email cannot exceed max length of 32.");
         }
-
     }
 
 

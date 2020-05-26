@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use components\validators\ValidatorException;
 use components\validators\EventValidator;
+use components\validators\ValidatorException;
 use models\Event;
 
 /**
@@ -44,8 +44,6 @@ class EventCreateController extends Controller
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
     }
-
-
 
     /**
      * Create the event after data validation

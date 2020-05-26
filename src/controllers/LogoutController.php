@@ -9,4 +9,3 @@ class LogoutController extends Controller
         $this->session->unsetSession();
     }
 }
-

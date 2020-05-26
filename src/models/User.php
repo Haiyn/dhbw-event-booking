@@ -179,8 +179,6 @@ class User
         ];
     }
 
-
-
     /**
      * Update user password in the database
      * @param $data * new password
@@ -213,8 +211,6 @@ class User
             );
         }
     }
-
-
 
     /**
      * Maps the data from user_data to a users database object

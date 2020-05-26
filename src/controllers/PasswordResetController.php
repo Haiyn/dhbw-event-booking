@@ -28,7 +28,6 @@ class PasswordResetController extends Controller
         $this->view->isError = isset($_GET["error"]);
     }
 
-
     /**
      * Verifies user by email and sends a link that will redirect to a form
      * for new password input
@@ -49,12 +48,11 @@ class PasswordResetController extends Controller
                 $email,
                 "Reset your password",
                 "Follow <a href='" . Utility::getApplicationURL() . "/password-save?hash={$hash}'>this link</a> 
-                to reset your password.");
-        } else{
-            $this->setSuccess("Follow <a href='" . Utility::getApplicationURL() . "/password-save?hash={$hash}'>this link</a> 
-                to reset your password.");
+                to reset your password."
+            );
+        } else {
+            $this->setSuccess("Follow <a href='" . Utility::getApplicationURL() .
+                "/password-save?hash={$hash}'>this link</a> to reset your password.");
         }
-
     }
-
 }

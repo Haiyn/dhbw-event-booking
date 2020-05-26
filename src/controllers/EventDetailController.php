@@ -3,9 +3,9 @@
 namespace controllers;
 
 use components\core\Utility;
-use components\validators\ValidatorException;
 use components\email\EmailService;
 use components\validators\EventValidator;
+use components\validators\ValidatorException;
 use models\Booking;
 use models\enums\Status;
 use models\Event;
@@ -102,8 +102,7 @@ class EventDetailController extends Controller
                     ["event_id" => $_GET['event_id']]
                 );
             }
-        }
-        else {
+        } else {
             // No event ID set or event id is invalid
             $this->redirect("/event-overview");
         }

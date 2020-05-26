@@ -11,7 +11,6 @@ use components\database\DatabaseService;
  */
 class Session
 {
-
     private static $instance;
     private static $database;
 

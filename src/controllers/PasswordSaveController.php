@@ -2,8 +2,8 @@
 
 namespace controllers;
 
-use components\validators\ValidatorException;
 use components\validators\UserValidator;
+use components\validators\ValidatorException;
 use models\User;
 
 /**
@@ -16,7 +16,6 @@ class PasswordSaveController extends Controller
     public function render()
     {
         if (isset($_GET['hash'])) {
-
             $hash = htmlspecialchars($_GET['hash']);
             $user = User::getInstance();
 
@@ -64,4 +63,3 @@ class PasswordSaveController extends Controller
         }
     }
 }
-

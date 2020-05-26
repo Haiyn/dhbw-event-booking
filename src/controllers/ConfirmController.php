@@ -6,7 +6,7 @@ use models\User;
 
 /**
  * Class ConfirmController
- * Handles confirming of email addresses via the verifaction hash of a user.
+ * Handles confirming of email addresses via the verification hash of a user.
  * @package controllers
  */
 class ConfirmController extends Controller
@@ -14,7 +14,6 @@ class ConfirmController extends Controller
     public function render()
     {
         if (isset($_GET['hash'])) {
-
             $hash = htmlspecialchars($_GET['hash']);
             $user = User::getInstance();
 
@@ -24,8 +23,6 @@ class ConfirmController extends Controller
             } else {
                 $this->setError("Sorry, we couldn't confirm your email!");
             }
-
-
         } else {
             if (!isset($_GET['success']) && !isset($_GET['error'])) {
                 $this->setError("Sorry, something went wrong!");

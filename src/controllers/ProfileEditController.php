@@ -25,7 +25,10 @@ class ProfileEditController extends Controller
         $this->displayUserInfo();
 
         //Save button pressed on personal info
-        if (isset($_POST["username"]) && isset($_POST["first_name"]) && isset($_POST["last_name"]) && isset($_POST["email"])) {
+        if (
+            isset($_POST["username"]) && isset($_POST["first_name"])
+            && isset($_POST["last_name"]) && isset($_POST["email"])
+        ) {
             $new_data = [
                 'username' => filter_var(htmlspecialchars($_POST['username']), FILTER_SANITIZE_STRING),
                 'first_name' => filter_var(htmlspecialchars($_POST['first_name']), FILTER_SANITIZE_STRING),
@@ -51,7 +54,6 @@ class ProfileEditController extends Controller
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
     }
-
 
     /**
      * Displays personal information of currently logged in user inside editing input fields

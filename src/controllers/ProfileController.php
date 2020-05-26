@@ -1,12 +1,9 @@
 <?php
 
-
 namespace controllers;
 
-use models\Booking;
-use models\User;
 use models\Event;
-use function Composer\Autoload\includeFile;
+use models\User;
 
 /**
  * Class ProfileController
@@ -15,7 +12,6 @@ use function Composer\Autoload\includeFile;
  */
 class ProfileController extends Controller
 {
-
     public function render()
     {
         $this->session->checkSession();
@@ -46,7 +42,6 @@ class ProfileController extends Controller
         $this->view->email = $email;
     }
 
-
     /**
      * Checks if user id from session is equal to the id of the creator of an event
      * While they are equal, return all events created by current user
@@ -66,6 +61,5 @@ class ProfileController extends Controller
         }
 
         $this->view->events = $creator_events;
-
     }
 }

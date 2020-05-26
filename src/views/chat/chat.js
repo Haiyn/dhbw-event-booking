@@ -8,10 +8,10 @@ $(document).ready(function () {
      * Sends IDENT message to WSS and enables send button
      * @param e * Connection event
      */
-    server.onopen= e => {
+    server.onopen = e => {
         console.log('Connected.');
         server.send("IDENT " + selfId);
-        if(sendButton) {
+        if (sendButton) {
             sendButton.removeAttr("disabled");
         }
 
@@ -41,18 +41,18 @@ $(document).ready(function () {
      * @param e * Message event
      */
     server.onmessage = e => {
-        if(e.data === "ERR_USER_NOT_CONNECTED") {
+        if (e.data === "ERR_USER_NOT_CONNECTED") {
             showInfo("Uh-Oh, looks like your chat partner is not online right now! You can still <a href=\"mailto:" + partnerEmail + "\">email them</a>");
             return;
         }
 
-        if(e.data === "ERR_MSG_NOT_DELIVERED") {
+        if (e.data === "ERR_MSG_NOT_DELIVERED") {
             showError("Sorry, something went wrong. Your message was not delivered.");
             return;
         }
 
         const message = JSON.parse(e.data);
-        if(message.from === partnerId) {
+        if (message.from === partnerId) {
             // Message is from chat partner, show it
             createNewMessage(message.message, true);
         } else {
@@ -67,11 +67,11 @@ $(document).ready(function () {
      * Sends a JSON payload to the server
      */
     if (sendButton) {
-        sendButton.on("click", function() {
+        sendButton.on("click", function () {
             // Get message and check for validity
             let messageBox = $('#js-message-box');
             let message = messageBox.val().trim();
-            if(!message) {
+            if (!message) {
                 return;
             }
             if (message.length > 2048) {
@@ -97,7 +97,8 @@ $(document).ready(function () {
      * @param message * The message content
      * @param isInbound * Whether the message is outbound (sent) or inbound (received)
      */
-    function createNewMessage(message, isInbound) {
+    function createNewMessage(message, isInbound)
+    {
         let className = isInbound ? "msg-inbound bg-light" : "msg-outbound bg-primary";
 
         $('#js-history-box').append(
@@ -111,7 +112,8 @@ $(document).ready(function () {
      * Shows an error message
      * @param message
      */
-    function showError(message) {
+    function showError(message)
+    {
         // Set the error message
         $('#js-error-text').html(message);
 
@@ -133,7 +135,8 @@ $(document).ready(function () {
      * Shows an info message
      * @param message
      */
-    function showInfo(message) {
+    function showInfo(message)
+    {
         // Set the info message
         $('#js-info-text').html(message);
 
