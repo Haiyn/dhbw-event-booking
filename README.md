@@ -13,7 +13,7 @@ PostgreSQL database, startable via docker. Created as a PHP lecture assignment a
 ## Development Setup
 
 ### A shell script (`run.sh`) is supplied to automatically do steps 1. and 2.
-It is located in the project root. Be sure to make it executable with `chmod +x ./run.sh` beforehand. 
+It is located in the project root. Be sure to make it executable with `chmod +x ./run.sh` beforehand.
 You'll need Composer and Docker to run this script, as defined by the above versioning tags.
 
 If you want to use this script, run it and skip ahead to 3. Configuration.
@@ -126,7 +126,7 @@ Installation:
 
 ## Release History
 
-* Version 0.1 (12.03.2020)
+* **Version 0.1** (12.03.2020)
   * Implemented:
     * Docker Setup for webserver and Database
     * Website MVC structure with router and autoloader
@@ -136,7 +136,7 @@ Installation:
     * Event Detail View
 
 
-* Version 0.2 (30.03.2020)
+* **Version 0.2** (30.03.2020)
   * Implemented:
     * User Login
     * User Sessions
@@ -152,7 +152,7 @@ Installation:
     * Footer is not always at the bottom
 
 
-* Version 0.3 (20.04.2020)
+* **Version 0.3** (20.04.2020)
   * Implemented:
     * Websocket Real-Time Chat
     * Event Filtering
@@ -164,7 +164,8 @@ Installation:
     * Email verification issue fixed
     * Login time of session does not refresh on user activity
 
-* Version 0.4 ([DATE])
+
+* **Version 0.4** (26.05.2020)
   * Implemented:
     * Home page
     * Profile
@@ -172,6 +173,14 @@ Installation:
     * Password Reset
   * Fixed:
     * Composer post-install does not work on windows
+    * Booking user feedback showed wrong information
+    * Current page was not correctly highlighted in the header
+    * Inviting a non-existent user does not redirect back to the edit page
+    * User did not have no verify their email after changing it
+    * Chat partner shown as offline even when online
+    * Creator can invite themselves to their own event
+    * Bootstrap throws console errors
+    * Chat homepage does not show error messages
 
 <!-- Markdown link & img dfn's -->
 [php-image]: https://img.shields.io/badge/php-v7.4.3-brightgreen?style=flat-square&logo=php
