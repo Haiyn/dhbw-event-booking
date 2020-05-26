@@ -13,7 +13,7 @@ use models\Event;
  */
 class EventOverviewController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         $this->session->checkSession();
 

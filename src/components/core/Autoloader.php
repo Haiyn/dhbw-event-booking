@@ -13,7 +13,6 @@ require_once 'components/InternalComponent.php';
  */
 class Autoloader extends InternalComponent
 {
-
     /**
      * Registers all active autoloaders
      */
@@ -56,7 +55,4 @@ class Autoloader extends InternalComponent
             require_once $file;
         }
     }
-
-
 }
-

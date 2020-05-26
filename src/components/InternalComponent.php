@@ -9,8 +9,9 @@ namespace components;
  */
 abstract class InternalComponent
 {
-    /*
+    /**
      * Redirects to the given url. Makes use of the router.
+     * @param $url * URL to redirect to
      */
     final protected function redirect($url)
     {
@@ -19,11 +20,9 @@ abstract class InternalComponent
         exit;
     }
 
-    /*
-     * These message setters set a new session variable according to their view name and message level and store the
-     * passed message in it. It then redirects to their current view with the message level as a parameter
-     *
-     * e.g. in register, the _setError method creates $_SESSION['REGISTER_ERROR'] and reroutes to /register?error
+    /**
+     * This error setter sets an error message in the session and redirects to the internal error page to display it
+     * @param $errorMessage * message to display
      */
     protected function setError($errorMessage)
     {

@@ -13,7 +13,7 @@ use models\User;
  */
 class PasswordResetController extends Controller
 {
-    public function render($params)
+    public function render()
     {
         if (isset($_POST['email'])) {
             $email = filter_var(htmlspecialchars($_POST['email']), FILTER_SANITIZE_EMAIL);
@@ -27,7 +27,6 @@ class PasswordResetController extends Controller
         $this->view->isSuccess = isset($_GET["success"]);
         $this->view->isError = isset($_GET["error"]);
     }
-
 
     /**
      * Verifies user by email and sends a link that will redirect to a form
@@ -49,12 +48,11 @@ class PasswordResetController extends Controller
                 $email,
                 "Reset your password",
                 "Follow <a href='" . Utility::getApplicationURL() . "/password-save?hash={$hash}'>this link</a> 
-                to reset your password.");
-        } else{
-            $this->setSuccess("Follow <a href='" . Utility::getApplicationURL() . "/password-save?hash={$hash}'>this link</a> 
-                to reset your password.");
+                to reset your password."
+            );
+        } else {
+            $this->setSuccess("Follow <a href='" . Utility::getApplicationURL() .
+                "/password-save?hash={$hash}'>this link</a> to reset your password.");
         }
-
     }
-
 }

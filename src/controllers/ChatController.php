@@ -2,7 +2,6 @@
 
 namespace controllers;
 
-use components\core\Utility;
 use models\User;
 
 /**
@@ -12,7 +11,7 @@ use models\User;
  */
 class ChatController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         $this->session->checkSession();
 
@@ -27,11 +26,11 @@ class ChatController extends Controller
             $self = $user->getUserById($_SESSION['USER_ID']);
             $partner = $user->getUserByUsername(htmlspecialchars($_GET['username']));
 
-            if(empty($partner)) {
+            if (empty($partner)) {
                 $this->setError("This user does not exist! Try searching for one that exists.
                 You can also message people via the attendees list in an event!");
             }
-            if($_GET['username'] == $self->username) {
+            if ($_GET['username'] == $self->username) {
                 // User is trying to chat with themselves
                 $this->redirect("/chat");
             }

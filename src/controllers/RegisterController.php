@@ -3,9 +3,9 @@
 namespace controllers;
 
 use components\core\Utility;
-use components\validators\ValidatorException;
 use components\email\EmailService;
 use components\validators\UserValidator;
+use components\validators\ValidatorException;
 use models\User;
 
 /**
@@ -15,7 +15,7 @@ use models\User;
  */
 class RegisterController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         // /register?verify=[email] was called to resend a verification link
         if (isset($_GET['verify'])) {

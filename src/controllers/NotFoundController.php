@@ -9,7 +9,7 @@ namespace controllers;
  */
 class NotFoundController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         $this->view->pageTitle = "404 Not Found";
     }

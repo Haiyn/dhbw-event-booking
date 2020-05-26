@@ -14,7 +14,6 @@ use PDOException;
  */
 class DatabaseService extends InternalComponent
 {
-
     private static $instance;
     private static $connection;
 
@@ -81,7 +80,6 @@ class DatabaseService extends InternalComponent
         } catch (\Exception $exception) {
             $this->setError("Database fetch failed unexpectedly.");
         }
-
     }
 
     /**
@@ -101,6 +99,5 @@ class DatabaseService extends InternalComponent
         } catch (\Exception $exception) {
             $this->setError("Database execute failed unexpectedly.");
         }
-
     }
 }

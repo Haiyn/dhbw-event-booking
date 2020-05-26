@@ -9,7 +9,7 @@ namespace controllers;
  */
 class InternalErrorController extends Controller
 {
-    public function render($parameters)
+    public function render()
     {
         session_start();
         if (!empty($_SESSION['INTERNAL_ERROR'])) {

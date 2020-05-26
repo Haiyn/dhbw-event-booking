@@ -1,6 +1,7 @@
 <?php
 
 namespace socket;
+
 /**
  * Class Utility
  * Various methods needed throughout different functions in the application.
@@ -14,7 +15,8 @@ class Utility
      * @param $bytes * message to check
      * @return false|string * failure | unmasked data
      */
-    public static function unmask($bytes) {
+    public static function unmask($bytes)
+    {
         $decodedData = '';
 
         // Get the data length if mask bit is set
@@ -27,13 +29,11 @@ class Utility
             // Extended payload length  (16): 24 Bits, 3 Bytes
             $mask = substr($bytes, 4, 4);
             $codedData = substr($bytes, 8);
-        }
-        elseif ($dataLength === 127) {
+        } elseif ($dataLength === 127) {
             // Extended payload length continued (64): 84 Bits, 14 Bytes (8+16+64)
             $mask = substr($bytes, 10, 4);
             $codedData = substr($bytes, 14);
-        }
-        else {
+        } else {
             // Payload length (8): 8 Bits, 1 Byte
             $mask = substr($bytes, 2, 4);
             $codedData = substr($bytes, 6);
@@ -62,18 +62,15 @@ class Utility
 
         // Mask message for different payload lengths
         // See https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API/Writing_WebSocket_servers
-        if($dataLength <= 125) {
+        if ($dataLength <= 125) {
             $codedData = pack('CC', $b1, $dataLength);
-        }
-        elseif($dataLength > 125 && $dataLength < 65536) {
+        } elseif ($dataLength > 125 && $dataLength < 65536) {
             $codedData = pack('CCn', $b1, 126, $dataLength);
-        }
-
-        elseif($dataLength >= 65536) {
+        } elseif ($dataLength >= 65536) {
             $codedData = pack('CCNN', $b1, 127, $dataLength);
         }
 
-        return $codedData.$message;
+        return $codedData . $message;
     }
 
     /**
@@ -81,10 +78,11 @@ class Utility
      * @param $input * Request header
      * @return string * Response header
      */
-    public static function createResponse($input) {
+    public static function createResponse($input)
+    {
         // Get the sent key and generate accept key
         preg_match('/Sec-WebSocket-Key: (.*)\r\n/', $input, $matches);
-        $rawKey = sha1($matches[1].'258EAFA5-E914-47DA-95CA-C5AB0DC85B11',true);
+        $rawKey = sha1($matches[1] . '258EAFA5-E914-47DA-95CA-C5AB0DC85B11', true);
         $acceptKey = base64_encode($rawKey);
 
         // Construct and return response header
@@ -99,7 +97,8 @@ class Utility
      * Log a non-fatal error
      * @param $message
      */
-    public static function error($message) {
+    public static function error($message)
+    {
         echo("\n[ERROR] {$message}");
     }
 
@@ -107,7 +106,8 @@ class Utility
      * Logs a message
      * @param $message
      */
-    public static function log($message) {
+    public static function log($message)
+    {
         echo("\n[LOG] {$message}");
     }
 
@@ -115,8 +115,9 @@ class Utility
      * Logs a very verbose message if TRACE_ENABLED true
      * @param $message
      */
-    public static function trace($message) {
-        if(filter_var(self::getIniFile()['TRACE_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
+    public static function trace($message)
+    {
+        if (filter_var(self::getIniFile()['TRACE_ENABLED'], FILTER_VALIDATE_BOOLEAN)) {
             echo("\n[TRACE] {$message}");
         }
     }
@@ -129,7 +130,7 @@ class Utility
     public static function getIniFile($process_sections = false)
     {
         $data = parse_ini_file("./config.ini", $process_sections);
-        if($data === false) {
+        if ($data === false) {
             echo("\n[WARN] Config file could not be found: Utility getIniFile returns false");
         }
         return $data;
